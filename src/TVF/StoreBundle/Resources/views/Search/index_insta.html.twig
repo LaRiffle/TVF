@@ -1,0 +1,54 @@
+<div id="my_insta">
+  <div id="no_results"><h4>Pas de résultats</h4></div>
+  <div class="tvf-grid">
+    <div class="tvf-row">
+      {% for creation in creations %}
+      <div class="tvf-box tvf-icon"
+          data-type="{% for type in creation.types %}{% if not loop.first %},{% endif %}{{type.id}}{% endfor %}"
+          data-collection="{{ creation.collection.id }}"
+          data-category="{{ creation.category.slug }}"
+          style="z-index: {{creations|length - loop.index0}}">
+        <div class="tvf-inner">
+          <a href="{{ path('tvf_store_creation_show', {'id': creation.id}) }}">
+            <img src="{{ asset('uploads/img/' ~ creation.small_image) }}" alt="" style="">
+            <div class="caption">
+              <h3>{{ creation.name }}</h3>
+              {% if creation.onsold %}<h5>{{ creation.price }} €</h5>{% endif %}
+            </div>
+          </a>
+        </div>
+      </div>
+      {% if loop.last %}
+        {% set index = loop.index %}
+        {% if is_granted('ROLE_ADMIN') %}
+          <div class="tvf-box tvf-icon add-icon" style="z-index: {{creations|length + 1}};">
+            <div class="tvf-inner">
+              <a href="{{ path('tvf_record_creation_add') }}" style="text-align: center; height: auto;">
+                  <h4 style="color: #BA0020;"><i class="fa fa-plus" aria-hidden="true"></i> Ajouter une création</h4>
+              </a>
+            </div>
+          </div>
+          {% set index = index + 1 %}
+        {% endif %}
+        {% if filterable == 'no'%}
+          {% if (index + 1) is divisible by(3) %}
+            <div class="tvf-box visible-from-sm"><div class="tvf-inner"></div></div>
+          {% elseif (index + 2) is divisible by(3) %}
+            <div class="tvf-box visible-from-sm"><div class="tvf-inner"></div></div>
+            <div class="tvf-box visible-from-sm"><div class="tvf-inner"></div></div>
+          {% endif %}
+          {% if (index + 1) is divisible by(2) %}
+            <div class="tvf-box visible-to-xs"><div class="tvf-inner"></div></div>
+          {% endif %}
+        {% else %}
+          <div class="tvf-box visible-from-sm"><div class="tvf-inner"></div></div>
+          <div class="tvf-box visible-from-sm"><div class="tvf-inner"></div></div>
+          <div class="tvf-box visible-from-sm"><div class="tvf-inner"></div></div>
+          <div class="tvf-box visible-to-xs"><div class="tvf-inner"></div></div>
+          <div class="tvf-box visible-to-xs"><div class="tvf-inner"></div></div>
+        {% endif %}
+      {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</div>

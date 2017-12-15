@@ -1,0 +1,47 @@
+tvf_admin_category_add:
+    path:     /admin/category/add/{id}
+    defaults: { _controller: TVFAdminBundle:Category:add, id:0 }
+tvf_admin_category_show:
+    path:     /admin/category/{id}
+    defaults: { _controller: TVFAdminBundle:Category:show }
+    requirements:
+        id:   \d+
+tvf_admin_category_remove:
+    path:     /admin/category/remove/{id}
+    defaults: { _controller: TVFAdminBundle:Category:remove}
+
+
+tvf_admin_text_add:
+    path:     /admin/text/add/{id}
+    defaults: { _controller: TVFAdminBundle:Edition:textAdd, id:0 }
+tvf_admin_image_add:
+    path:     /admin/image/add/{id}
+    defaults: { _controller: TVFAdminBundle:Edition:imageAdd, id:0 }
+
+
+tvf_admin_gender_add:
+    path:     /admin/gender/add/{id}
+    defaults: { _controller: TVFAdminBundle:MusicGenre:genderAdd, id:0 }
+tvf_admin_gender_remove:
+    path:     /admin/gender/remove/{id}
+    defaults: { _controller: TVFAdminBundle:MusicGenre:genderRemove}
+tvf_admin_type_add:
+    path:     /admin/type/add/{gender_id}/{id}
+    defaults: { _controller: TVFAdminBundle:MusicGenre:typeAdd, id:0 }
+tvf_admin_type_remove:
+    path:     /admin/type/remove/{id}
+    defaults: { _controller: TVFAdminBundle:MusicGenre:typeRemove}
+
+
+tvf_admin_init_create:
+    path:     /admin_init/{key}
+    defaults: { _controller: TVFAdminBundle:Admin:createAdmin }
+tvf_admin_user_add:
+    path:     /admin/user/add/{id}
+    defaults: { _controller: TVFAdminBundle:Admin:addUser, id: 0 }
+tvf_admin_users_show:
+    path:     /admin/users/show
+    defaults: { _controller: TVFAdminBundle:Admin:showUsers }
+tvf_admin_user_remove:
+    path:     /admin/user/remove/{id}
+    defaults: { _controller: TVFAdminBundle:Admin:removeUser }

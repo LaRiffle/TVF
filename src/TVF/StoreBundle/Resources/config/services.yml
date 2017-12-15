@@ -1,0 +1,11 @@
+services:
+#    tvf_store.example:
+#        class: TVF\StoreBundle\Example
+#        arguments: ["@service_id", "plain_value", "%parameter%"]
+services:
+    tvf_store.imagehandler:
+        class: TVF\StoreBundle\Handler\TVFImagehandler
+        arguments: [%img_dir%]
+    tvf_store.fieldhandler:
+        class: TVF\StoreBundle\Handler\TVFFieldhandler
+        arguments: [ "@doctrine.orm.entity_manager", "@tvf_store.imagehandler" ]

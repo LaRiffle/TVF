@@ -1,0 +1,17 @@
+{% extends "TVFStoreBundle::layout.html.twig" %}
+{% block body %}
+{% set navbar = "TVFStoreBundle:Utils:nav.html.twig" %}
+{{ include(navbar, {'active': 'collection'}) }}
+<div class="container">
+  <div class="row">
+    <div class="col-sm-6 offset-sm-3">
+      <form name="form" class="form-signin" method="post" action="{{ path('tvf_admin_user_add',{'id': id}) }}">
+        <h3 class="form-signin-heading">{% if id == 0 %}Ajouter{% else %}Modifier{% endif %} un disquaire</h3>
+        {% set input_form="TVFAdminBundle:Utils:form_input.html.twig" %}
+        {% set save_form="TVFAdminBundle:Utils:form_save.html.twig" %}
+        {{ form_rest(form) }}
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

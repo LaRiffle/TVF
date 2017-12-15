@@ -1,0 +1,58 @@
+
+<li class="list-group-item justify-content-between">
+  <label class="" for="select_collection"><h5>Les sélections</h5></label>
+  <select id="select_collection" class="form-control" placeholder="Collection">
+    <option {% if '_' == collection_id %}selected="selected"{% endif %} value="_">Toute la collection</option>
+    {% for collection in collections %}
+      <option {% if collection.id == collection_id %}selected="selected"{% endif %} value="{{ collection.id }}">{{ collection.title }}</option>
+    {% endfor %}
+  </select>
+  <select id="select_category" class="form-control" placeholder="Collection" style="margin-top: 10px;">
+    <option {% if '_' == category_id %}selected="selected"{% endif %} value="_">Tous nos articles</option>
+    {% for category in categories %}
+      <option {% if category.slug == category_id %}selected="selected"{% endif %} value="{{ category.slug }}">{{ category.name }}</option>
+    {% endfor %}
+  </select>
+</li>
+<li class="list-group-item" style="padding: 5px; padding-right:0px;">
+  <div class="horizontal-scroll">
+    {% for gender in genders %}
+    <a href="#" data-toggle="gender{{ gender.id }}" class="toggler btn btn-default btn-tvf">{{ gender.name }}</a>
+    {% endfor %}
+  </div>
+</li>
+<div>
+  {% for gender in genders %}
+  <div id="gender{{ gender.id }}" class="gender {% if not loop.first %}hide{% endif %}">
+  {% for type in gender.types %}
+    <li class="list-group-item justify-content-between">
+      <a href="#type-{{ type.id }}" class="filter">
+        <i class="fa fa-circle-thin" aria-hidden="true"></i>&nbsp;
+        <input id="" type="checkbox" style="display:none;"> {{ type.name }}
+      </a>
+      {% if is_granted('ROLE_ADMIN') %}
+      <a class="remove" href="{{ path('tvf_admin_type_remove', {'id': type.id }) }}"><i class="fa fa-trash-o"></i></a>
+      {% endif %}
+    </li>
+  {% endfor %}
+  {% if is_granted('ROLE_ADMIN') %}
+  <li class="list-group-item justify-content-between">
+    <a href="#" class="internal-link" data-target="#form-type{{ gender.id }}">+ Sous-genre</a>
+    <div id="form-type{{ gender.id }}" style="display:none">
+      {{ render(controller("TVFAdminBundle:MusicGenre:typeAdd", {'gender_id': gender.id })) }}
+    </div>
+  </li>
+  {% endif %}
+  </div>
+  {% endfor %}
+</div>
+{% if is_granted('ROLE_ADMIN') %}
+<li class="list-group-item justify-content-between vetement_filter">
+  <a href="#" class="internal-link" data-target="#form-gender">Ajouter un genre</a>
+  <div id="form-gender" style="display:none">
+    {{ render(controller("TVFAdminBundle:MusicGenre:genderAdd")) }}
+  </div>
+</li>
+{% endif %}
+<li class="list-group-item justify-content-between visible-to-md" style="height: 72px;">
+</li>

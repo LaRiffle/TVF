@@ -1,0 +1,25 @@
+tvf_record:
+    resource: "@TVFRecordBundle/Resources/config/routing.yml"
+    prefix:   /
+
+tvf_admin:
+    resource: "@TVFAdminBundle/Resources/config/routing.yml"
+    prefix:   /
+
+tvf_store:
+    resource: "@TVFStoreBundle/Resources/config/routing.yml"
+    prefix:   /
+
+default:
+    path: /
+    defaults:
+        _controller: TVFStoreBundle:Home:work
+
+login:
+    path: /login
+    defaults:
+        _controller: TVFUserBundle:Security:login
+login_check:
+    path: /login_check
+logout:
+    path: /logout

@@ -1,0 +1,31 @@
+{% extends "TVFStoreBundle::layout.html.twig" %}
+{% block title %}
+  | Bienvenue
+{% endblock %}
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{ asset('bundles/TVF/slick/slick.css') }}"/>
+<link rel="stylesheet" type="text/css" href="{{ asset('bundles/TVF/slick/slick-theme.css') }}"/>
+{% endblock %}
+{% block body %}
+  {{ render(controller('TVFStoreBundle:Home:home')) }}
+{% endblock %}
+{% block script %}
+{% if is_granted('ROLE_ADMIN') %}
+  {% set edit_script = "TVFAdminBundle:Utils:edit-handler.html.twig" %}
+  {{ include(edit_script) }}
+{% endif %}
+{% set carousel_scripts = "TVFStoreBundle:Collection:index_scripts.html.twig" %}
+{{ include(carousel_scripts) }}
+<script>
+$('.tvf-icon').slice(0,10).each(function(){
+  var img = $(this).find('img');
+  var img_width = img.width();
+  var img_height = img.height();
+  if(img_width < img_height){
+     img.addClass('portrait');
+  } else {
+     img.removeClass('portrait');
+  }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,11 @@
+
+
+<form class="form-signin" name="form" method="post" action="{{ path('tvf_admin_text_add',{'id': id}) }}">
+  {% set input_form="TVFAdminBundle:Utils:form_input.html.twig" %}
+  {% set save_form="TVFAdminBundle:Utils:form_save.html.twig" %}
+  <h6 class="form-signin-heading">{% if id == 0 %}Créer{% else %}Modifier un texte{% endif %}</h6>
+  {{ include(input_form, {'element': form.role, 'name':"Rôle"}) }}
+  {{ include(input_form, {'element': form.text, 'name':"Texte"}) }}
+  {{ include(save_form, {'element': form.save, 'name':"Publier"}) }}
+  {{ form_rest(form) }}
+</form>

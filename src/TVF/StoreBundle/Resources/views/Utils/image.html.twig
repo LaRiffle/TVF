@@ -1,0 +1,13 @@
+{% if element.small_image is defined %}
+{%   set src = element.small_image %}
+{% else %}
+{%   set src = element.image %}
+{% endif %}
+{% if class is not defined %}
+    <img id="img-{{ element.id }}" src="{{ asset('uploads/img/' ~ src) }}" alt="" style="{{ style }}">
+{% else %}
+    <img id="img-{{ element.id }}" src="{{ asset('uploads/img/' ~ src) }}" alt="" style="{{ style }}" class="{{ class }}">
+{% endif %}
+{% if is_granted('ROLE_ADMIN') %}
+<a  style="" class="edit-img" id="{{ element.id }}" href="{{ path('tvf_admin_image_add', {'id': element.id }) }}"><i class="fa fa-pencil-square-o"></i></a>
+{% endif %}

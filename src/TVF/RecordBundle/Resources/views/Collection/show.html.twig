@@ -1,0 +1,8 @@
+{% extends "TVFStoreBundle::layout.html.twig" %}
+{% block body %}
+  <h2>{{ collection.title }}</h2>
+  <p>{{ collection.description }}</p>
+  <img src="{{ asset('uploads/img/' ~ collection.image) }}" class="img-thumbnail" width="300">
+{% endblock %}
+{% block script %}
+{% endblock %}

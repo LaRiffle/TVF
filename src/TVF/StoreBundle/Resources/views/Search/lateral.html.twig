@@ -1,0 +1,28 @@
+<div id="lateral_mobile" class="col-lg-4 col-xl-3">
+  <ul class="list-group">
+    <li class="list-group-item collapse-toggle justify-content-between">
+      <h5 style="margin-bottom: 0px; width: 100%;">
+        <div style="float: right; margin-top: 2px;">
+          <a href="#" alt="Fermer le volet" class="close-lateral visible-to-md">
+            <i class="fa fa-chevron-right" aria-hidden="true"></i>
+          </a>
+          <a href="#" alt="Aligner les icones" class="reorder-btn visible-from-lg">
+            <i class="fa fa-th" aria-hidden="true"></i>
+          </a>
+        </div>
+        Filtres <span id="number_results"></span>
+      </h5>
+    </li>
+    <div id="menu_lateral" class="collapse show">
+        {% set lateral_navbar_content = "TVFStoreBundle:Search:lateral_content.html.twig" %}
+        {{ include(lateral_navbar_content) }}
+    </div>
+    <div id="lateral_mobile_bottom" class="visible-to-md" style="display:none;">
+    <li class="list-group-item justify-content-between">
+      <a href="#" alt="Fermer le volet" class="close-lateral btn btn-primary">
+        Fermer
+      </a>
+    </li>
+    </div>
+  </ul>
+</div>

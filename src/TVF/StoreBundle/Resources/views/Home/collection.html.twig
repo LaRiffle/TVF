@@ -1,0 +1,31 @@
+{% extends "TVFStoreBundle::layout.html.twig" %}
+{% block title %}
+  | Collections
+{% endblock %}
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{ asset('bundles/TVF/slick/slick.css') }}"/>
+<link rel="stylesheet" type="text/css" href="{{ asset('bundles/TVF/slick/slick-theme.css') }}"/>
+{% endblock %}
+{% block body %}
+<div id="collection-page">
+  {% set navbar = "TVFStoreBundle:Utils:nav.html.twig" %}
+  {% set text = "TVFStoreBundle:Utils:text.html.twig" %}
+  {% set image = "TVFStoreBundle:Utils:image.html.twig" %}
+  {{ include(navbar, {'active': 'collection'}) }}
+  <div class="container container-body">
+    <div class="row" style="margin-top: 25px;">
+      <div class="col-sm-12">
+      {% set carousel = "TVFStoreBundle:Collection:index.html.twig" %}
+      {{ include(carousel) }}
+      {% if is_granted('ROLE_ADMIN') %}
+        <a class="btn btn-primary" style="margin-top: 5px;" href="{{ path('tvf_record_collection_add')}}">+ Créer une nouvelle collection</a>
+      {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block script %}
+{% set carousel_scripts = "TVFStoreBundle:Collection:index_scripts.html.twig" %}
+{{ include(carousel_scripts) }}
+{% endblock %}

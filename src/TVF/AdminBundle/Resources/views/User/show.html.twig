@@ -1,0 +1,19 @@
+{% extends "TVFStoreBundle::layout.html.twig" %}
+{% block body %}
+<div id="attribute-page">
+  {% set navbar = "TVFStoreBundle:Utils:nav.html.twig" %}
+  {{ include(navbar, {'active': 'collection'}) }}
+  <div class="container">
+    <div class="row" style="margin-top: 25px;">
+      <div class="offset-sm-3 col-sm-6">
+        <h4 style="text-align: center;">Disquaires</h4>
+        <a href="{{ path('tvf_admin_user_add') }}">Ajouter disquaire</a><br />
+        {% set edition_buttons="TVFAdminBundle:Utils:edition.html.twig" %}
+        {% for user in users %}
+          {{ user.username }} {{ user.password }} {{ user.roles|join('|') }}
+          {{ include(edition_buttons, {'edit': path('tvf_admin_user_add', {'id': user.id}), 'remove': path('tvf_admin_user_remove', {'id': user.id}) }) }}
+          <br />
+        {% endfor %}
+{% endblock %}
+{% block script %}
+{% endblock %}

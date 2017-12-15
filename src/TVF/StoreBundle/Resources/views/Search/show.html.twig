@@ -1,0 +1,185 @@
+{% extends "TVFStoreBundle::layout.html.twig" %}
+{% block body %}
+
+<div id="explore-page">
+  {% set navbar = "TVFStoreBundle:Utils:nav.html.twig" %}
+  {{ include(navbar, {'active': 'collection'}) }}
+  <div class="container">
+    <div class="row">
+      <div class="col-md-1">
+      </div>
+      <div class="col-sm-7 col-md-6">
+        <div class="visible-to-xs">
+          <h2>{{ creation.name }}</h2>
+          <h4>
+            {% if creation.onsold %}
+              <span class="badge badge-primary badge-pill" style="padding: 16px;padding-top: 11px;padding-bottom: 9px;">{{ creation.price }} €</span>
+            {% endif %}
+            <span class="love_btn love_icon top_circle_icon">
+              <a href="#" style="color:#BA0020;">
+                {% if creation.love %}
+                  <i class="fa fa-heart fa-2x" aria-hidden="true"></i>
+                {% else %}
+                  <i class="fa fa-heart-o fa-2x" aria-hidden="true"></i>
+                {% endif %}
+              </a>
+            </span>
+          </h4>
+        </div>
+        {% set carousel = "TVFStoreBundle:Search:carousel.html.twig" %}
+        {{ include(carousel, {'url': creation.images}) }}
+        <div class="visible-from-sm">
+          <h4>{{ creation.title2 }}</h4>
+          <p>{{ creation.text2|nl2br }}</p>
+        </div>
+      </div>
+      <div class="col-sm-5 col-md-4">
+        {% if is_granted('ROLE_ADMIN') %}
+          {% set edition_buttons="TVFAdminBundle:Utils:edition.html.twig" %}
+          {{ include(edition_buttons, {'edit': path('tvf_record_creation_add', {'id': creation.id}), 'remove': path('tvf_record_creation_remove', {'id': creation.id}) }) }}
+        {% endif %}
+        <div class="visible-from-sm">
+          <h2>{{ creation.name }}</h2>
+          <h4>
+            {% if creation.onsold %}
+              <span class="badge badge-primary badge-pill" style="padding: 16px;padding-top: 11px;padding-bottom: 9px;">{{ creation.price }} €</span>
+            {% endif %}
+            <span class="love_btn love_icon top_circle_icon">
+              <a href="#" style="color:#BA0020;">
+                {% if creation.love %}
+                  <i class="fa fa-heart fa-2x" aria-hidden="true"></i>
+                {% else %}
+                  <i class="fa fa-heart-o fa-2x" aria-hidden="true"></i>
+                {% endif %}
+              </a>
+            </span>
+          </h4>
+        </div>
+        <h4>{{ creation.title1 }}</h4>
+        <p>{{ creation.text1|nl2br }}</p>
+        <div class="visible-to-xs">
+          <h4>{{ creation.title2 }}</h4>
+          <p>{{ creation.text2|nl2br }}</p>
+        </div>
+         <ul id="notify" class="list-group" style="margin-bottom: 10px;">
+           <!--<li class="list-group-item collapse-toggle justify-content-between">
+             <h5 style="margin-bottom: 0px;">
+               Modèles
+             </h5>
+           </li>-->
+           <div id="creation_options" class="collapse show">
+               {% if creation.sizes|length > 0 %}
+               <li class="list-group-item" style="padding-right: 0px;" data-unique="1">
+                 <h5 style="width: 100%;">Tailles</h5>
+                 <div style="width: 100%; overflow: auto;" class="no-scroll-bar">
+                   <table><tr>
+                   {% set card="TVFRecordBundle:Attribute:card_attribute.html.twig" %}
+                   {% for attribute in creation.sizes %}
+                     <td>{{ include(card, {'attribute': attribute, 'allow_modify': false}) }}</td>
+                   {% endfor %}
+                   </tr></table>
+                   <div class="slide-horizontal">
+                     <div><i class="fa fa-2x fa-angle-right" aria-hidden="true"></i></div>
+                   </div>
+                 </div>
+               </li>
+               {% endif %}
+               {% if creation.colors|length > 0 %}
+               <li class="list-group-item" style="padding-right: 0px;"  data-unique="1">
+                 <h5 style="width: 100%;">Couleurs</h5>
+                 <div style="width: 100%; overflow: auto;" class="no-scroll-bar">
+                   <table><tr>
+                   {% set card="TVFRecordBundle:Attribute:card_attribute.html.twig" %}
+                   {% for attribute in creation.colors %}
+                     <td>{{ include(card, {'attribute': attribute, 'allow_modify': false}) }}</td>
+                   {% endfor %}
+                   </tr></table>
+                   <div class="slide-horizontal">
+                     <div><i class="fa fa-2x fa-angle-right" aria-hidden="true"></i></div>
+                   </div>
+                 </div>
+               </li>
+               {% endif %}
+               {% if creation.others|length > 0 %}
+               <li class="list-group-item" style="padding-right: 0px;" data-unique="0">
+                 <h5 style="width: 100%;">Options</h5>
+                 {% set card="TVFRecordBundle:Attribute:card_attribute.html.twig" %}
+                 {% for attribute in creation.others %}
+                   {{ include(card, {'attribute': attribute, 'allow_modify': false}) }}
+                 {% endfor %}
+               </li>
+              {% endif %}
+               </li>
+             </div>
+         </ul>
+      </div>
+    </div>
+    <div class="row">
+      <div class="offset-sm-1 col-sm-10" style="margin-top: 15px;">
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block script %}
+<script>
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+    $('#creation_options table').each(function(){
+      if($(this).width() > $(this).parent().width()){
+        $(this).parent().find('.slide-horizontal').fadeIn();
+      }
+    })
+});
+</script>
+<script>
+  //$("#carousel .carousel-item").zoom({ on:'grab' });
+  $('#carousel img')
+    .wrap('<span style="display:inline-block"></span>')
+    .css('display', 'block')
+    .parent()
+    .zoom({ on:'grab' });
+</script>
+<script>
+  $('.attribute-card').on('click', function(e){
+    var rule = $(this).closest('li').attr('data-unique');
+    if($(this).attr('data-selected') == '1'){
+      $(this).css('border-color', 'rgba(0,0,0,.125)');
+      $(this).attr('data-selected', 0);
+    } else {
+      if(rule == '1'){
+        $(this).closest('li').find('.attribute-card').css('border-color', 'rgba(0,0,0,.125)').attr('data-selected', 0);;
+      }
+      $(this).css('border-color', '#0275d8');
+      $(this).attr('data-selected', 1);
+    }
+  });
+</script>
+<script>
+$('.love_btn').on('click', function(e) {
+  e.preventDefault();
+  $.ajax({
+      url:'{% if creation.love %}{{ path('tvf_store_creation_unlove') }}{% else %}{{ path('tvf_store_creation_love') }}{% endif %}/{{ creation.id }}',
+      type: "POST",
+      dataType: "json",
+      data: {
+      },
+      async: true,
+      success: function (data)
+      {
+          console.log('Action stored.')
+          //console.log(data.output);
+          var nb = Number($('#nb_love').html());
+          {% if creation.love %}
+          $('.love_btn .fa-heart').removeClass('fa-heart').addClass('fa-heart-o');
+          $('#nb_love').html(nb-1);
+          {% else %}
+          $('.love_btn .fa-heart-o').removeClass('fa-heart-o').addClass('fa-heart');
+          $('#nb_love').html(nb+1);
+          {% endif %}
+      }
+  });
+});
+</script>
+{% endblock %}

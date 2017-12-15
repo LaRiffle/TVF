@@ -1,0 +1,256 @@
+{% extends "TVFStoreBundle::layout.html.twig" %}
+{% block title %}
+  | Créations
+{% endblock %}
+{% block body %}
+{% endblock %}
+{% block script %}
+<script>
+  var icon_per_row = 3;
+  function Icon(x, y) {
+    var icon = {};
+    icon.x = x-50;
+    icon.y = y-50;
+    icon.width = 300;
+    icon.height = 300;
+    icon.contains = function (x, y) {
+        x += this.width/2
+        y += this.height/2
+        //console.log(x, this.x, this.x + this.width);
+        return this.x <= x && x <= this.x + this.width &&
+               this.y <= y && y <= this.y + this.height;
+    }
+    return icon;
+  }
+  function icon_overlap(icon){
+    var overlap = false
+    for(index in icons){
+      var in_it = icons[index].contains(icon.x, icon.y);
+      if(in_it){
+        overlap =  true;
+      }
+    }
+    return overlap;
+  }
+  var width = $('#display_icons').width() - 200;
+  var height = 280;
+  icons = [];
+  $('.tvf-icon').slice(0,10).each(function(){
+      $(this).css('position', 'absolute').fadeIn();
+      if (window.matchMedia('screen and (min-width: 568px)').matches) {
+        var idx = $(this).index('.tvf-row .tvf-icon');
+        var grid_j = idx % 3;
+        var grid_i = (idx - idx % 3)/3;
+        //console.log(grid_i + ' ' + grid_j);
+        var x = 10 - 50*grid_j + 0.3*Math.random() * width;
+        var y = 10 - 50*grid_i + 0.3*Math.random() * height;
+        var icon = Icon(x, y);
+        var i = 10;
+        while(icon_overlap(icon) && i > 0){
+          i--;
+          x = 10 - 50*grid_j + 0.3*Math.random() * width;
+          y = 10 - 50*grid_i + 0.3*Math.random() * height;
+          icon = Icon(x, y);
+          //console.log('try'+i);
+        }
+        theta = (Math.random() - 0.5)*30;
+        $(this).css('left', x);
+        $(this).css('top', y);
+        //$(this).css('transform', 'rotate('+theta+'deg)');
+      }
+      var img = $(this).find('img');
+      var img_width = img.width();
+      var img_height = img.height();
+      if(img_width < img_height){
+         img.addClass('portrait');
+      } else {
+         img.removeClass('portrait');
+      }
+      icons.push(icon);
+  })
+</script>
+<script>
+  function reshape_image(obj){
+    var img = $(obj).find('img');
+    var img_width = img.width();
+    var img_height = img.height();
+    if(img_width < img_height){
+       img.addClass('portrait');
+    } else {
+       img.removeClass('portrait');
+    }
+  }
+  var filter = {
+    collection: "{{ collection_id }}",
+    category: "{{ category_id }}",
+    types: []
+  }
+
+  function icon_filter(){
+    var visible_items = 0;
+    $('.tvf-icon:not(.add-icon)').each(function(){
+      var collection = $(this).attr('data-collection');
+      var category = $(this).attr('data-category');
+      var types = $(this).attr('data-type').split(',').map(Number);
+      var visible = (collection == filter.collection || filter.collection == '_')
+      visible = visible && (category == filter.category || filter.category == '_')
+      if(filter.types.length > 0){
+        var has_one_type = false;
+        for(i in types){
+          var type = types[i];
+          has_one_type = has_one_type || filter.types.includes(type);
+        }
+        visible = visible && has_one_type;
+      }
+      if(visible){
+        $(this).css('display', 'block');
+        reshape_image(this);
+        visible_items++;
+      } else {
+        $(this).css('display', 'none');
+      }
+    });
+    if(visible_items > 0){
+      $('#number_results').html('('+visible_items+')');
+      $('#no_results').hide();
+    } else {
+      $('#number_results').html('');
+      $('#no_results').show();
+    }
+    if(filter.category == 'accessoire'){
+      $('.vetement_filter').hide();
+    } else {
+      $('.vetement_filter').show();
+    }
+    return visible_items;
+  }
+  $(document).ready(function(){
+    setTimeout(function(){
+      $('.tvf-icon').css('display', 'none').css('visibility', 'visible').fadeIn();
+      var visible_items = icon_filter();
+      if(visible_items <= 3) {
+        reorganize();
+      }
+    }, 400);
+  });
+
+  var first_click = true;
+  function reorganize(){
+    if(first_click){
+      $('.tvf-icon').each(function(){
+        $(this).css('left', '0');
+        $(this).css('top', '0');
+        $(this).css('transform', 'none');
+      });
+      first_click = false;
+    }
+  }
+  $('.reorder-btn').on('click', function(e){
+    e.preventDefault();
+    reorganize();
+  });
+
+  $('#menu_lateral a.filter').on('click', function(e){
+    e.preventDefault();
+    reorganize();
+    var $input = $(this).find("input").first();
+    $input.prop("checked", !$input.prop("checked"));
+    var type_id = Number(this.href.split('-')[this.href.split('-').length-1]);
+    if($input.prop("checked")){
+      filter.types.push(type_id);
+      $(this).find('i').removeClass('fa-circle-thin').addClass('fa-circle');
+    } else {
+      var index = filter.types.indexOf(type_id);
+      if (index > -1) {
+          filter.types.splice(index, 1);
+      }
+      $(this).find('i').removeClass('fa-circle').addClass('fa-circle-thin');
+    }
+    icon_filter();
+  });
+
+  $("#select_collection").change(function() {
+    reorganize();
+    filter.collection = $(this).val();
+    icon_filter();
+  });
+  $("#select_category").change(function() {
+    reorganize();
+    filter.category = $(this).val();
+    icon_filter();
+  });
+</script>
+<script>
+/* Put on top creation on which we hover with the mouse */
+
+  nb_creation = $('.tvf-icon').length;
+  z_index = nb_creation;
+  $('.tvf-icon').mouseenter(function(){
+    var $this = $(this)
+    $this.css('z-index', z_index);
+    /*
+    $this.css('opacity', 0);
+    setTimeout(function(){
+      $this.css('z-index', z_index).css('opacity', 1);
+    }, 400);*/
+    z_index += 1;
+  })
+
+</script>
+<script>
+  /*
+    Script for the lateral mobile volet
+  */
+  var lateral_visible = false;
+  $('.close-lateral').on('click', function(e){
+    e.preventDefault();
+    $('#lateral_mobile').css('right', '-280px');
+  })
+  $('.show-lateral').on('click', function(e){
+    // more a toggle than a show
+    e.preventDefault();
+    if(!lateral_visible){
+      $('#lateral_mobile').css('right', '0px');
+    } else {
+      $('#lateral_mobile').css('right', '-280px');
+    }
+    lateral_visible = !lateral_visible;
+  })
+</script>
+<script>
+$(document).ready(function(){
+  $('.toggler').on('click', function(e){
+    e.preventDefault();
+    id = $(this).attr('data-toggle');
+    console.log(id);
+    if($('#'+id).is(":visible")){
+      $('#'+id).slideUp();
+      $(this).css('border-color','rgba(0,0,0,.125)');
+    } else {
+      $('.toggler').each(function(){
+        $(this).css('border-color','rgba(0,0,0,.125)');
+      });
+      $('.gender').each(function(){
+        $(this).find('input:checkbox').each(function(){
+          var $input = $(this);
+          $input.prop("checked", false);
+          console.log($input.parent());
+          var type_id = Number($input.parent().attr('href').split('-')[1]);
+          var index = filter.types.indexOf(type_id);
+          if (index > -1) {
+              filter.types.splice(index, 1);
+          }
+          $input.parent().find('i').removeClass('fa-circle').addClass('fa-circle-thin');
+        });
+        icon_filter();
+        if($(this).attr('id') != id){
+          $(this).hide();
+        }
+      });
+      $(this).css('border-color','rgb(2, 117, 216)');
+      $('#'+id).slideDown();
+    }
+  });
+});
+</script>
+{% endblock %}

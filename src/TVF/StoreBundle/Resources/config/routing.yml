@@ -1,0 +1,49 @@
+tvf_store_work:
+    path:     /work
+    defaults: { _controller: TVFStoreBundle:Home:work }
+
+# Behaviour
+tvf_store_creation_love:
+    path:     /creation/love/{id}
+    defaults: { _controller: TVFStoreBundle:Behaviour:love, id:0 }
+tvf_store_creation_unlove:
+    path:     /creation/unlove/{id}
+    defaults: { _controller: TVFStoreBundle:Behaviour:unlove, id:0 }
+
+# Customer
+tvf_store_customer_register:
+    path:     /register
+    defaults: { _controller: TVFStoreBundle:Customer:register }
+
+# Home
+tvf_store_homepage:
+    path:     /accueil
+    defaults: { _controller: TVFStoreBundle:Home:homepage }
+tvf_store_collection:
+    path:     /collections
+    defaults: { _controller: TVFStoreBundle:Home:collection }
+tvf_store_history:
+    path:     /histoire
+    defaults: { _controller: TVFStoreBundle:Home:history }
+tvf_store_contact:
+    path:     /contact
+    defaults: { _controller: TVFStoreBundle:Home:contact }
+
+# Search
+tvf_store_show:
+    path:     /show/{id}
+    defaults: { _controller: TVFStoreBundle:Search:show, id:0 }
+tvf_store_selection:
+    path:     /selection
+    defaults: { _controller: TVFStoreBundle:Search:selection }
+tvf_store_explore:
+    path:     /collection/{collection}/{category}
+    defaults: { _controller: TVFStoreBundle:Search:collection, collection:"_", category:"_" }
+tvf_store_creation:
+    path:     /creation/
+    defaults: { _controller: TVFStoreBundle:Search:indexCreations}
+tvf_store_creation_show:
+    path:     /creation/{id}
+    defaults: { _controller: TVFStoreBundle:Search:showCreation }
+    requirements:
+        id:   \d+

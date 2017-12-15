@@ -1,0 +1,5 @@
+<div style="margin-top: 10px;">
+  {{ form_label(element, name, {'label_attr' : {'class': 'sr-only'}}) }}
+  {{ form_errors(element) }}
+  {{ form_widget(element, {'attr': {'class': 'form-control', 'placeholder': name}}) }}
+</div>

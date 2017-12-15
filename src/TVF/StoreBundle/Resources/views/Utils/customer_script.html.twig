@@ -1,0 +1,26 @@
+0<script src="https://cdnjs.cloudflare.com/ajax/libs/fingerprintjs2/1.5.1/fingerprint2.min.js"></script>
+<script>
+var user_id;
+console.log('Registration...');
+new Fingerprint2().get(function(result, components){
+  user_id = result
+  console.log(result); //a hash, representing your device fingerprint
+  // console.log(components); // an array of FP components
+  $.ajax({
+      url:'{{ (path('tvf_store_customer_register')) }}',
+      type: "POST",
+      dataType: "json",
+      data: {
+          "username": user_id
+      },
+      async: true,
+      success: function (data)
+      {
+          console.log('Done.')
+          console.log(data.output);
+          console.log(data.nb_love);
+          $('#nb_love').html(data.nb_love);
+      }
+  });
+});
+</script>
