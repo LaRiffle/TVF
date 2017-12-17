@@ -765,6 +765,10 @@ ul.edition-btn li:after {
     transition:top 0.4s linear, left 0.4s linear;
     visibility: hidden;
 }
+.tvf-box-small {
+    margin: 1px;
+    visibility: visible;
+}
 @media screen and (max-width: 576px) {
   #explore-page #display_icons {
     padding: 0;
@@ -829,4 +833,12 @@ ul.edition-btn li:after {
   .selection-title {
     font-size: 1.5rem;
   }
+}
+
+/* Chatbot */
+.tvf-bubble {
+    border-radius: .25rem;
+    padding: .5rem 1rem;
+    border: 1px solid rgba(0,0,0,.125);
+    margin-bottom: 0.5rem;
 }

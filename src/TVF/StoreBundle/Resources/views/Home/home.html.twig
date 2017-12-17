@@ -8,14 +8,14 @@
       <div class="offset-sm-0 col-sm-12 offset-md-1 col-md-10 offset-lg-2 col-lg-8">
         <div class="card-deck">
           <div class="card">
-            <a href="{{ path('tvf_store_explore', {'category': 'vetement'}) }}">
+            <a href="{{ path('tvf_store_explore', {'category': 'vinyle'}) }}">
               {{ include(image, {'element': data.home.left_img, 'style': 'width: 100%', 'class': 'card-img-top'}) }}
             </a>
             <div class="card-block">
               <h2 class="card-title">{{ include(text, {'element': data.home.title.left }) }}</h2>
               <p class="card-text">{{ include(text, {'element': data.home.text.left }) }}</p>
               <div class="center">
-                <a href="{{ path('tvf_store_explore', {'category': 'vetement'}) }}" class="btn btn-primary">
+                <a href="{{ path('tvf_store_explore', {'category': 'lecteur'}) }}" id="vinyl-explore" class="btn btn-primary">
                   {{ include(text, {'element': data.home.btn.left }) }}
                 </a>
               </div>

@@ -1,4 +1,4 @@
-TVFAdminBundle<?php
+<?php
 
 namespace TVF\AdminBundle\Controller;
 
@@ -25,7 +25,7 @@ class UserController extends Controller
     */
     public function createAdminAction($key){
       /* Create the first account */
-      if($key == 'alienordaquitaine'){
+      if($key == $this->getParameter('admin_init')){
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository('TVFUserBundle:User');
         // On crée l'utilisateur
@@ -33,7 +33,7 @@ class UserController extends Controller
 
         // Le nom d'utilisateur et le mot de passe sont identiques pour l'instant
         $user->setUsername($this->getParameter('admin_username'));
-        $user->setPassword($this->getParameter('admin_password'));
+        $user->setPassword($this->getParameter('admin_password  '));
         $user->setFirstname($this->getParameter('admin_username'));
         $user->setSurname($this->getParameter('admin_username'));
 

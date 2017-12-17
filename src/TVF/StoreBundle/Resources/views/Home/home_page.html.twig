@@ -28,4 +28,45 @@ $('.tvf-icon').slice(0,10).each(function(){
   }
 });
 </script>
+<script>
+$('#vinyl-explore').on('click', function(e){
+  e.preventDefault();
+  var dialog = bootbox.dialog({
+    message: `{{ include('TVFStoreBundle:Search:chatbot.html.twig') }}`,
+    title: "Bienvenue !",
+    buttons: {
+        "Fermer": {
+            className: "btn-default",
+        },
+        main: {
+            label: "En avant !",
+            className: "btn-primary",
+            callback: function() {
+                window.location = url;
+            }
+        }
+    }
+  });
+});
+</script>
+<script>
+var current_section = 'chat-0';
+$('body').on('click', 'a.interactive', function(e){
+  e.preventDefault();
+  var target = $(this).attr('data-to');
+  $('#'+target).slideDown();
+  $('#'+current_section+' a').addClass('disabled');
+  current_section = target;
+  if(target == 'chat-5'){
+    setTimeout(function(){
+       window.location = '{{ path('tvf_store_explore', {'category': 'vinyle'}) }}';
+    }, 1000);
+  }
+});
+$('body').on('click', 'a.btn-select', function(e){
+  e.preventDefault();
+  $(this).css('border-color','rgb(2, 117, 216)');
+  console.log($(this).html());
+});
+</script>
 {% endblock %}
