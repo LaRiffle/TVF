@@ -68,7 +68,7 @@ a:hover, a:visited, a:link, a:active {
 #explore-page, #history-page, #collection-page, #home-page{
   padding-bottom: 30px;
 }
-@media screen and (max-width: 567px) {
+@media screen and (max-width: 576px) {
   #explore-page .container-icons {
     margin-top: 10px;
   }
@@ -100,8 +100,10 @@ a:hover, a:visited, a:link, a:active {
 }
 @media screen and (max-width: 576px) {
   .title.special-font {
-    font-size: 2rem;
-    margin-top:14px !important;
+    font-size: 1.5rem;
+    margin-top:19px !important;
+    position: relative;
+    right: 7px;
   }
   .signature {
     font-size: 0.79rem;
@@ -202,7 +204,7 @@ button.navbar-toggler:hover {
   cursor: pointer;
   border-color: #999999;
 }
-@media screen and (max-width: 567px) {
+@media screen and (max-width: 576px) {
   #navbar li {
     border-bottom: 1px #CCCCCC solid;
     width: 100%;
@@ -210,7 +212,7 @@ button.navbar-toggler:hover {
   }
 }
 
-@media only screen and (min-width : 568px) {
+@media only screen and (min-width : 578px) {
   #navbar li:first-of-type {
     margin-left: min(5px, 20%);
   }
@@ -845,4 +847,13 @@ ul.edition-btn li:after {
     padding: .5rem 1rem;
     border: 1px solid rgba(0,0,0,.125);
     margin-bottom: 0.5rem;
+}
+
+/* Footer */
+footer {
+  margin-top: 20px;
+  font-size: 0.95rem;
+}
+footer .row > div {
+  border-left: 1px solid rgba(0,0,0,.1);
 }

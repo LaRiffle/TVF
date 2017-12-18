@@ -2,13 +2,16 @@
 {% block title %}
   | Bienvenue
 {% endblock %}
+
 {% block head %}
 <link rel="stylesheet" type="text/css" href="{{ asset('bundles/TVF/slick/slick.css') }}"/>
 <link rel="stylesheet" type="text/css" href="{{ asset('bundles/TVF/slick/slick-theme.css') }}"/>
 {% endblock %}
+
 {% block body %}
   {{ render(controller('TVFStoreBundle:Home:home')) }}
 {% endblock %}
+
 {% block script %}
 {% if is_granted('ROLE_ADMIN') %}
   {% set edit_script = "TVFAdminBundle:Utils:edit-handler.html.twig" %}
