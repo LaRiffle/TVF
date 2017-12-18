@@ -54,10 +54,18 @@ var current_section = 'chat-0';
 $('body').on('click', 'a.interactive', function(e){
   e.preventDefault();
   var target = $(this).attr('data-to');
-  $('#'+target).slideDown();
+  $('#'+target).show(); //slideDown();
   $('#'+current_section+' a').addClass('disabled');
+
+  // Define an auto scroll
+  var chat_window = $('.modal-body').get(0);
+  var scrollTop = chat_window.scrollHeight - $('#'+target).height() - 10;
+  $(chat_window).animate({scrollTop: scrollTop}, 800);
+
+
   current_section = target;
   if(target == 'chat-5'){
+    /* TODO: Here save preferences */
     setTimeout(function(){
        window.location = '{{ path('tvf_store_explore', {'category': 'vinyle'}) }}';
     }, 1000);

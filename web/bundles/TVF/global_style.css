@@ -836,6 +836,10 @@ ul.edition-btn li:after {
 }
 
 /* Chatbot */
+.modal-body {
+  max-height: calc(100vh - 200px);
+  overflow-y: scroll;
+}
 .tvf-bubble {
     border-radius: .25rem;
     padding: .5rem 1rem;
