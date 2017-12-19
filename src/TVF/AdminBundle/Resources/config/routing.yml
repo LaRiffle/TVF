@@ -1,3 +1,7 @@
+tvf_admin_creation_feed:
+    path:     /admin/creation/feed
+    defaults: { _controller: TVFAdminBundle:Crawl:feed}
+
 tvf_admin_category_add:
     path:     /admin/category/add/{id}
     defaults: { _controller: TVFAdminBundle:Category:add, id:0 }

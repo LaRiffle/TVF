@@ -1,0 +1,14 @@
+{% extends "TVFStoreBundle::layout.html.twig" %}
+{% block body %}
+  <h1>{{ vinyls|length }}</h1>
+  {% for vinyl in vinyls %}
+  <div>
+    <h3>{{ vinyl.title }}</h3>
+    <h4>{{ vinyl.artist }}</h4>
+    <p>{{ vinyl.description }}</p>
+    <img src="{{ vinyl.img }}" />
+  </div>
+  {% endfor %}
+{% endblock %}
+{% block script %}
+{% endblock %}
