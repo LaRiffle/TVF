@@ -2,10 +2,10 @@
   {% if is_granted('ROLE_ADMIN') and allow_modify %}
     <ul class="edition-btn">
       <li style="float: left;">
-        <a href="{{ path('tvf_record_creation_attribute_add', {'id': attribute.id, 'category': attribute.category}) }}"><i class="fa fa-pencil-square-o"></i></a>
+        <a href="{{ path('tvf_record_vinyl_attribute_add', {'id': attribute.id, 'category': attribute.category}) }}"><i class="fa fa-pencil-square-o"></i></a>
       </li>
       <li  style="float: right;">
-        <a href="{{ path('tvf_record_creation_attribute_remove', {'id': attribute.id})}}" class="remove" style="padding-right: 10px;"><i class="fa fa-trash-o"></i></a>
+        <a href="{{ path('tvf_record_vinyl_attribute_remove', {'id': attribute.id})}}" class="remove" style="padding-right: 10px;"><i class="fa fa-trash-o"></i></a>
       </li>
     </ul>
   {% endif %}

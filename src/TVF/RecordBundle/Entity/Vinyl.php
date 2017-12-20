@@ -5,12 +5,12 @@ namespace TVF\RecordBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Creation
+ * Vinyl
  *
- * @ORM\Table(name="creation")
- * @ORM\Entity(repositoryClass="TVF\RecordBundle\Repository\CreationRepository")
+ * @ORM\Table(name="vinyl")
+ * @ORM\Entity(repositoryClass="TVF\RecordBundle\Repository\VinylRepository")
  */
-class Creation
+class Vinyl
 {
     /**
      * Constructor
@@ -111,9 +111,9 @@ class Creation
     private $attributes;
 
     /**
-     * @ORM\ManyToMany(targetEntity="TVF\UserBundle\Entity\User", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="TVF\StoreBundle\Entity\VinylUser", mappedBy="vinyl")
      */
-    private $lovers;
+    private $users;
 
     /**
      * Get id
@@ -130,7 +130,7 @@ class Creation
      *
      * @param string $name
      *
-     * @return Creation
+     * @return Vinyl
      */
     public function setName($name)
     {
@@ -154,7 +154,7 @@ class Creation
      *
      * @param string $title1
      *
-     * @return Creation
+     * @return Vinyl
      */
     public function setTitle1($title1)
     {
@@ -178,7 +178,7 @@ class Creation
      *
      * @param string $text1
      *
-     * @return Creation
+     * @return Vinyl
      */
     public function setText1($text1)
     {
@@ -202,7 +202,7 @@ class Creation
      *
      * @param string $title2
      *
-     * @return Creation
+     * @return Vinyl
      */
     public function setTitle2($title2)
     {
@@ -226,7 +226,7 @@ class Creation
      *
      * @param string $text2
      *
-     * @return Creation
+     * @return Vinyl
      */
     public function setText2($text2)
     {
@@ -250,7 +250,7 @@ class Creation
      *
      * @param float $price
      *
-     * @return Creation
+     * @return Vinyl
      */
     public function setPrice($price)
     {
@@ -274,7 +274,7 @@ class Creation
      *
      * @param boolean $onsold
      *
-     * @return Creation
+     * @return Vinyl
      */
     public function setOnsold($onsold)
     {
@@ -298,7 +298,7 @@ class Creation
      *
      * @param \TVF\AdminBundle\Entity\Type $type
      *
-     * @return Creation
+     * @return Vinyl
      */
     public function addType(\TVF\AdminBundle\Entity\Type $type)
     {
@@ -335,7 +335,7 @@ class Creation
     /**
      * Add image
      *
-     * @return Creation
+     * @return Vinyl
      */
     public function addImage($image)
     {
@@ -397,7 +397,7 @@ class Creation
      *
      * @param array $images
      *
-     * @return Creation
+     * @return Vinyl
      */
     public function setImages($images)
     {
@@ -411,7 +411,7 @@ class Creation
      *
      * @param \TVF\AdminBundle\Entity\Category $category
      *
-     * @return Creation
+     * @return Vinyl
      */
     public function setCategory(\TVF\AdminBundle\Entity\Category $category)
     {
@@ -440,7 +440,7 @@ class Creation
      *
      * @param \TVF\RecordBundle\Entity\Attribute $attribute
      *
-     * @return Creation
+     * @return Vinyl
      */
     public function addAttribute(\TVF\RecordBundle\Entity\Attribute $attribute)
     {
@@ -470,15 +470,17 @@ class Creation
     }
 
     /**
-     * Add lover
+     * Add user
      *
-     * @param \TVF\UserBundle\Entity\User $user
+     * @param \TVF\StoreBundle\Entity\VinylUser $user
      *
-     * @return Creation
+     * @return Vinyl
      */
-    public function addLover(\TVF\UserBundle\Entity\User $user)
+    public function addUser(\TVF\StoreBundle\Entity\VinylUser $user)
     {
-        $this->lovers[] = $user;
+        $this->users[] = $user;
+
+        $user->setVinyl($this);
 
         return $this;
     }
@@ -486,11 +488,11 @@ class Creation
     /**
      * Remove user
      *
-     * @param \TVF\UserBundle\Entity\User $user
+     * @param \TVF\StoreBundle\Entity\VinylUser $user
      */
-    public function removeLover(\TVF\UserBundle\Entity\User $user)
+    public function removeUser(\TVF\StoreBundle\Entity\VinylUser $user)
     {
-        $this->lovers->removeElement($user);
+        $this->users->removeElement($user);
     }
 
     /**
@@ -498,13 +500,8 @@ class Creation
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getLovers()
+    public function getUsers()
     {
-        return $this->lovers;
-    }
-
-    public function emptyLovers()
-    {
-        $this->lovers = [];
+        return $this->users;
     }
 }

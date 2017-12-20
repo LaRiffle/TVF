@@ -3,17 +3,20 @@ tvf_store_work:
     defaults: { _controller: TVFStoreBundle:Home:work }
 
 # Behaviour
-tvf_store_creation_love:
-    path:     /creation/love/{id}
+tvf_store_vinyl_love:
+    path:     /vinyl/love/{id}
     defaults: { _controller: TVFStoreBundle:Behaviour:love, id:0 }
-tvf_store_creation_unlove:
-    path:     /creation/unlove/{id}
+tvf_store_vinyl_unlove:
+    path:     /vinyl/unlove/{id}
     defaults: { _controller: TVFStoreBundle:Behaviour:unlove, id:0 }
 
 # Customer
 tvf_store_customer_register:
     path:     /register
     defaults: { _controller: TVFStoreBundle:Customer:register }
+tvf_store_customer_register_or_login:
+    path:     /register_or_login
+    defaults: { _controller: TVFStoreBundle:Customer:register_or_login }
 
 # Home
 tvf_store_homepage:
@@ -39,11 +42,11 @@ tvf_store_selection:
 tvf_store_explore:
     path:     /collection/{collection}/{category}
     defaults: { _controller: TVFStoreBundle:Search:collection, collection:"_", category:"_" }
-tvf_store_creation:
-    path:     /creation/
-    defaults: { _controller: TVFStoreBundle:Search:indexCreations}
-tvf_store_creation_show:
-    path:     /creation/{id}
-    defaults: { _controller: TVFStoreBundle:Search:showCreation }
+tvf_store_vinyl:
+    path:     /vinyl/
+    defaults: { _controller: TVFStoreBundle:Search:indexVinyls}
+tvf_store_vinyl_show:
+    path:     /vinyl/{id}
+    defaults: { _controller: TVFStoreBundle:Search:showVinyl }
     requirements:
         id:   \d+

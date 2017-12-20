@@ -34,7 +34,7 @@ class HomeController extends Controller
         $text['home']['right_img'] = $this->handler->fetchImage('home:right_img');
 
         $text['home']['collection']['title'] = $this->handler->fetchText('home:collection:title');
-        $text['home']['creation']['title'] = $this->handler->fetchText('home:creation:title');
+        $text['home']['vinyl']['title'] = $this->handler->fetchText('home:vinyl:title');
 
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository('TVFRecordBundle:Collection');
@@ -46,17 +46,17 @@ class HomeController extends Controller
           $collection->small_image = $path_small_image;
         }
 
-        $repository = $em->getRepository('TVFRecordBundle:Creation');
-        $creations = $repository->findBy(array(), array('id' => 'desc'));
-        foreach ($creations as $creation) {
-          $fileNames = $creation->getImages();
+        $repository = $em->getRepository('TVFRecordBundle:Vinyl');
+        $vinyls = $repository->findBy(array(), array('id' => 'desc'));
+        foreach ($vinyls as $vinyl) {
+          $fileNames = $vinyl->getImages();
           $path_small_image = $imagehandler->get_image_in_quality($fileNames[0], 'xs');
-          $creation->small_image = $path_small_image;
+          $vinyl->small_image = $path_small_image;
         }
         return $this->render($this->entityNameSpace.':home.html.twig', array(
           'data' => $text,
           'collections' => $collections,
-          'creations' => $creations
+          'vinyls' => $vinyls
         ));
     }
     public function historyAction()

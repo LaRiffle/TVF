@@ -56,7 +56,7 @@ class AttributeController extends Controller
         if($form->isValid()) {
             $em->persist($attribute);
             $em->flush();
-            return $this->redirect($this->generateUrl('tvf_record_creation_attributes'));
+            return $this->redirect($this->generateUrl('tvf_record_vinyl_attributes'));
         }
         return $this->render($this->entityNameSpace.':add.html.twig', array(
             'form' => $form->createView(),
@@ -70,6 +70,6 @@ class AttributeController extends Controller
         $type = $em->getRepository($this->entityNameSpace)->find($id);
         $em->remove($type);
         $em->flush();
-        return $this->redirect($this->generateUrl('tvf_record_creation_attributes'));
+        return $this->redirect($this->generateUrl('tvf_record_vinyl_attributes'));
     }
 }

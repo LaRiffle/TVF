@@ -1,9 +1,9 @@
-tvf_record_creation_add:
-  path:     /record/creation/add/{id}
-  defaults: { _controller: TVFRecordBundle:Creation:add, id:0 }
-tvf_record_creation_remove:
-  path:     /record/creation/remove/{id}
-  defaults: { _controller: TVFRecordBundle:Creation:remove}
+tvf_record_vinyl_add:
+  path:     /record/vinyl/add/{id}
+  defaults: { _controller: TVFRecordBundle:Vinyl:add, id:0 }
+tvf_record_vinyl_remove:
+  path:     /record/vinyl/remove/{id}
+  defaults: { _controller: TVFRecordBundle:Vinyl:remove}
 tvf_record_collection_add:
   path:     /record/collection/add/{id}
   defaults: { _controller: TVFRecordBundle:Collection:add, id:0 }
@@ -15,14 +15,14 @@ tvf_record_collection_show:
 tvf_record_collection_remove:
   path:     /record/collection/remove/{id}
   defaults: { _controller: TVFRecordBundle:Collection:remove}
-tvf_record_creation_attributes:
+tvf_record_vinyl_attributes:
   path:     /record/attributes/
   defaults: { _controller: TVFRecordBundle:Attribute:index}
-tvf_record_creation_attribute_add:
+tvf_record_vinyl_attribute_add:
   path:     /record/attributes/add/{id}/{category}
   defaults: { _controller: TVFRecordBundle:Attribute:add, id:0, category:0}
   requirements:
       id:   \d+
-tvf_record_creation_attribute_remove:
+tvf_record_vinyl_attribute_remove:
   path:     /record/attributes/remove/{id}
   defaults: { _controller: TVFRecordBundle:Attribute:remove}

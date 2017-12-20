@@ -5,7 +5,7 @@
   {% set navbar = "TVFStoreBundle:Utils:nav.html.twig" %}
   {{ include(navbar, {'active': 'collection'}) }}
   <div class="container">
-    <form name="form" class="form-signin" method="post" enctype="multipart/form-data" action="{{ path('tvf_record_creation_add',{'id': id}) }}">
+    <form name="form" class="form-signin" method="post" enctype="multipart/form-data" action="{{ path('tvf_record_vinyl_add',{'id': id}) }}">
     <div class="row">
       <div class="col-sm-6 offset-sm-3">
         <h3 class="form-signin-heading">{% if id == 0 %}Ajouter{% else %}Modifier{% endif %} une création</h3>
@@ -84,7 +84,7 @@
         <hr />
         <div style="margin-top: 10px;">
           <h4>Déclinaisons du modèle</h4>
-          <a target="_blank" href="{{ path('tvf_record_creation_attributes') }}">Modifier le choix de déclinaisons</a><br /><br />
+          <a target="_blank" href="{{ path('tvf_record_vinyl_attributes') }}">Modifier le choix de déclinaisons</a><br /><br />
           <h5>{{ form_label(form.attributes, "Tailles disponibles") }}</h5>
           {% set card="TVFRecordBundle:Attribute:card_attribute.html.twig" %}
           {{ form_errors(form.attributes) }}

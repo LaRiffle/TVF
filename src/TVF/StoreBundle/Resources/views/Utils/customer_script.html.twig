@@ -17,9 +17,12 @@ new Fingerprint2().get(function(result, components){
       success: function (data)
       {
           console.log('Done.')
-          console.log(data.output);
-          console.log(data.nb_love);
+          console.log('Message of server: '+data.output);
           $('#nb_love').html(data.nb_love);
+          if(!Cookies.get('user_id')){
+            Cookies.set('user_id', user_id);
+            console.log('Cookie set.')
+          }
       }
   });
 });

@@ -2,9 +2,10 @@
 
 namespace TVF\StoreBundle\Controller;
 
-use TVF\RecordBundle\Entity\Creation;
+use TVF\RecordBundle\Entity\Vinyl;
 use TVF\AdminBundle\Entity\Gender;
 use TVF\AdminBundle\Entity\Type;
+use TVF\StoreBundle\Entity\VinylUser;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -12,64 +13,67 @@ class SearchController extends Controller
 {
     public $entityNameSpace = 'TVFStoreBundle:Search';
 
-    public function indexCreationsAction()
+    public function indexVinylsAction()
     {
       /*
         This function shouldn't be useful anymore
       */
         $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository('TVFRecordBundle:Creation');
-        $creations = $repository->findBy(array(), array('id' => 'desc'));
+        $repository = $em->getRepository('TVFRecordBundle:Vinyl');
+        $vinyls = $repository->findBy(array(), array('id' => 'desc'));
         $imagehandler = $this->container->get('tvf_store.imagehandler');
-        foreach ($creations as $creation) {
-          $fileNames = $creation->getImages();
+        foreach ($vinyls as $vinyl) {
+          $fileNames = $vinyl->getImages();
           $path_small_image = $imagehandler->get_image_in_quality($fileNames[0], 'xs');
-          $creation->small_image = $path_small_image;
+          $vinyl->small_image = $path_small_image;
         }
         return $this->render($this->entityNameSpace.':index_insta.html.twig', array(
-          'creations' => $creations,
+          'vinyls' => $vinyls,
         ));
     }
-    public function showCreationAction($id)
+    public function showVinylAction($id)
     {
         $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository('TVFRecordBundle:Creation');
-        $creation = $repository->find($id);
-        $attributes = $creation->getAttributes();
-        $creation->sizes = [];
-        $creation->colors = [];
-        $creation->others = [];
+        $repository = $em->getRepository('TVFRecordBundle:Vinyl');
+        $vinyl = $repository->find($id);
+        $attributes = $vinyl->getAttributes();
+        $vinyl->sizes = [];
+        $vinyl->colors = [];
+        $vinyl->others = [];
         foreach ($attributes as $attribute) {
           if($attribute->getCategory() == 'size'){
-            $creation->sizes[] = $attribute;
+            $vinyl->sizes[] = $attribute;
           } elseif($attribute->getCategory() == 'color'){
-            $creation->colors[] = $attribute;
+            $vinyl->colors[] = $attribute;
           } else {
-            $creation->others[] = $attribute;
+            $vinyl->others[] = $attribute;
           }
         }
         $user = $this->getUser();
-        $creation->love = false;
-        foreach ($creation->getLovers() as $lover) {
-          if($lover->getUsername() == $user->getUsername()){
-            $creation->love = true;
-          }
+        $repository = $em->getRepository('TVFStoreBundle:VinylUser');
+        $vinyluser = $repository->findOneBy(array('vinyl' => $vinyl, 'user' => $user));
+        if($vinyluser === null) {
+          $vinyluser = new VinylUser();
+          $vinyluser->setUser($user);
+          $vinyluser->setVinyl($vinyl);
         }
-        return $this->render('TVFStoreBundle:Search:show.html.twig', array(
-          'creation' => $creation,
+        $vinyluser->setNbViews($vinyluser->getNbViews() + 1);
+        $vinyl->love = $vinyluser->getLover();
+        return $this->render($this->entityNameSpace.':show.html.twig', array(
+          'vinyl' => $vinyl,
         ));
     }
 
     public function collectionAction($collection = '_', $category = '_')
     {
         $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository('TVFRecordBundle:Creation');
-        $creations = $repository->findBy(array(), array('id' => 'desc'));
+        $repository = $em->getRepository('TVFRecordBundle:Vinyl');
+        $vinyls = $repository->findBy(array(), array('id' => 'desc'));
         $imagehandler = $this->container->get('tvf_store.imagehandler');
-        foreach ($creations as $creation) {
-          $fileNames = $creation->getImages();
+        foreach ($vinyls as $vinyl) {
+          $fileNames = $vinyl->getImages();
           $path_small_image = $imagehandler->get_image_in_quality($fileNames[0], 'xs');
-          $creation->small_image = $path_small_image;
+          $vinyl->small_image = $path_small_image;
         }
         $repository = $em->getRepository('TVFAdminBundle:Gender');
         $genders = $repository->findAll();
@@ -88,7 +92,7 @@ class SearchController extends Controller
         $repository = $em->getRepository('TVFAdminBundle:Category');
         $categories = $repository->findAll();
         return $this->render($this->entityNameSpace.':collection.html.twig', array(
-          'creations' => $creations,
+          'vinyls' => $vinyls,
           'genders' => $genders,
           'collections' => $collections,
           'collection_id' => $collection_id,
@@ -99,22 +103,21 @@ class SearchController extends Controller
     public function selectionAction()
     {
         $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository('TVFRecordBundle:Creation');
-        $creations = $repository->findBy(array(), array('id' => 'desc'));
+        $repository = $em->getRepository('TVFRecordBundle:Vinyl');
+        $vinyls = $repository->findBy(array(), array('id' => 'desc'));
         $user = $this->getUser();
-        $loved_creations = [];
-        foreach ($creations as $creation) {
-          foreach ($creation->getLovers() as $lover) {
-            if($lover->getUsername() == $user->getUsername()){
-              $loved_creations[] = $creation;
-            }
-          }
+        $loved_vinyls = [];
+        $repository = $em->getRepository('TVFStoreBundle:VinylUser');
+        $user_vinyl_loved = $repository->findBy(array('user' => $user, 'lover' => true));
+        foreach ($user_vinyl_loved as $user_vinyl) {
+          $loved_vinyls[] = $user_vinyl->getVinyl();
         }
+
         $imagehandler = $this->container->get('tvf_store.imagehandler');
-        foreach ($loved_creations as $creation) {
-          $fileNames = $creation->getImages();
+        foreach ($loved_vinyls as $vinyl) {
+          $fileNames = $vinyl->getImages();
           $path_small_image = $imagehandler->get_image_in_quality($fileNames[0], 'xs');
-          $creation->small_image = $path_small_image;
+          $vinyl->small_image = $path_small_image;
         }
         $repository = $em->getRepository('TVFAdminBundle:Gender');
         $genders = $repository->findAll();
@@ -127,7 +130,7 @@ class SearchController extends Controller
         $repository = $em->getRepository('TVFAdminBundle:Category');
         $categories = $repository->findAll();
         return $this->render($this->entityNameSpace.':selection.html.twig', array(
-            'creations' => $loved_creations,
+            'vinyls' => $loved_vinyls,
             'genders' => $genders,
             'collections' => $collections,
             'collection_id' => '_',

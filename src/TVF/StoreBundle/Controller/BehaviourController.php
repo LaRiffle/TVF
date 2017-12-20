@@ -10,7 +10,8 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 
 use TVF\UserBundle\Entity\User;
-use TVF\RecordBundle\Entity\Creation;
+use TVF\RecordBundle\Entity\Vinyl;
+use TVF\StoreBundle\Entity\VinylUser;
 
 class BehaviourController extends Controller
 {
@@ -20,11 +21,18 @@ class BehaviourController extends Controller
     public function loveAction($id)
     {
         $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository('TVFRecordBundle:Creation');
-        $creation = $repository->find($id);
+        $repository = $em->getRepository('TVFRecordBundle:Vinyl');
+        $vinyl = $repository->find($id);
         $user = $this->getUser();
-        $creation->addLover($user);
-        $em->persist($creation);
+        $repository = $em->getRepository('TVFStoreBundle:VinylUser');
+        $vinyluser = $repository->findOneBy(array('vinyl' => $vinyl, 'user' => $user));
+        if($vinyluser === null) {
+          $vinyluser = new VinylUser();
+          $vinyluser->setUser($user);
+          $vinyluser->setVinyl($vinyl);
+        }
+        $vinyluser->setLover(true);
+        $em->persist($vinyluser);
         $em->flush();
         $data = ['output' => 'Love done.'];
         return new JsonResponse($data);
@@ -32,11 +40,18 @@ class BehaviourController extends Controller
     public function unloveAction($id)
     {
         $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository('TVFRecordBundle:Creation');
-        $creation = $repository->find($id);
+        $repository = $em->getRepository('TVFRecordBundle:Vinyl');
+        $vinyl = $repository->find($id);
         $user = $this->getUser();
-        $creation->removeLover($user);
-        $em->persist($creation);
+        $repository = $em->getRepository('TVFStoreBundle:VinylUser');
+        $vinyluser = $repository->findOneBy(array('vinyl' => $vinyl, 'user' => $user));
+        if($vinyluser === null) {
+          $vinyluser = new VinylUser();
+          $vinyluser->setUser($user);
+          $vinyluser->setVinyl($vinyl);
+        }
+        $vinyluser->setLover(false);
+        $em->persist($vinyluser);
         $em->flush();
         $data = ['output' => 'Done.'];
         return new JsonResponse($data);

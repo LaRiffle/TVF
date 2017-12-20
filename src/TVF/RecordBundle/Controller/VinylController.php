@@ -2,7 +2,7 @@
 
 namespace TVF\RecordBundle\Controller;
 
-use TVF\RecordBundle\Entity\Creation;
+use TVF\RecordBundle\Entity\Vinyl;
 use TVF\AdminBundle\Entity\Type;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -22,42 +22,42 @@ use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
-class  CreationController extends Controller
+class  VinylController extends Controller
 {
-    public $entityNameSpace = 'TVFRecordBundle:Creation';
+    public $entityNameSpace = 'TVFRecordBundle:Vinyl';
 
     public function addAction(Request $request, $id = 0) {
         $em = $this->getDoctrine()->getManager();
         if($id == 0) {
-            $creation = new Creation();
+            $vinyl = new Vinyl();
         } else {
             $repository = $em->getRepository($this->entityNameSpace);
-            $creation = $repository->find($id);
-            $images = $creation->getImages();
-            $creation->emptyImages();
+            $vinyl = $repository->find($id);
+            $images = $vinyl->getImages();
+            $vinyl->emptyImages();
             foreach ($images as $image) {
-              $creation->addImage(
+              $vinyl->addImage(
                   new File($this->getParameter('img_dir').'/'.$image)
               );
             }
-            $new_creation = new Creation();
-            $new_creation->setName($creation->getName());
-            $new_creation->setTitle1($creation->getTitle1());
-            $new_creation->setText1($creation->getText1());
-            $new_creation->setTitle2($creation->getTitle2());
-            $new_creation->setText2($creation->getText2());
-            $new_creation->setOnsold($creation->getOnsold());
-            $new_creation->setPrice($creation->getPrice());
-            $new_creation->setCollection($creation->getCollection());
-            $new_creation->setCategory($creation->getCategory());
-            foreach($creation->getTypes() as $type){
-              $new_creation->addType($type);
+            $new_vinyl = new Vinyl();
+            $new_vinyl->setName($vinyl->getName());
+            $new_vinyl->setTitle1($vinyl->getTitle1());
+            $new_vinyl->setText1($vinyl->getText1());
+            $new_vinyl->setTitle2($vinyl->getTitle2());
+            $new_vinyl->setText2($vinyl->getText2());
+            $new_vinyl->setOnsold($vinyl->getOnsold());
+            $new_vinyl->setPrice($vinyl->getPrice());
+            $new_vinyl->setCollection($vinyl->getCollection());
+            $new_vinyl->setCategory($vinyl->getCategory());
+            foreach($vinyl->getTypes() as $type){
+              $new_vinyl->addType($type);
             }
-            foreach($creation->getAttributes() as $type){
-              $new_creation->addAttribute($type);
+            foreach($vinyl->getAttributes() as $type){
+              $new_vinyl->addAttribute($type);
             }
         }
-        $form = $this->get('form.factory')->createBuilder(FormType::class, ($id == 0 ? $creation : $new_creation))
+        $form = $this->get('form.factory')->createBuilder(FormType::class, ($id == 0 ? $vinyl : $new_vinyl))
         ->add('name', TextType::class)
         ->add('collection', EntityType::class, array(
                 'class'        => 'TVFRecordBundle:Collection',
@@ -96,7 +96,7 @@ class  CreationController extends Controller
           'mapped' => false,
           'multiple' => true,
           'expanded' => true,
-          'choices' => $creation->getImages(),
+          'choices' => $vinyl->getImages(),
           'choice_label' => function ($value, $key, $index) {
               return $value;
           }
@@ -119,8 +119,8 @@ class  CreationController extends Controller
         $form->handleRequest($request);
         if($form->isValid()) {
             if($id == 0){
-              $files = $creation->getImages();
-              $creation->emptyImages();
+              $files = $vinyl->getImages();
+              $vinyl->emptyImages();
               if($files != null) {
                 foreach ($files as $file) {
                   // Generate a unique name for the file before saving it
@@ -138,18 +138,18 @@ class  CreationController extends Controller
 
                   // Update the 'image' property to store the file name
                   // instead of its contents
-                  $creation->addImage($fileName);
+                  $vinyl->addImage($fileName);
                 }
               }
             } else {
-              $files = $new_creation->getImages();
-              $creation->emptyImages();
-              $new_creation->emptyImages();
+              $files = $new_vinyl->getImages();
+              $vinyl->emptyImages();
+              $new_vinyl->emptyImages();
               // On met les ancienns images gardées
               $old_files = $form['imgs']->getData();
               foreach ($old_files as $old_file) {
                 $fileName = $old_file->getFilename();
-                $creation->addImage($fileName);
+                $vinyl->addImage($fileName);
               }
               // And the new ones
               if($files != null) {
@@ -169,30 +169,30 @@ class  CreationController extends Controller
 
                   // Update the 'image' property to store the file name
                   // instead of its contents
-                  $creation->addImage($fileName);
+                  $vinyl->addImage($fileName);
                 }
               }
-              $creation->setName($new_creation->getName());
-              $creation->setTitle1($new_creation->getTitle1());
-              $creation->setText1($new_creation->getText1());
-              $creation->setTitle2($new_creation->getTitle2());
-              $creation->setText2($new_creation->getText2());
-              $creation->setOnsold($new_creation->getOnsold());
-              $creation->setPrice($new_creation->getPrice());
-              $creation->setCollection($new_creation->getCollection());
-              $creation->setCategory($new_creation->getCategory());
-              $creation->emptyTypes();
-              foreach($new_creation->getTypes() as $type){
-                $creation->addType($type);
+              $vinyl->setName($new_vinyl->getName());
+              $vinyl->setTitle1($new_vinyl->getTitle1());
+              $vinyl->setText1($new_vinyl->getText1());
+              $vinyl->setTitle2($new_vinyl->getTitle2());
+              $vinyl->setText2($new_vinyl->getText2());
+              $vinyl->setOnsold($new_vinyl->getOnsold());
+              $vinyl->setPrice($new_vinyl->getPrice());
+              $vinyl->setCollection($new_vinyl->getCollection());
+              $vinyl->setCategory($new_vinyl->getCategory());
+              $vinyl->emptyTypes();
+              foreach($new_vinyl->getTypes() as $type){
+                $vinyl->addType($type);
               }
-              $creation->emptyAttributes();
-              if(count($new_creation->getAttributes()) > 0){
-                foreach($new_creation->getAttributes() as $type){
-                  $creation->addAttribute($type);
+              $vinyl->emptyAttributes();
+              if(count($new_vinyl->getAttributes()) > 0){
+                foreach($new_vinyl->getAttributes() as $type){
+                  $vinyl->addAttribute($type);
                 }
               }
             }
-            $em->persist($creation);
+            $em->persist($vinyl);
             $em->flush();
             //return new Response();
             return $this->redirect($this->generateUrl('tvf_store_explore'));
@@ -204,8 +204,8 @@ class  CreationController extends Controller
     }
     public function removeAction(Request $request, $id){
         $em = $this->getDoctrine()->getManager();
-        $creation = $em->getRepository($this->entityNameSpace)->find($id);
-        $em->remove($creation);
+        $vinyl = $em->getRepository($this->entityNameSpace)->find($id);
+        $em->remove($vinyl);
         $em->flush();
         return $this->redirect($this->generateUrl('tvf_store_explore'));
     }

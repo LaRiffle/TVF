@@ -3,7 +3,7 @@
 <div class="container">
   <div class="row" style="margin-top: 25px;">
     <div class="offset-sm-3 col-sm-6">
-      <form class="form-signin" name="form" method="post" action="{{ path('tvf_record_creation_attribute_add',{'id': id, 'category': category}) }}">
+      <form class="form-signin" name="form" method="post" action="{{ path('tvf_record_vinyl_attribute_add',{'id': id, 'category': category}) }}">
         {% set input_form="TVFAdminBundle:Utils:form_input.html.twig" %}
         {% set save_form="TVFAdminBundle:Utils:form_save.html.twig" %}
         Ajouter/Modifier une attribut de type {{ category }}

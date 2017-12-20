@@ -1,5 +1,5 @@
-tvf_admin_creation_feed:
-    path:     /admin/creation/feed
+tvf_admin_vinyl_feed:
+    path:     /admin/vinyl/feed
     defaults: { _controller: TVFAdminBundle:Crawl:feed}
 
 tvf_admin_category_add:
@@ -39,13 +39,13 @@ tvf_admin_type_remove:
 
 tvf_admin_init_create:
     path:     /admin_init/{key}
-    defaults: { _controller: TVFAdminBundle:Admin:createAdmin }
+    defaults: { _controller: TVFAdminBundle:User:createAdmin }
 tvf_admin_user_add:
     path:     /admin/user/add/{id}
-    defaults: { _controller: TVFAdminBundle:Admin:addUser, id: 0 }
+    defaults: { _controller: TVFAdminBundle:User:addUser, id: 0 }
 tvf_admin_users_show:
     path:     /admin/users/show
-    defaults: { _controller: TVFAdminBundle:Admin:showUsers }
+    defaults: { _controller: TVFAdminBundle:User:showUsers }
 tvf_admin_user_remove:
     path:     /admin/user/remove/{id}
-    defaults: { _controller: TVFAdminBundle:Admin:removeUser }
+    defaults: { _controller: TVFAdminBundle:User:removeUser }

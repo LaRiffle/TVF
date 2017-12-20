@@ -8,9 +8,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
+use Symfony\Component\HttpFoundation\Cookie;
 
 use TVF\UserBundle\Entity\User;
-use TVF\StoreBundle\Entity\Creation;
+use TVF\StoreBundle\Entity\Vinyl;
 
 class CustomerController extends Controller
 {
@@ -24,31 +25,41 @@ class CustomerController extends Controller
       } else {
         $user = $this->getUser();
         $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository('TVFRecordBundle:Creation');
-        $creations = $repository->findAll();
-        $nb_love = 0;
-        foreach ($creations as $creation) {
-          foreach ($creation->getLovers() as $lover) {
-            if($lover->getUsername() == $user->getUsername()){
-              $nb_love++;
-            }
-          }
-        }
-        return new Response(
+        $repository = $em->getRepository('TVFStoreBundle:VinylUser');
+        $vinyls_loved = $repository->findBy(array('user' => $user, 'lover' => true));
+        $nb_love = count($vinyls_loved);
+
+        $response = new Response(
             $nb_love,
             Response::HTTP_OK,
             array('Content-type' => 'text/html')
         );
+        //$cookie = new Cookie('foo', 'bar', time() + 600, '/', null, false, false);
+        //$response->headers->setCookie($cookie);
+        return $response;
       }
     }
     public function registerAction(Request $request){
-        // This data is most likely to be retrieven from the Request object (from Form)
-        // But to make it easy to understand ...
-        if($request->request->get('username')){
-            $_username = $request->request->get('username');
+        /*
+          If there is no active session for this user
+          - We check that it has a cookie to retrieve him ; else
+          - We use the fingerprint to authenticate if it is known ; else
+          - We use the fingerprint to create a new account
+        */
+        $opt_message = '';
+
+        $cookies = $request->cookies;
+        if ($cookies->has('user_id') && false)
+        {
+            $_username = $cookies->get('user_id');
         } else {
-          $data = ['error' => 'Param invalid'];
-          return new JsonResponse($data);
+          // Get the fingerprint sent by ajax
+          if($request->request->get('username')){
+              $_username = $request->request->get('username');
+          } else {
+            $data = ['error' => 'Param invalid'];
+            return new JsonResponse($data);
+          }
         }
         $_password = "";
 
@@ -56,14 +67,16 @@ class CustomerController extends Controller
         $factory = $this->get('security.encoder_factory');
 
         /// Start retrieve user
-        // Let's retrieve the user by its username:
-        // Or by yourself
-        $user = $this->getDoctrine()->getManager()->getRepository("TVFUserBundle:User")
+        // Retrieve the user by its username:
+        $em = $this->getDoctrine()->getManager();
+        $user = $em->getRepository("TVFUserBundle:User")
                 ->findOneBy(array('username' => $_username));
-        /// End Retrieve user
 
-        // Check if the user exists ! Else we create it
-        $opt_message = '';
+        // If cookie or fingerprint weren't enough, try an IP match
+        $ip = $request->getClientIp();
+        // TODO
+
+        // If user doesn't exist, we create it. Else we load its preference
         $nb_love = 0;
         if(!$user){
             $em = $this->getDoctrine()->getManager();
@@ -77,21 +90,15 @@ class CustomerController extends Controller
             $user->setRoles(array('ROLE_USER'));
             $em->persist($user);
             $em->flush();
-            $opt_message = ' (Account created)';
+            $opt_message = $opt_message.' (Account created)';
         } else {
           $em = $this->getDoctrine()->getManager();
-          $repository = $em->getRepository('TVFRecordBundle:Creation');
-          $creations = $repository->findAll();
-          foreach ($creations as $creation) {
-            foreach ($creation->getLovers() as $lover) {
-              if($lover->getUsername() == $user->getUsername()){
-                $nb_love++;
-              }
-            }
-          }
+          $repository = $em->getRepository('TVFStoreBundle:VinylUser');
+          $vinyls_loved = $repository->findBy(array('user' => $user, 'lover' => true));
+          $nb_love = count($vinyls_loved);
         }
 
-        /// Start verification
+        // We verify the account (in our case it is almost a formality)
         $encoder = $factory->getEncoder($user);
         $salt = $user->getSalt();
 
@@ -99,16 +106,14 @@ class CustomerController extends Controller
             $data = ['output' => 'Username or Password not valid.'];
             return new JsonResponse($data);
         }
-        /// End Verification
 
-        // The password matches ! then proceed to set the user in session
+        // Proceed to set the user in session
 
-        //Handle getting or creating the user entity likely with a posted form
-        // The third parameter "main" can change according to the name of your firewall in security.yml
+        // Handle getting or creating the user entity likely with a posted form
+        // "main" is name of your firewall in security.yml
         $token = new UsernamePasswordToken($user, null, 'main', $user->getRoles());
         $this->get('security.token_storage')->setToken($token);
 
-        // If the firewall name is not main, then the set value would be instead:
         // $this->get('session')->set('_security_XXXFIREWALLNAMEXXX', serialize($token));
         $this->get('session')->set('_security_main', serialize($token));
 
@@ -116,10 +121,7 @@ class CustomerController extends Controller
         $event = new InteractiveLoginEvent($request, $token);
         $this->get("event_dispatcher")->dispatch("security.interactive_login", $event);
 
-        /*
-         * Now the user is authenticated !
-         * Do what you need to do now, like render a view, redirect to route etc.
-         */
+        // Now the user is authenticated
         $data = [
           'output' => 'Welcome !'.$opt_message,
           'nb_love' => $nb_love
