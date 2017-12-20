@@ -1,0 +1,98 @@
+{% extends "TVFStoreBundle::layout.html.twig" %}
+{% block body %}
+
+<div id="">
+  {% set navbar = "TVFStoreBundle:Utils:nav.html.twig" %}
+  {{ include(navbar) }}
+  <div class="container">
+    <form name="form" class="form-signin" method="post" enctype="multipart/form-data" action="{{ path('tvf_record_client_add',{'id': id}) }}">
+    <div class="row">
+      <div class="col-sm-6 offset-sm-3">
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+        <h4 class="form-signin-heading">À propos de vous</h4>
+        {% set input_form="TVFAdminBundle:Utils:form_input.html.twig" %}
+        {% set save_form="TVFAdminBundle:Utils:form_save.html.twig" %}
+        <div class="h3">{{ include(input_form, {'element': form.name, 'name':"Nom de l'enseigne"}) }}</div>
+        <div style="margin-top: 10px">
+          <a href="#" id="to-website"><i class="fa fa-plus" aria-hidden="true"></i> {% if id is same as(0) %}Ajouter{% else %}Modifier{% endif %} votre site web</a>
+        </div>
+        <div id="website" class="hide">
+          {{ include(input_form, {'element': form.website, 'name':"Indiquez l'adresse de votre site web"}) }}
+        </div>
+        {{ include(input_form, {'element': form.description, 'name':"Description succincte de l'enseigne"}) }}
+        <div style="margin-top: 10px">
+          <a href="#" id="to-image"><i class="fa fa-plus" aria-hidden="true"></i> {% if id is same as(0) %}Ajouter une {% else %} Modifier l'{% endif %}illustration</a>
+        </div>
+        {% if id != 0 and img != '' %}
+        <div style="margin-top: 1rem; font-weight: bold;">Votre illustration</div>
+        <img src="{{ asset('uploads/img/' ~ img) }}" class="img-thumbnail" width="300">
+        {% endif %}
+        <div id="image" class="hide">
+          {{ include(input_form, {'element': form.image, 'name':"Ajouter une image qui vous représente"}) }}
+        </div>
+        <hr />
+        <h4>Informations de contact</h4>
+        <em>Ces informations sont confidentielles et ne nous servent qu'à communiquer avec vous.</em>
+        {{ include(input_form, {'element': form.email, 'name':"Email"}) }}
+        <div id="login_warning" class="hide alert alert-warning"><b>Attention !</b> Cet email vous servira également d'identifiant pour vous connecter.</div>
+        {% if id is same as(0) %}
+          {{ include(input_form, {'element': form.password, 'name':"Définissez un mot de passe de connexion"}) }}
+        {% else %}
+          <div style="margin-top: 10px">
+            <a href="#" id="to-password"><i class="fa fa-plus" aria-hidden="true"></i> Modifier le mot de passe</a>
+          </div>
+          <div id="password" class="hide">
+            {{ include(input_form, {'element': form.password, 'name':"Modifiez votre mot de passe de connexion"}) }}
+          </div>
+        {% endif %}
+        <div style="margin-top: 10px">
+          <a href="#" id="to-tel"><i class="fa fa-plus" aria-hidden="true"></i> {% if id is same as(0) %}Ajouter un{% else %}Modifier le{% endif %} numéro de téléphone</a>
+        </div>
+        <div id="tel" class="hide">
+          {{ include(input_form, {'element': form.phone, 'name':"Numéro de téléphone"}) }}
+        </div>
+        <hr />
+        {{ include(save_form, {'element': form.save, 'name':"Enregistrer"}) }}
+        {{ form_rest(form) }}
+      </div>
+    </div>
+    <p></p>
+    </form>
+  </div>
+</div>
+{% endblock %}
+{% block script %}
+<script>
+  {% if id is not same as(0) %}
+  $('#form_email').prop('readonly', true);
+  {% else %}
+  $('#form_email').on('focus', function(){
+    $('#login_warning').slideDown();
+  });
+  {% endif %}
+  $('#to-tel').on('click', function(e){
+    e.preventDefault();
+    $(this).parent().hide();
+    $('#tel').fadeIn();
+  });
+  $('#to-website').on('click', function(e){
+    e.preventDefault();
+    $(this).parent().hide();
+    $('#website').fadeIn();
+  });
+  $('#to-image').on('click', function(e){
+    e.preventDefault();
+    $(this).parent().hide();
+    $('#image').fadeIn();
+  });
+  $('#to-password').on('click', function(e){
+    e.preventDefault();
+    $(this).parent().hide();
+    $('#password').fadeIn();
+  });
+</script>
+{% endblock %}

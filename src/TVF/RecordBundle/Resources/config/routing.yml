@@ -1,3 +1,7 @@
+tvf_record_client_add:
+  path:     /record/client/add/{id}
+  defaults: { _controller: TVFRecordBundle:Client:add, id:0 }
+
 tvf_record_vinyl_add:
   path:     /record/vinyl/add/{id}
   defaults: { _controller: TVFRecordBundle:Vinyl:add, id:0 }

@@ -3,6 +3,8 @@
 namespace TVF\StoreBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 class HomeController extends Controller
 {
@@ -53,10 +55,23 @@ class HomeController extends Controller
           $path_small_image = $imagehandler->get_image_in_quality($fileNames[0], 'xs');
           $vinyl->small_image = $path_small_image;
         }
+
+        $repository = $em->getRepository('TVFRecordBundle:Client');
+        $clients = $repository->findBy(array(), array('joindate' => 'asc'));
+        foreach ($clients as $client) {
+          $fileName = $client->getImage();
+          if($fileName !== ''){
+            $path_small_image = $imagehandler->get_image_in_quality($fileName, 'xs');
+          } else {
+            $path_small_image = '';
+          }
+          $client->small_image = $path_small_image;
+        }
         return $this->render($this->entityNameSpace.':home.html.twig', array(
           'data' => $text,
           'collections' => $collections,
-          'vinyls' => $vinyls
+          'vinyls' => $vinyls,
+          'clients' => $clients,
         ));
     }
     public function historyAction()
@@ -106,5 +121,43 @@ class HomeController extends Controller
         return $this->render($this->entityNameSpace.':contact.html.twig', array(
           'data' => $text
         ));
+    }
+
+    public function joinAction(Request $request)
+    {
+        $text = [];
+        $text['info'] = '';
+        if ($request->getMethod() == 'POST') {
+            $data = $request->get('form');
+            if($data['key'] == $this->getParameter('record_key')){
+              // We upgrade the rights of this account to enable Registration
+              $user = $this->getUser();
+              $roles = $user->getRoles();
+              if(!in_array('ROLE_RECORD', $roles)){
+                  $roles[] = 'ROLE_RECORD';
+              }
+              $user->setRoles($roles);
+              $em = $this->getDoctrine()->getManager();
+              $em->persist($user);
+              $em->flush();
+              // Update the infos of logged user
+              $token = new UsernamePasswordToken($user, null, 'main', $user->getRoles());
+              $this->get('security.token_storage')->setToken($token);
+
+              $flashbag = $this->get('session')->getFlashBag();
+              $flashbag->add('success', 'La clef a été approuvée, vous pouvez désormais remplir quelques informations sur vous.');
+              return $this->redirect($this->generateUrl('tvf_record_client_add'));
+            } else {
+              $text['info'] = "La clef n'est pas valide. Merci de nous contacter.";
+            }
+        }
+        $this->handler = $this->container->get('tvf_store.fieldhandler');
+        $text['join']['title'] = $this->handler->fetchText('join:title');
+        $text['join']['text'] = $this->handler->fetchText('join:text');
+        $text['join']['method'] = $this->handler->fetchText('join:method');
+        return $this->render($this->entityNameSpace.':join.html.twig', array(
+          'data' => $text
+        ));
+
     }
 }

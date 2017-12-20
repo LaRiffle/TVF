@@ -1,0 +1,40 @@
+{% extends "TVFStoreBundle::layout.html.twig" %}
+{% block title %}
+  | Contact
+{% endblock %}
+{% block body %}
+<div id="history-page">
+  {% set navbar = "TVFStoreBundle:Utils:nav.html.twig" %}
+  {% set text = "TVFStoreBundle:Utils:text.html.twig" %}
+  {% set image = "TVFStoreBundle:Utils:image.html.twig" %}
+  {{ include(navbar, {'active': 'contact'}) }}
+  <div class="container">
+    <div class="row hidden-xs-down" style="height:40px;"></div>
+    <div class="row" style="margin-top: 25px;">
+      <div class="offset-md-3 col-md-6" style="border-left: 1px #777777 solid;">
+        <h2>{{ include(text, {'element': data.join.title }) }}</h2>
+        <p>{{ include(text, {'element': data.join.text }) }}</p>
+        <p>{{ include(text, {'element': data.join.method }) }}</p>
+        <form name="form" class="form-signin" method="post" action="{{ path('tvf_store_join') }}">
+          {% if data.info is not empty %}
+          <p class="alert alert-danger">{{ data.info }}</p>
+          {% endif %}
+          <div style="margin-top: 10px;">
+            <label class="sr-only required" for="form_title">Clef</label>
+            <input id="form_key" name="form[key]" required="required" class="form-control" placeholder="Copiez la clef ici" type="text">
+          </div>
+          <div style="margin-top: 10px;">
+            <button type="submit" id="form_save" name="form[save]" class="btn btn-primary ">Valider</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block script %}
+{% if is_granted('ROLE_ADMIN') %}
+  {% set edit_script = "TVFAdminBundle:Utils:edit-handler.html.twig" %}
+  {{ include(edit_script) }}
+{% endif %}
+{% endblock %}

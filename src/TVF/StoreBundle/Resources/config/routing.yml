@@ -31,6 +31,9 @@ tvf_store_history:
 tvf_store_contact:
     path:     /contact
     defaults: { _controller: TVFStoreBundle:Home:contact }
+tvf_store_join:
+    path:     /join
+    defaults: { _controller: TVFStoreBundle:Home:join }
 
 # Search
 tvf_store_show:

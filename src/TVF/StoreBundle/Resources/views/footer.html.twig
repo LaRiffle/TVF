@@ -7,10 +7,10 @@
           <li class="widget-container"><!-- widgets list -->
             <h5 class="title-widget">Les disquaires</h5>
             <ul class="list-unstyled clear-margins">
-      			  <li><a  href="#">Au petit vinyle</a></li>
-              <li><a  href="#">Les ateliers tournants</a></li>
-              <li><a  href="#">Le disquaire</a></li>
-              <li><a  href="#">Noir de jais</a></li>
+              {% for client in clients %}
+                  <li><a href="/disquaire/{{ client.id }}">{{ client.name }}</a></li>
+              {% endfor %}
+              <li><a  href="{{ path('tvf_store_join') }}"><i class="fa fa-plus" aria-hidden="true"></i> Nous rejoindre</a></li>
             </ul>
           <li>
         </ul>
