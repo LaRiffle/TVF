@@ -8,21 +8,20 @@
     <form name="form" class="form-signin" method="post" enctype="multipart/form-data" action="{{ path('tvf_record_vinyl_add',{'id': id}) }}">
     <div class="row">
       <div class="col-sm-6 offset-sm-3">
-        <h3 class="form-signin-heading">{% if id == 0 %}Ajouter{% else %}Modifier{% endif %} une création</h3>
+        <h3 class="form-signin-heading">{% if id == 0 %}Ajouter{% else %}Modifier{% endif %} un album vinyle</h3>
         {% set input_form="TVFAdminBundle:Utils:form_input.html.twig" %}
         {% set save_form="TVFAdminBundle:Utils:form_save.html.twig" %}
-        <div class="h1">{{ include(input_form, {'element': form.name, 'name':"Nom de l'article"}) }}</div>
-        <h5>Collection</h5>
+        <div class="h1">{{ include(input_form, {'element': form.name, 'name':"Nom de l'album"}) }}</div>
+        <h5>Artiste</h5>
+        <div class="h2">{{ include(input_form, {'element': form.artist, 'name':"Artiste"}) }}</div>
+        <h5>Sélection</h5>
         <div class="h2">{{ include(input_form, {'element': form.collection, 'name':"Collection"}) }}</div>
         <p><a href="{{ path('tvf_record_collection_add')}}" target="_blank">Créer une nouvelle collection</a></p>
         <h5>Type de création</h5>
         <div class="h2">{{ include(input_form, {'element': form.category, 'name':"Catégorie"}) }}</div>
         <hr />
-        <div class="h2">{{ include(input_form, {'element': form.title1, 'name':"Titre description"}) }}</div>
-        {{ include(input_form, {'element': form.text1, 'name':"Description brève"}) }}
-        <hr />
-        <div class="h2">{{ include(input_form, {'element': form.title2, 'name':"Titre complémentaire (facultatif)"}) }}</div>
-        {{ include(input_form, {'element': form.text2, 'name':"Description étendue (facultatif)"}) }}
+        <div class="h2">Description</div>
+        {{ include(input_form, {'element': form.description, 'name':"Description brève"}) }}
         <hr />
         <div style="margin-top: 10px; {% if id == 0 %}display: none;{% endif %}">
           <h5>{{ form_label(form.imgs, "Images existantes") }}</h5>

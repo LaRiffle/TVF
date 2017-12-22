@@ -32,6 +32,7 @@ $('.tvf-icon').slice(0,10).each(function(){
 });
 </script>
 <script>
+/* Pour le chat 1/2 */
 $('#vinyl-explore').on('click', function(e){
   e.preventDefault();
   var dialog = bootbox.dialog({
@@ -53,6 +54,7 @@ $('#vinyl-explore').on('click', function(e){
 });
 </script>
 <script>
+/* Pour le chat 2/2 */
 var current_section = 'chat-0';
 $('body').on('click', 'a.interactive', function(e){
   e.preventDefault();
@@ -78,6 +80,122 @@ $('body').on('click', 'a.btn-select', function(e){
   e.preventDefault();
   $(this).css('border-color','rgb(2, 117, 216)');
   console.log($(this).html());
+});
+</script>
+<script>
+var selected_id = -1;
+var active_index = -1;
+$('a.show-vinyl').on('click', function(e){
+  e.preventDefault();
+  var $vinyl = $(this).closest('.tvf-box');
+  selected_id = $vinyl.attr('data-id');
+  var index = Number($vinyl.attr('data-index'));
+  if(index == active_index){
+    $('#vinyl_slider').slideUp();
+    active_index = -1;
+  } else {
+    var after_index = index - index%3 + 2;
+    var $after_box = $($('#my_insta .tvf-box:not(.no-count) .tvf-inner')[after_index]).parent('.tvf-box');
+    // If different row, need to slide up the overview :
+    if(active_index == -1 || after_index != (active_index - active_index%3 + 2)){
+        $('#vinyl_slider').slideUp('fast', function() {
+          $('#vinyl_overview').insertAfter($after_box);
+          update_content_overview($vinyl, index, after_index);
+        });
+    } else {
+      update_content_overview($vinyl, index, after_index);
+    }
+    active_index = index;
+  }
+});
+
+function update_content_overview($vinyl, index, after_index){
+  $("#vinyl_overview .vinyl-name").html($vinyl.attr('data-name'));
+  $("#vinyl_overview .vinyl-artist").html($vinyl.attr('data-artist'));
+  $("#vinyl_overview .vinyl-description").html($vinyl.attr('data-description'));
+  $("#vinyl_overview .vinyl-disquaire").html($vinyl.attr('data-disquaire'));
+  // Set url
+  var base_href = $("#vinyl_overview .vinyl-disquaire-link").attr('data-href');
+  var href = base_href + '/' + $vinyl.attr('data-disquaire-link');
+  $("#vinyl_overview .vinyl-disquaire-link").attr('href', href);
+  // Set image
+  var $img = $("#vinyl_overview .vinyl-img");
+  var src = $img.attr('data-src') + $vinyl.attr('data-img');
+  $img.attr('src', src);
+  // Set love btn
+  var $icon = $('#vinyl_overview .love_btn a i').first();
+  if($vinyl.attr('data-loved') == '1'){
+    $icon.removeClass('fa-heart-o').addClass('fa-heart');
+  } else {
+    $icon.removeClass('fa-heart').addClass('fa-heart-o');
+  }
+
+  color_overview_from_img(src);
+  // adapt caret
+  $("#vinyl_overview .caret").css('right', 'calc('+(16.67+(after_index - index)*33.33)+'% - 10px)');
+  $('#vinyl_slider').slideDown();
+}
+
+function color_overview_from_img(sourceImage){
+  /* Color the vinyle overview */
+  var colorThief = new ColorThief();
+  var image = new Image;
+  image.src = sourceImage;
+  var colors = colorThief.getPalette(image, 3);
+  var c = colors[0];
+  var rgb = 'rgb('+c[0]+','+c[1]+', '+c[2]+')';
+  $('.vinyl-overview').css('color', rgb);
+  $('.vinyl-overview .love_btn a').css('color', rgb);
+  $('.love_price .badge').css('color', rgb);
+  $('.vinyl-overview .love_btn').hover(function(){
+    $(this).css('border-color', rgb);
+  });
+  $('.vinyl-overview .love_btn').mouseleave(function(){
+    $(this).css('border-color', '');
+  });
+  var c = colors[1];
+  var rgb_bg = 'rgb('+c[0]+','+c[1]+', '+c[2]+')';
+  $('.vinyl-overview .window').css('background-color', rgb_bg);
+  $('.vinyl-overview .caret').css('border-bottom', '10px solid '+rgb_bg);
+  var c = colors[2];
+  var rgb_2 = 'rgb('+c[0]+','+c[1]+', '+c[2]+')';
+  $('.vinyl-overview h5, .vinyl-overview h6').css('color', rgb_2);
+}
+</script>
+<script>
+var love_url = '{{ path('tvf_store_vinyl_love') }}/';
+var unlove_url = '{{ path('tvf_store_vinyl_unlove') }}/';
+$('#vinyl_overview .love_btn a').on('click', function(e) {
+  var url;
+  var $icon = $(this).find('i').first();
+  if($icon.hasClass('fa-heart-o')){
+    console.log('Love detected');
+    url = love_url + selected_id;
+  } else {
+    console.log('Unlove detected');
+    url = unlove_url + selected_id;
+  }
+  e.preventDefault();
+  $.ajax({
+      url: url,
+      type: "POST",
+      dataType: "json",
+      data: {
+      },
+      async: true,
+      success: function (data)
+      {
+          console.log('Action stored.');
+          var nb = Number($('#nb_love').html());
+          if($icon.hasClass('fa-heart-o')){
+            $icon.removeClass('fa-heart-o').addClass('fa-heart');
+            $('#nb_love').html(nb+1);
+          } else {
+            $icon.removeClass('fa-heart').addClass('fa-heart-o');
+            $('#nb_love').html(nb-1);
+          }
+      }
+  });
 });
 </script>
 {% endblock %}

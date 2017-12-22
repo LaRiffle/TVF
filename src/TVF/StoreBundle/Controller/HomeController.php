@@ -50,10 +50,18 @@ class HomeController extends Controller
 
         $repository = $em->getRepository('TVFRecordBundle:Vinyl');
         $vinyls = $repository->findBy(array(), array('id' => 'desc'));
+        $love_repository = $em->getRepository('TVFStoreBundle:VinylUser');
+        $user = $this->getUser();
         foreach ($vinyls as $vinyl) {
           $fileNames = $vinyl->getImages();
           $path_small_image = $imagehandler->get_image_in_quality($fileNames[0], 'xs');
           $vinyl->small_image = $path_small_image;
+          $vinyluser = $love_repository->findOneBy(array('vinyl' => $vinyl, 'user' => $user));
+          if($vinyluser === null) {
+            $vinyl->loved = '0';
+          } else {
+            $vinyl->loved = $vinyluser->getLover();
+          }
         }
 
         $repository = $em->getRepository('TVFRecordBundle:Client');

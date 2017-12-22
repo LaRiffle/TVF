@@ -1,0 +1,47 @@
+{% if active is not defined %}
+  {%  set active = '' %}
+{% endif %}
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12">
+      <div id="nav_left_icon" class="top_circle_icon">
+        <a href="{{ path('tvf_store_selection') }}" title="Retour au site" style="color:#BA0020; position: relative; right: 2px;">
+          <i class="fa fa-chevron-left fa-2x" aria-hidden="true"></i>
+        </a>
+      </div>
+      <div id="nav_right_icon" class="top_circle_icon visible-from-sm">
+        <a href="{{ path('logout') }}" title="Déconnexion" style="color:#BA0020;">
+          <i class="fa fa-lock fa-2x" aria-hidden="true"></i>
+        </a>
+      </div>
+      <div id="nav_toggle_btn">
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
+      <a href="{{ path('tvf_store_homepage') }}" class="sober_link">
+      <div class="title special-font"><em>Côté disquaire</em> — The Vinyl Factory.</div>
+      </a>
+    </div>
+  </div>
+</div>
+<nav class="navbar navbar-toggleable navbar-light top-navbar">
+<a class="navbar-brand" href="#"></a>
+<div class="collapse navbar-collapse special-font" id="navbar">
+  <ul class="navbar-nav">
+    <li class="nav-item">
+      {% if client is defined %}
+      <a class="nav-link {% if active != 'profile' %}active{% endif %}" href="{{ path('tvf_record_client_show', {'id': client.id}) }}">Votre profil</a>
+      {% else %}
+      <a class="nav-link {% if active != 'profile' %}active{% endif %}" href="#">Profil</a>
+      {% endif %}
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {% if active != 'selection' %}active{% endif %}" href="{{ path('tvf_store_collection')}}">Vos sélections</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {% if active != 'collection' %}active{% endif %}" href="{{ path('tvf_store_explore') }}">Votre collection</a>
+    </li>
+  </ul>
+</div>
+</nav>

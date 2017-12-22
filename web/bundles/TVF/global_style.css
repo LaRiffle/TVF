@@ -236,14 +236,6 @@ button.navbar-toggler:hover {
   background-color: rgba(255, 255, 255, 0.5);
   z-index: 10;
 }
-#fb-icon {
-  color: #3B5B98;
-  border-color: #3B5B98;
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  transition: opacity 1s ease;
-}
 #nav_left_icon, #nav_right_icon {
   position: absolute;
   top: 0px;
@@ -265,11 +257,14 @@ button.navbar-toggler:hover {
     margin-top: 13px;
   }
 }
-#nav_left_icon:hover, .love_icon:hover{
+#nav_right_icon:hover, #nav_left_icon:hover, .love_icon:hover{
   border-color: #BA0020;
 }
-#nav_left_icon:hover i.full-heart, .love_icon:hover i.full-heart {
+#nav_right_icon:hover i.full-user, #nav_left_icon:hover i.full-heart, .love_icon:hover i.full-heart {
   opacity: 1;
+}
+#nav_right_icon:hover i.fa-user-o {
+  opacity: 0;
 }
 #nav_toggle_btn button {
   display: none;
@@ -294,11 +289,14 @@ button.navbar-toggler:hover {
     background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(186,0,32,1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E");
   }
 }
-.full-heart {
+.full-heart, .full-user {
   opacity: 0;
   transition: opacity 0.5s;
   position: relative;
   bottom: 1.5rem;
+}
+.full-user {
+  bottom: 1.52rem;
 }
 #nav_left_icon{
   float: left;
@@ -322,6 +320,17 @@ button.navbar-toggler:hover {
   left: 15px;
   background-color: #BA0020;
 }
+/* Correctif pour record-nav */
+#record-page .title.special-font {
+  margin-top: 0.8rem;
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+#record-page #navbar li {
+    font-size: 1.25rem;
+}
+
+
 @media(min-width: 576px){
   .visible-to-xs {
     display: none;
@@ -772,15 +781,18 @@ ul.edition-btn li:after {
     visibility: visible;
 }
 @media screen and (max-width: 576px) {
+  #my_insta {
+    margin-left: -1rem;
+    margin-right: -1rem;
+  }
   #explore-page #display_icons {
     padding: 0;
   }
   .tvf-box {
     margin: 1.5px;
-    min-width: 45%;
   }
   .tvf-inner .caption {
-    opacity: 1 !important;
+    /*opacity: 1 !important;*/
   }
 }
 .tvf-box:after {
@@ -856,4 +868,60 @@ footer {
 }
 footer .row > div {
   border-left: 1px solid rgba(0,0,0,.1);
+}
+
+/* Icon insta overview */
+#vinyl_overview {
+  width: 100%;
+  margin-top: -6px;
+}
+.vinyl-overview  {
+  color: white;
+  transition: color 1s;
+  margin: 5px;
+  margin-top: 0px;
+  position: relative;
+}
+@media screen and (max-width: 576px) {
+  .vinyl-overview  {
+    margin: 1.5px;
+    margin-top: 0px;
+  }
+  #vinyl_overview {
+    margin-top: -2px;
+  }
+}
+.vinyl-overview .caret {
+  border-bottom: 10px solid #222;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  transition: border-color 1s;
+  height: 0;
+  width: 0;
+  position: absolute;
+  right: calc(16.67% - 10px);
+}
+.vinyl-overview .window {
+  background-color: #222;
+  transition: background-color 1s;
+  margin-top: 10px;
+  width: 100%;
+  min-height: 100px;
+}
+.vinyl-overview .love_price {
+  float: right;
+  margin-right: 20px;
+}
+.vinyl-overview .love_btn {
+  background-color: transparent;
+}
+.vinyl-overview .content {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+.vinyl-overview .love_price .badge {
+  border: 1px rgba(0,0,0,.125) solid
+}
+.vinyl-overview a {
+  color: inherit !important;
 }

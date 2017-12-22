@@ -30,6 +30,37 @@ class ClientController extends Controller
           'clients' => $clients
         ));
     }
+    public function showAction($id = 0){
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_RECORD')) {
+          return $this->redirect($this->generateUrl('tvf_record_my_account'));
+        }
+        if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+          throw new AccessDeniedException('Accès limité.');
+        }
+        $em = $this->getDoctrine()->getManager();
+        $repository = $em->getRepository($this->entityNameSpace);
+        $client = $repository->find($id);
+        return $this->render($this->entityNameSpace.':show.html.twig', array(
+          'client' => $client
+        ));
+    }
+    public function presentAction($slug){
+        $em = $this->getDoctrine()->getManager();
+        $repository = $em->getRepository($this->entityNameSpace);
+        $client = $repository->findOneBy(array('slug' => $slug));
+        return $this->render($this->entityNameSpace.':present.html.twig', array(
+          'client' => $client
+        ));
+    }
+    public function myAccountAction() {
+        $user = $this->getUser();
+        $em = $this->getDoctrine()->getManager();
+        $repository = $em->getRepository($this->entityNameSpace);
+        $client = $repository->findOneBy(array('user' => $user));
+        return $this->render($this->entityNameSpace.':show.html.twig', array(
+          'client' => $client
+        ));
+    }
     public function addAction(Request $request, $id = 0) {
         if (!$this->get('security.authorization_checker')->isGranted('ROLE_RECORD')) {
           throw new AccessDeniedException('Accès limité.');
@@ -114,7 +145,7 @@ class ClientController extends Controller
             $client->setUser($user);
             $em->persist($client);
             $em->flush();
-            return $this->redirect($this->generateUrl('tvf_store_homepage'));
+            return $this->redirect($this->generateUrl('tvf_record_my_account'));
         }
         return $this->render($this->entityNameSpace.':add.html.twig', array(
             'form' => $form->createView(),
@@ -124,10 +155,13 @@ class ClientController extends Controller
 
     }
     public function removeAction(Request $request, $id){
+        if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+          throw new AccessDeniedException('Accès limité.');
+        }
         $em = $this->getDoctrine()->getManager();
-        $type = $em->getRepository($this->entityNameSpace)->find($id);
-        $em->remove($type);
+        $client = $em->getRepository($this->entityNameSpace)->find($id);
+        $em->remove($client);
         $em->flush();
-        return $this->redirect($this->generateUrl('tvf_record_vinyl_attributes'));
+        return $this->redirect($this->generateUrl('tvf_store_homepage'));
     }
 }

@@ -1,0 +1,35 @@
+{% extends "TVFStoreBundle::layout.html.twig" %}
+{% block body %}
+
+<div id="record-page">
+  {% set navbar = "TVFRecordBundle:Utils:nav.html.twig" %}
+  {{ include(navbar, {active: 'profile'}) }}
+  <div class="container" style="margin-top: 5px; margin-bottom: 20px;">
+    <div class="row">
+      <div class="col-sm-6 offset-sm-3">
+        <div class="card" style="width: 100%;">
+          {% if client.image is not empty %}
+            <img class="card-img-top" src="{{ asset('uploads/img/' ~ client.image) }}" alt="Image indisponible" style="width: 100%;">
+          {% endif %}
+          <div class="card-block">
+            <h4 class="card-title center" style="font-weight: bold;">{{ client.name }}</h4>
+            <h6 class="card-subtitle mb-2 text-muted">Depuis le {{ client.joindate|date("d/m/Y") }}</h6>
+            <p class="card-text">{{ client.description }}</p>
+          </div>
+          <div class="card-block">
+            <a href="{{ path('tvf_record_client_add', {'id': client.id}) }}" class="card-link">Modifier le profil</a>
+          </div>
+          <div class="card-footer text-muted">
+            <a href="mailto:{{ client.email }}">{{ client.email }}</a> · <a href="{{ client.website }}" target="_blank">{{ client.website }}</a> · {{ client.phone }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block script %}
+<script>
+
+</script>
+{% endblock %}

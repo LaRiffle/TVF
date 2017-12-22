@@ -28,6 +28,21 @@ class CrawlController extends Controller
 {
     public $entityNameSpace = 'TVFRecordBundle:Vinyl';
 
+    public function dropCollectionAction(){
+      $em = $this->getDoctrine()->getManager();
+      $repository = $em->getRepository($this->entityNameSpace);
+      $vinyls = $repository->findAll();
+      $interaction_repository = $em->getRepository('TVFStoreBundle:VinylUser');
+      foreach ($vinyls as $vinyl) {
+        $interactions = $interaction_repository->findBy(array('vinyl' => $vinyl));
+        foreach ($interactions as $interaction) {
+          $em->remove($interaction);
+        }
+        $em->remove($vinyl);
+      }
+      $em->flush();
+      return $this->redirect($this->generateUrl('tvf_store_explore'));
+    }
     public function feedAction(Request $request) {
       $finder = new Finder();
       $finder->files()->in(__DIR__.'/../Crawl');

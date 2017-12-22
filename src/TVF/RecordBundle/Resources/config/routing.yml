@@ -1,6 +1,29 @@
 tvf_record_client_add:
   path:     /record/client/add/{id}
   defaults: { _controller: TVFRecordBundle:Client:add, id:0 }
+tvf_record_client_show:
+  path:     /record/client/show/{id}
+  defaults: { _controller: TVFRecordBundle:Client:show, id:0 }
+tvf_record_my_account:
+  path:     /record/mon-compte
+  defaults: { _controller: TVFRecordBundle:Client:myAccount, id:0 }
+tvf_record_client_present:
+  path:     /disquaire/{slug}
+  defaults: { _controller: TVFRecordBundle:Client:present, slug:'' }
+
+tvf_record_artist:
+  path:     /record/artist
+  defaults: { _controller: TVFRecordBundle:Artist:index }
+tvf_record_artist_add:
+  path:     /record/artist/add/{id}
+  defaults: { _controller: TVFRecordBundle:Artist:add, id:0 }
+tvf_record_artist_show:
+  path:     /record/artist/show/{id}
+  defaults: { _controller: TVFRecordBundle:Artist:show, id:0 }
+tvf_record_artist_remove:
+  path:     /record/artist/remove/{id}
+  defaults: { _controller: TVFRecordBundle:Artist:remove, id:0 }
+
 
 tvf_record_vinyl_add:
   path:     /record/vinyl/add/{id}

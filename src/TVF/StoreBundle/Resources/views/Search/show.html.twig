@@ -28,10 +28,6 @@
         </div>
         {% set carousel = "TVFStoreBundle:Search:carousel.html.twig" %}
         {{ include(carousel, {'url': vinyl.images}) }}
-        <div class="visible-from-sm">
-          <h4>{{ vinyl.title2 }}</h4>
-          <p>{{ vinyl.text2|nl2br }}</p>
-        </div>
       </div>
       <div class="col-sm-5 col-md-4">
         {% if is_granted('ROLE_ADMIN') %}
@@ -55,12 +51,7 @@
             </span>
           </h4>
         </div>
-        <h4>{{ vinyl.title1 }}</h4>
-        <p>{{ vinyl.text1|nl2br }}</p>
-        <div class="visible-to-xs">
-          <h4>{{ vinyl.title2 }}</h4>
-          <p>{{ vinyl.text2|nl2br }}</p>
-        </div>
+        <p>{{ vinyl.description|nl2br }}</p>
          <ul id="notify" class="list-group" style="margin-bottom: 10px;">
            <!--<li class="list-group-item collapse-toggle justify-content-between">
              <h5 style="margin-bottom: 0px;">

@@ -1,0 +1,12 @@
+{% extends "TVFStoreBundle::layout.html.twig" %}
+{% block body %}
+  {% for artist in artists %}
+  {% set edition_buttons="TVFAdminBundle:Utils:edition.html.twig" %}
+  {{ include(edition_buttons, {'edit': path('tvf_record_artist_add', {'id': artist.id}), 'remove': path('tvf_record_artist_remove', {'id': artist.id}) }) }}
+  <h2>{{ artist.name }}</h2>
+  <p>{{ artist.bio }}</p>
+  <img src="{{ asset('uploads/img/' ~ artist.image) }}" class="img-thumbnail" width="300">
+  {% endfor %}
+{% endblock %}
+{% block script %}
+{% endblock %}

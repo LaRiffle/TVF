@@ -1,0 +1,27 @@
+{% extends "TVFStoreBundle::layout.html.twig" %}
+{% block body %}
+{% set navbar = "TVFStoreBundle:Utils:nav.html.twig" %}
+{{ include(navbar, {'active': 'collection'}) }}
+<div class="container">
+  <div class="row">
+    <div class="col-sm-6 offset-sm-3">
+      <form name="form" class="form-signin"
+            method="post" enctype="multipart/form-data"
+            action="{{ path('tvf_record_artist_add',{'id': id}) }}">
+        <h3 class="form-signin-heading">{% if id == 0 %}Ajouter{% else %}Modifier{% endif %} un artiste</h3>
+        {% set input_form="TVFAdminBundle:Utils:form_input.html.twig" %}
+        {% set save_form="TVFAdminBundle:Utils:form_save.html.twig" %}
+        {{ include(input_form, {'element': form.name, 'name':"Nom de l'artiste"}) }}
+        {{ include(input_form, {'element': form.bio, 'name':"Brève description de son travail"}) }}
+        {% if id != 0 and img != '' %}
+        <div style="margin-top: 1rem; font-weight: bold;">Modifier l'image</div>
+        <img src="{{ asset('uploads/img/' ~ img) }}" class="img-thumbnail" width="300">
+        {% endif %}
+        {{ include(input_form, {'element': form.image, 'name':"Ajouter une image"}) }}
+        {{ include(save_form, {'element': form.save, 'name':"Enregistrer"}) }}
+        {{ form_rest(form) }}
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

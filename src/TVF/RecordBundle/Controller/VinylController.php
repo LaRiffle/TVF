@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -27,6 +28,9 @@ class  VinylController extends Controller
     public $entityNameSpace = 'TVFRecordBundle:Vinyl';
 
     public function addAction(Request $request, $id = 0) {
+        if (!$this->get('security.authorization_checker')->isGranted('ROLE_RECORD')) {
+          throw new AccessDeniedException('Accès limité.');
+        }
         $em = $this->getDoctrine()->getManager();
         if($id == 0) {
             $vinyl = new Vinyl();
@@ -42,14 +46,13 @@ class  VinylController extends Controller
             }
             $new_vinyl = new Vinyl();
             $new_vinyl->setName($vinyl->getName());
-            $new_vinyl->setTitle1($vinyl->getTitle1());
-            $new_vinyl->setText1($vinyl->getText1());
-            $new_vinyl->setTitle2($vinyl->getTitle2());
-            $new_vinyl->setText2($vinyl->getText2());
+            $new_vinyl->setArtist($vinyl->getArtist());
+            $new_vinyl->setDescription($vinyl->getDescription());
             $new_vinyl->setOnsold($vinyl->getOnsold());
             $new_vinyl->setPrice($vinyl->getPrice());
             $new_vinyl->setCollection($vinyl->getCollection());
             $new_vinyl->setCategory($vinyl->getCategory());
+            $new_vinyl->setClient($vinyl->getClient());
             foreach($vinyl->getTypes() as $type){
               $new_vinyl->addType($type);
             }
@@ -59,6 +62,10 @@ class  VinylController extends Controller
         }
         $form = $this->get('form.factory')->createBuilder(FormType::class, ($id == 0 ? $vinyl : $new_vinyl))
         ->add('name', TextType::class)
+        ->add('artist', EntityType::class, array(
+                'class'        => 'TVFRecordBundle:Artist',
+                'choice_label' => 'name',
+        ))
         ->add('collection', EntityType::class, array(
                 'class'        => 'TVFRecordBundle:Collection',
                 'choice_label' => 'title',
@@ -67,14 +74,7 @@ class  VinylController extends Controller
                 'class'        => 'TVFAdminBundle:Category',
                 'choice_label' => 'name',
         ))
-        ->add('title1', TextType::class)
-        ->add('text1', TextareaType::class)
-        ->add('title2', TextType::class, array(
-          'required' => false
-        ))
-        ->add('text2', TextareaType::class, array(
-          'required' => false
-        ))
+        ->add('description', TextareaType::class)
         ->add('onsold', CheckboxType::class, array(
           'required' => false
         ))
@@ -173,10 +173,8 @@ class  VinylController extends Controller
                 }
               }
               $vinyl->setName($new_vinyl->getName());
-              $vinyl->setTitle1($new_vinyl->getTitle1());
-              $vinyl->setText1($new_vinyl->getText1());
-              $vinyl->setTitle2($new_vinyl->getTitle2());
-              $vinyl->setText2($new_vinyl->getText2());
+              $vinyl->setArtist($new_vinyl->getArtist());
+              $vinyl->setDescription($new_vinyl->getDescription());
               $vinyl->setOnsold($new_vinyl->getOnsold());
               $vinyl->setPrice($new_vinyl->getPrice());
               $vinyl->setCollection($new_vinyl->getCollection());
@@ -192,6 +190,10 @@ class  VinylController extends Controller
                 }
               }
             }
+            $user = $this->getUser();
+            $repository = $em->getRepository('TVFRecordBundle:Client');
+            $client = $repository->findOneBy(array('user' => $user));
+            $vinyl->setClient($client);
             $em->persist($vinyl);
             $em->flush();
             //return new Response();

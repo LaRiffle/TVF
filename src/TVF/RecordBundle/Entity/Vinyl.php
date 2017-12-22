@@ -41,30 +41,9 @@ class Vinyl
     /**
      * @var string
      *
-     * @ORM\Column(name="title1", type="string", length=255)
+     * @ORM\Column(name="description", type="text")
      */
-    private $title1;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="text1", type="text")
-     */
-    private $text1;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="title2", type="string", length=255, nullable=true)
-     */
-    private $title2;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="text2", type="text", nullable=true)
-     */
-    private $text2;
+    private $description;
 
     /**
      * @var float
@@ -116,6 +95,18 @@ class Vinyl
     private $users;
 
     /**
+     * @ORM\ManyToOne(targetEntity="TVF\RecordBundle\Entity\Client")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $client;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="TVF\RecordBundle\Entity\Artist")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $artist;
+
+    /**
      * Get id
      *
      * @return int
@@ -147,102 +138,6 @@ class Vinyl
     public function getName()
     {
         return $this->name;
-    }
-
-    /**
-     * Set title1
-     *
-     * @param string $title1
-     *
-     * @return Vinyl
-     */
-    public function setTitle1($title1)
-    {
-        $this->title1 = $title1;
-
-        return $this;
-    }
-
-    /**
-     * Get title1
-     *
-     * @return string
-     */
-    public function getTitle1()
-    {
-        return $this->title1;
-    }
-
-    /**
-     * Set text1
-     *
-     * @param string $text1
-     *
-     * @return Vinyl
-     */
-    public function setText1($text1)
-    {
-        $this->text1 = $text1;
-
-        return $this;
-    }
-
-    /**
-     * Get text1
-     *
-     * @return string
-     */
-    public function getText1()
-    {
-        return $this->text1;
-    }
-
-    /**
-     * Set title2
-     *
-     * @param string $title2
-     *
-     * @return Vinyl
-     */
-    public function setTitle2($title2)
-    {
-        $this->title2 = $title2;
-
-        return $this;
-    }
-
-    /**
-     * Get title2
-     *
-     * @return string
-     */
-    public function getTitle2()
-    {
-        return $this->title2;
-    }
-
-    /**
-     * Set text2
-     *
-     * @param string $text2
-     *
-     * @return Vinyl
-     */
-    public function setText2($text2)
-    {
-        $this->text2 = $text2;
-
-        return $this;
-    }
-
-    /**
-     * Get text2
-     *
-     * @return string
-     */
-    public function getText2()
-    {
-        return $this->text2;
     }
 
     /**
@@ -503,5 +398,77 @@ class Vinyl
     public function getUsers()
     {
         return $this->users;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return Vinyl
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set client
+     *
+     * @param \TVF\RecordBundle\Entity\Client $client
+     *
+     * @return Vinyl
+     */
+    public function setClient(\TVF\RecordBundle\Entity\Client $client)
+    {
+        $this->client = $client;
+
+        return $this;
+    }
+
+    /**
+     * Get client
+     *
+     * @return \TVF\RecordBundle\Entity\Client
+     */
+    public function getClient()
+    {
+        return $this->client;
+    }
+
+    /**
+     * Set artist
+     *
+     * @param \TVF\RecordBundle\Entity\Artist $artist
+     *
+     * @return Vinyl
+     */
+    public function setArtist(\TVF\RecordBundle\Entity\Artist $artist)
+    {
+        $this->artist = $artist;
+
+        return $this;
+    }
+
+    /**
+     * Get artist
+     *
+     * @return \TVF\RecordBundle\Entity\Artist
+     */
+    public function getArtist()
+    {
+        return $this->artist;
     }
 }

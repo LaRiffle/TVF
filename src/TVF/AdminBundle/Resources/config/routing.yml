@@ -1,3 +1,6 @@
+tvf_admin_vinyl_drop:
+    path:     /admin/vinyl/drop
+    defaults: { _controller: TVFAdminBundle:Crawl:dropCollection}
 tvf_admin_vinyl_feed:
     path:     /admin/vinyl/feed
     defaults: { _controller: TVFAdminBundle:Crawl:feed}

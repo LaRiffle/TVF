@@ -2,7 +2,7 @@
 {% block body %}
 
 <div id="">
-  {% set navbar = "TVFStoreBundle:Utils:nav.html.twig" %}
+  {% set navbar = "TVFRecordBundle:Utils:nav.html.twig" %}
   {{ include(navbar) }}
   <div class="container">
     <form name="form" class="form-signin" method="post" enctype="multipart/form-data" action="{{ path('tvf_record_client_add',{'id': id}) }}">
