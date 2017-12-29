@@ -10,6 +10,12 @@ tvf_record_my_account:
 tvf_record_client_present:
   path:     /disquaire/{slug}
   defaults: { _controller: TVFRecordBundle:Client:present, slug:'' }
+tvf_record_selection:
+    path:     /mes-selections
+    defaults: { _controller: TVFRecordBundle:Client:selection }
+tvf_record_collection:
+    path:     /ma-collection
+    defaults: { _controller: TVFRecordBundle:Client:collection }
 
 tvf_record_artist:
   path:     /record/artist

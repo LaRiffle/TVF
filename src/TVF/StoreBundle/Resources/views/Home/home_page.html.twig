@@ -79,6 +79,7 @@ $('body').on('click', 'a.interactive', function(e){
 $('body').on('click', 'a.btn-select', function(e){
   e.preventDefault();
   $(this).css('border-color','rgb(2, 117, 216)');
+  $(this).parent('.horizontal-scroll').find('.interactive-next').html("C'est tout !");
   console.log($(this).html());
 });
 </script>
@@ -114,6 +115,13 @@ function update_content_overview($vinyl, index, after_index){
   $("#vinyl_overview .vinyl-artist").html($vinyl.attr('data-artist'));
   $("#vinyl_overview .vinyl-description").html($vinyl.attr('data-description'));
   $("#vinyl_overview .vinyl-disquaire").html($vinyl.attr('data-disquaire'));
+  // Set price
+  if($vinyl.attr('data-onsold') == '1'){
+    $("#vinyl_overview .price_btn").show();
+    $("#vinyl_overview .vinyl-price").html($vinyl.attr('data-price'));
+  } else {
+    $("#vinyl_overview .price_btn").hide();
+  }
   // Set url
   var base_href = $("#vinyl_overview .vinyl-disquaire-link").attr('data-href');
   var href = base_href + '/' + $vinyl.attr('data-disquaire-link');
@@ -165,6 +173,11 @@ function color_overview_from_img(sourceImage){
 <script>
 var love_url = '{{ path('tvf_store_vinyl_love') }}/';
 var unlove_url = '{{ path('tvf_store_vinyl_unlove') }}/';
+$('.love_icon_insta_btn').mousedown(function(){
+  setTimeout(function(){
+    $('#vinyl_overview .love_btn a').click();
+  }, 200);
+});
 $('#vinyl_overview .love_btn a').on('click', function(e) {
   var url;
   var $icon = $(this).find('i').first();
@@ -187,12 +200,15 @@ $('#vinyl_overview .love_btn a').on('click', function(e) {
       {
           console.log('Action stored.');
           var nb = Number($('#nb_love').html());
+          var vinyl = $('.tvf-box[data-id='+selected_id+']');
           if($icon.hasClass('fa-heart-o')){
             $icon.removeClass('fa-heart-o').addClass('fa-heart');
             $('#nb_love').html(nb+1);
+            vinyl.attr('data-loved', 1);
           } else {
             $icon.removeClass('fa-heart').addClass('fa-heart-o');
             $('#nb_love').html(nb-1);
+            vinyl.attr('data-loved', 0);
           }
       }
   });

@@ -7,8 +7,8 @@
 <link rel="stylesheet" type="text/css" href="{{ asset('bundles/TVF/slick/slick-theme.css') }}"/>
 {% endblock %}
 {% block body %}
-<div id="collection-page">
-  {% set navbar = "TVFStoreBundle:Utils:nav.html.twig" %}
+<div id="record-page">
+  {% set navbar = "TVFRecordBundle:Utils:nav.html.twig" %}
   {% set text = "TVFStoreBundle:Utils:text.html.twig" %}
   {% set image = "TVFStoreBundle:Utils:image.html.twig" %}
   {{ include(navbar, {'active': 'collection'}) }}
@@ -17,7 +17,7 @@
       <div class="col-sm-12">
       {% set carousel = "TVFStoreBundle:Collection:index.html.twig" %}
       {{ include(carousel) }}
-      {% if is_granted('ROLE_ADMIN') %}
+      {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_RECORD') %}
         <a class="btn btn-primary" style="margin-top: 5px;" href="{{ path('tvf_record_collection_add')}}">+ Créer une nouvelle sélection</a>
       {% endif %}
       </div>

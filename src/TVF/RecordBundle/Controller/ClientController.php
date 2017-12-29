@@ -61,6 +61,63 @@ class ClientController extends Controller
           'client' => $client
         ));
     }
+
+    public function collectionAction()
+    {
+        $user = $this->getUser();
+        $em = $this->getDoctrine()->getManager();
+
+        $repository = $em->getRepository($this->entityNameSpace);
+        $client = $repository->findOneBy(array('user' => $user));
+
+        $repository = $em->getRepository('TVFRecordBundle:Vinyl');
+        $vinyls = $repository->findBy(array('client' => $client), array('id' => 'desc'));
+
+        $imagehandler = $this->container->get('tvf_store.imagehandler');
+        foreach ($vinyls as $vinyl) {
+          $fileNames = $vinyl->getImages();
+          $path_small_image = $imagehandler->get_image_in_quality($fileNames[0], 'xs');
+          $vinyl->small_image = $path_small_image;
+          $vinyl->loved = '0';
+        }
+        $repository = $em->getRepository('TVFAdminBundle:Gender');
+        $genders = $repository->findAll();
+        $typeRepository = $em->getRepository('TVFAdminBundle:Type');
+        foreach ($genders as $gender) {
+          $gender->types = $typeRepository->whereGender($gender->getId());
+        }
+        $repository = $em->getRepository('TVFRecordBundle:Collection');
+        $collections = $repository->findAll();
+        $repository = $em->getRepository('TVFAdminBundle:Category');
+        $categories = $repository->findAll();
+        return $this->render($this->entityNameSpace.':collection.html.twig', array(
+            'vinyls' => $vinyls,
+            'genders' => $genders,
+            'collections' => $collections,
+            'collection_id' => '_',
+            'categories' => $categories,
+            'category_id' => '_'
+        ));
+    }
+
+    public function selectionAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $repository = $em->getRepository('TVFRecordBundle:Collection');
+        $selections = $repository->findBy(array(), array('id' => 'desc'));
+        $imagehandler = $this->container->get('tvf_store.imagehandler');
+        foreach ($selections as $selection) {
+          $em->persist($selection);
+          $filename = $selection->getImage();
+          $path_small_image = $imagehandler->get_image_in_quality($filename, 'sm');
+          $selection->small_image = $path_small_image;
+        }
+        $em->flush();
+        return $this->render($this->entityNameSpace.':selection.html.twig', array(
+          'collections' => $selections,
+        ));
+    }
+
     public function addAction(Request $request, $id = 0) {
         if (!$this->get('security.authorization_checker')->isGranted('ROLE_RECORD')) {
           throw new AccessDeniedException('Accès limité.');

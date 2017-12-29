@@ -15,7 +15,7 @@
           <a href="#" id="show_lateral" class="show-lateral visible-to-md btn btn-default" style="z-index: 200;"><i class="fa fa-filter" aria-hidden="true"></i> Filtrer les créations</a>
           <a href="#" alt="Aligner les icones" class="reorder-btn visible-from-sm visible-to-md btn btn-default" style="z-index: 200;"><i class="fa fa-th" aria-hidden="true"></i> Réorganiser</a>
         </div>
-        <div>
+        <div style="padding-left: 1rem; padding-right: 1rem;">
           {% set icons = "TVFStoreBundle:Search:index_insta.html.twig" %}
           {{ include(icons, {'vinyls': vinyls, 'filterable': 'yes'}) }}
         </div>

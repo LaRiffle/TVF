@@ -9,6 +9,8 @@
           data-img="{{ vinyl.small_image }}"
           data-name="{{ vinyl.name }}"
           data-artist="{{ vinyl.artist.name }}"
+          data-price="{{ vinyl.price }}"
+          data-onsold="{{ vinyl.onsold }}"
           data-description="{{ vinyl.description|nl2br }}"
           data-disquaire="{{ vinyl.client.name }}"
           data-disquaire-link="{{ vinyl.client.slug }}"
@@ -21,8 +23,20 @@
           <a class="show-vinyl" href="{{ path('tvf_store_vinyl_show', {'id': vinyl.id}) }}">
             <img src="{{ asset('uploads/img/' ~ vinyl.small_image) }}" alt="" style="">
             <div class="caption">
-              <h3>{{ vinyl.name }}</h3>
-              {% if vinyl.onsold %}<h5>{{ vinyl.price }} €</h5>{% endif %}
+              <!--<h3>{{ vinyl.name }}</h3>
+              {% if vinyl.onsold %}<h5>{{ vinyl.price }} €</h5>{% endif %}-->
+              <h3>
+                <div class="love_icon love_icon_insta_btn">
+                  {% if vinyl.loved  %}
+                    <i class="fa fa-heart fa-2x" aria-hidden="true"></i>
+                    <i class="fa fa-heart fa-2x full-heart" aria-hidden="true"></i>
+                  {% else %}
+                    <i class="fa fa-heart-o fa-2x" aria-hidden="true"></i>
+                    <i class="fa fa-heart fa-2x full-heart" aria-hidden="true"></i>
+                  {% endif %}
+                </div>
+                {% if vinyl.onsold %}<span class="icon_insta_price">{{ vinyl.price }} €</span>{% endif %}
+              </h3>
             </div>
           </a>
         </div>
@@ -33,7 +47,7 @@
           <div class="tvf-box tvf-icon add-icon" style="z-index: {{vinyls|length + 1}};">
             <div class="tvf-inner">
               <a href="{{ path('tvf_record_vinyl_add') }}" style="text-align: center; height: auto;">
-                  <h4 style="color: #BA0020;"><i class="fa fa-plus" aria-hidden="true"></i> Ajouter une création</h4>
+                  <h4 style="color: #BA0020;"><i class="fa fa-plus" aria-hidden="true"></i> Ajouter un vinyl</h4>
               </a>
             </div>
           </div>
@@ -76,7 +90,7 @@
           <div class="col-sm-8 content">
             <div class="love_price">
               <h4>
-                <span class="badge badge-pill" style="padding: 16px;padding-top: 11px;padding-bottom: 9px;">15 €</span>
+                <span class="price_btn badge badge-pill" style="padding: 16px;padding-top: 11px;padding-bottom: 9px;"><span class="vinyl-price"></span> €</span>
                 <span class="love_btn love_icon top_circle_icon">
                   <a href="#" style="color:#BA0020;">
                       <i class="fa fa-heart fa-2x" aria-hidden="true"></i>
