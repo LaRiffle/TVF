@@ -4,6 +4,7 @@ namespace TVF\RecordBundle\Controller;
 
 use TVF\RecordBundle\Entity\Artist;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\File\File;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
@@ -11,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 class ArtistController extends Controller
 {
@@ -23,6 +25,15 @@ class ArtistController extends Controller
         $artists = $repository->findAll();
         return $this->render($this->entityNameSpace.':index.html.twig', array(
           'artists' => $artists,
+        ));
+    }
+    public function showAction($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $repository = $em->getRepository($this->entityNameSpace);
+        $artist = $repository->find($id);
+        return $this->render($this->entityNameSpace.':show.html.twig', array(
+          'artist' => $artist,
         ));
     }
     public function addAction(Request $request, $id = 0) {
@@ -49,6 +60,12 @@ class ArtistController extends Controller
         ->add('name', TextType::class)
         ->add('bio', TextareaType::class)
         ->add('image', FileType::class, array('label' => 'Image', 'required' => False))
+        ->add('types', EntityType::class, array(
+                'class'        => 'TVFAdminBundle:Type',
+                'choice_label' => 'name',
+                'multiple'     => true,
+                'expanded'     => true,
+                'required'     => false))
         ->add('save',	SubmitType::class)
         ->getForm();
 
@@ -85,10 +102,19 @@ class ArtistController extends Controller
             $em->flush();
             return $this->redirect($this->generateUrl('tvf_record_artist'));
         }
+
+        $repository = $em->getRepository('TVFAdminBundle:Gender');
+        $genders = $repository->findAll();
+        $typeRepository = $em->getRepository('TVFAdminBundle:Type');
+        foreach ($genders as $gender) {
+          $gender->types = $typeRepository->whereGender($gender->getId());
+        }
+
         return $this->render($this->entityNameSpace.':add.html.twig', array(
             'form' => $form->createView(),
             'id' => $id,
             'img' => $artist_img_url,
+            'genders' => $genders,
         ));
 
     }

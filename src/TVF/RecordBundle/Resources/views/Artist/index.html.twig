@@ -6,6 +6,9 @@
   <h2>{{ artist.name }}</h2>
   <p>{{ artist.bio }}</p>
   <img src="{{ asset('uploads/img/' ~ artist.image) }}" class="img-thumbnail" width="300">
+  {% for type in artist.types %}
+    {{ type.name }} ;
+  {% endfor %}
   {% endfor %}
 {% endblock %}
 {% block script %}

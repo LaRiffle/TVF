@@ -1,4 +1,4 @@
-{% extends "TVFStoreBundle::layout.html.twig" %}
+{% extends "TVFStoreBundle:Search:layout.html.twig" %}
 {% block body %}
 {% set navbar = "TVFStoreBundle:Utils:nav.html.twig" %}
 {{ include(navbar, {'active': 'collection'}) }}
@@ -18,8 +18,45 @@
         <img src="{{ asset('uploads/img/' ~ img) }}" class="img-thumbnail" width="300">
         {% endif %}
         {{ include(input_form, {'element': form.image, 'name':"Ajouter une image"}) }}
+        <div style="margin-top: 10px;">
+          <h5>{{ form_label(form.types, "Genre musical") }}</h5>
+        </div>
+        <ul class="list-group">
+          <li class="list-group-item" style="padding: 5px; padding-right:0px;">
+            <div class="horizontal-scroll">
+              {% for gender in genders %}
+              <a href="#" data-toggle="gender{{ gender.id }}" class="toggler btn btn-default btn-tvf">{{ gender.name }}</a>
+              {% endfor %}
+            </div>
+          </li>
+        </ul>
+        <div id="menu_lateral">
+          {% for gender in genders %}
+          <div id="gender{{ gender.id }}" class="gender hide">
+            <li class="list-group-item justify-content-between">
+              <a href="#" class="toggle-all">
+                <i class="fa fa-dot-circle-o" aria-hidden="true"></i>&nbsp;
+                 <span class="text">Tout sélectionner</span>
+              </a>
+            </li>
+          {% for type in gender.types %}
+            <li class="list-group-item justify-content-between">
+              <a href="#type-{{ type.id }}" class="filter">
+                <i class="fa fa-circle-thin" aria-hidden="true"></i>&nbsp;
+                 <input id="form_types_{{ type.id }}" name="form[types][]" value="{{ type.id }}" type="checkbox" class="hide">
+                 {{ type.name }}
+              </a>
+            </li>
+          {% endfor %}
+          </div>
+          {% endfor %}
+        </div>
         {{ include(save_form, {'element': form.save, 'name':"Enregistrer"}) }}
-        {{ form_rest(form) }}
+        <div id="music_types" class="hide">
+          {{ form_widget(form.types) }}
+        </div>
+        {{ form_widget(form._token) }}
+        <br /><br /><br /><br /><br /><br /><br /><br />
       </form>
     </div>
   </div>

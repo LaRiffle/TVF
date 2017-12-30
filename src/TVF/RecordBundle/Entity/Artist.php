@@ -14,6 +14,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Artist
 {
     /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->types = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+    /**
      * @var int
      *
      * @ORM\Column(name="id", type="integer")
@@ -42,6 +49,11 @@ class Artist
      * @Assert\File(mimeTypes={ "image/*" })
      */
     private $image;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="TVF\AdminBundle\Entity\Type", cascade={"persist"})
+     */
+    private $types;
 
 
     /**
@@ -124,5 +136,44 @@ class Artist
     public function getImage()
     {
         return $this->image;
+    }
+
+    /**
+     * Add type
+     *
+     * @param \TVF\AdminBundle\Entity\Type $type
+     *
+     * @return Artist
+     */
+    public function addType(\TVF\AdminBundle\Entity\Type $type)
+    {
+        $this->types[] = $type;
+
+        return $this;
+    }
+
+    /**
+     * Remove type
+     *
+     * @param \TVF\AdminBundle\Entity\Type $type
+     */
+    public function removeType(\TVF\AdminBundle\Entity\Type $type)
+    {
+        $this->types->removeElement($type);
+    }
+
+    /**
+     * Get types
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getTypes()
+    {
+        return $this->types;
+    }
+
+    public function emptyTypes()
+    {
+        $this->types = [];
     }
 }

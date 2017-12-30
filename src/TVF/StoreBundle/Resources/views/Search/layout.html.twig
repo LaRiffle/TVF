@@ -80,6 +80,12 @@
        img.removeClass('portrait');
     }
   }
+  {% if collection_id is not defined %}
+  {%   set collection_id = '_' %}
+  {% endif %}
+  {% if category_id is not defined %}
+  {%   set category_id = '_' %}
+  {% endif %}
   var filter = {
     collection: "{{ collection_id }}",
     category: "{{ category_id }}",
@@ -132,6 +138,17 @@
         reorganize();
       }
     }, 400);
+    $('#music_types input').each(function(){
+      if($(this).prop('checked')){
+        $('#menu_lateral #'+$(this).attr('id')).parents('a').click();
+      }
+    });
+    $('#menu_lateral input').each(function(){
+      if($(this).prop('checked')){
+        $(this).parents('.gender').removeClass('hide');
+      }
+    });
+    $('#music_types').remove();
   });
 
   var first_click = true;
@@ -150,6 +167,27 @@
     reorganize();
   });
 
+  var select_all = true;
+  $('#menu_lateral a.toggle-all').on('click', function(e){
+    e.preventDefault();
+    var links = $(this).parents('.gender').first().find('a.filter');
+    links.each(function(){
+      var link = $(this);
+      var input = link.find("input").first();
+      if(select_all && !input.prop("checked")) {
+        link.click();
+      }
+      if(!select_all && input.prop("checked")) {
+        link.click();
+      }
+    });
+    if(select_all) {
+      $(this).find('.text').html('Tout déselectionner');
+    } else {
+      $(this).find('.text').html('Tout sélectionner');
+    }
+    select_all = !select_all;
+  });
   $('#menu_lateral a.filter').on('click', function(e){
     e.preventDefault();
     reorganize();
