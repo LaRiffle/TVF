@@ -50,7 +50,6 @@ class  VinylController extends Controller
             $new_vinyl->setDescription($vinyl->getDescription());
             $new_vinyl->setOnsold($vinyl->getOnsold());
             $new_vinyl->setPrice($vinyl->getPrice());
-            $new_vinyl->setCollection($vinyl->getCollection());
             $new_vinyl->setCategory($vinyl->getCategory());
             $new_vinyl->setClient($vinyl->getClient());
             foreach($vinyl->getTypes() as $type){
@@ -65,10 +64,6 @@ class  VinylController extends Controller
         ->add('artist', EntityType::class, array(
                 'class'        => 'TVFRecordBundle:Artist',
                 'choice_label' => 'name',
-        ))
-        ->add('collection', EntityType::class, array(
-                'class'        => 'TVFRecordBundle:Collection',
-                'choice_label' => 'title',
         ))
         ->add('category', EntityType::class, array(
                 'class'        => 'TVFAdminBundle:Category',
@@ -177,7 +172,6 @@ class  VinylController extends Controller
               $vinyl->setDescription($new_vinyl->getDescription());
               $vinyl->setOnsold($new_vinyl->getOnsold());
               $vinyl->setPrice($new_vinyl->getPrice());
-              $vinyl->setCollection($new_vinyl->getCollection());
               $vinyl->setCategory($new_vinyl->getCategory());
               $vinyl->emptyTypes();
               foreach($new_vinyl->getTypes() as $type){

@@ -72,12 +72,6 @@ class Vinyl
     private $images;
 
     /**
-     * @ORM\ManyToOne(targetEntity="TVF\RecordBundle\Entity\Collection")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $collection;
-
-    /**
      * @ORM\ManyToOne(targetEntity="TVF\AdminBundle\Entity\Category")
      * @ORM\JoinColumn(nullable=false, columnDefinition="INT NOT NULL DEFAULT 1")
      */
@@ -261,30 +255,6 @@ class Vinyl
     public function emptyImages()
     {
         $this->images = [];
-    }
-
-    /**
-     * Set collection
-     *
-     * @param \TVF\RecordBundle\Entity\Collection $collection
-     *
-     * @return Comment
-     */
-    public function setCollection(\TVF\RecordBundle\Entity\Collection $collection)
-    {
-        $this->collection = $collection;
-
-        return $this;
-    }
-
-    /**
-     * Get collection
-     *
-     * @return \TVF\RecordBundle\Entity\Collection
-     */
-    public function getCollection()
-    {
-        return $this->collection;
     }
 
     /**

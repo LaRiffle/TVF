@@ -14,10 +14,7 @@
         <div class="h1">{{ include(input_form, {'element': form.name, 'name':"Nom de l'album"}) }}</div>
         <h5>Artiste</h5>
         <div class="h2">{{ include(input_form, {'element': form.artist, 'name':"Artiste"}) }}</div>
-        <h5>Sélection</h5>
-        <div class="h2">{{ include(input_form, {'element': form.collection, 'name':"Collection"}) }}</div>
-        <p><a href="{{ path('tvf_record_collection_add')}}" target="_blank">Créer une nouvelle collection</a></p>
-        <h5>Type de création</h5>
+        <h5>Type d'article</h5>
         <div class="h2">{{ include(input_form, {'element': form.category, 'name':"Catégorie"}) }}</div>
         <hr />
         <div class="h2">Description</div>

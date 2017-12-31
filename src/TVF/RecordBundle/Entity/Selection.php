@@ -6,12 +6,12 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Collection
+ * Selection
  *
- * @ORM\Table(name="collection")
- * @ORM\Entity(repositoryClass="TVF\RecordBundle\Repository\CollectionRepository")
+ * @ORM\Table(name="selection")
+ * @ORM\Entity(repositoryClass="TVF\RecordBundle\Repository\SelectionRepository")
  */
-class Collection
+class Selection
 {
     /**
      * @var int
@@ -66,7 +66,7 @@ class Collection
      *
      * @param string $title
      *
-     * @return Collection
+     * @return Selection
      */
     public function setTitle($title)
     {
@@ -90,7 +90,7 @@ class Collection
      *
      * @param string $slug
      *
-     * @return Collection
+     * @return Selection
      */
     public function setSlug($slug)
     {
@@ -114,7 +114,7 @@ class Collection
      *
      * @param string $description
      *
-     * @return Collection
+     * @return Selection
      */
     public function setDescription($description)
     {
@@ -138,7 +138,7 @@ class Collection
      *
      * @param string $image
      *
-     * @return Collection
+     * @return Selection
      */
     public function setImage($image)
     {

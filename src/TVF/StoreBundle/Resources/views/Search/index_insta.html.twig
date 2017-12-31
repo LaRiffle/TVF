@@ -15,7 +15,6 @@
           data-disquaire="{{ vinyl.client.name }}"
           data-disquaire-link="{{ vinyl.client.slug }}"
           data-type="{% for type in vinyl.types %}{% if not loop.first %},{% endif %}{{type.id}}{% endfor %}"
-          data-collection="{{ vinyl.collection.id }}"
           data-category="{{ vinyl.category.slug }}"
           data-loved="{{ vinyl.loved }}"
           style="z-index: {{vinyls|length - loop.index0}}">

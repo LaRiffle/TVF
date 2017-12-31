@@ -1,0 +1,24 @@
+
+<div id="selection_carousel" class="selection-carousel" style="display:none;">
+  {% for selection in selections %}
+  <div class="selection-item">
+    <a href="{{ path('tvf_store_explore', {'selection': selection.slug }) }}">
+      <img class="selection-img" src="{{ asset('uploads/img/' ~ selection.small_image) }}">
+      <div class="item-overlay top"></div>
+    </a>
+      <div class="selection-description">
+        {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_RECORD') %}
+          {% set edition_buttons="TVFAdminBundle:Utils:edition.html.twig" %}
+          {{ include(edition_buttons, {'edit': path('tvf_record_selection_add', {'id': selection.id}), 'remove': path('tvf_record_selection_remove', {'id': selection.id}) }) }}
+        {% endif %}
+        <a href="{{ path('tvf_store_explore', {'selection': selection.slug }) }}">
+          <h2>{{ selection.title }}</h2>
+          <p>
+            {{ selection.description }}
+          </p>
+        </a>
+      </div>
+    </a>
+  </div>
+  {% endfor %}
+</div>

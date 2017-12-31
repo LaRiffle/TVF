@@ -103,7 +103,7 @@ class ClientController extends Controller
     public function selectionAction()
     {
         $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository('TVFRecordBundle:Collection');
+        $repository = $em->getRepository('TVFRecordBundle:Selection');
         $selections = $repository->findBy(array(), array('id' => 'desc'));
         $imagehandler = $this->container->get('tvf_store.imagehandler');
         foreach ($selections as $selection) {
@@ -114,7 +114,7 @@ class ClientController extends Controller
         }
         $em->flush();
         return $this->render($this->entityNameSpace.':selection.html.twig', array(
-          'collections' => $selections,
+          'selections' => $selections,
         ));
     }
 

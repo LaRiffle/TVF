@@ -1,13 +1,13 @@
 
 <li class="list-group-item justify-content-between">
-  <label class="" for="select_collection"><h5>Les sélections</h5></label>
-  <select id="select_collection" class="form-control" placeholder="Collection">
-    <option {% if '_' == collection_id %}selected="selected"{% endif %} value="_">Toute la collection</option>
-    {% for collection in collections %}
-      <option {% if collection.id == collection_id %}selected="selected"{% endif %} value="{{ collection.id }}">{{ collection.title }}</option>
+  <label class="" for="select_selection"><h5>Les sélections</h5></label>
+  <select id="select_selection" class="form-control">
+    <option {% if '_' == selection_id %}selected="selected"{% endif %} value="_">Toute la collection</option>
+    {% for selection in selections %}
+      <option {% if selection.id == selection_id %}selected="selected"{% endif %} value="{{ selection.id }}">{{ selection.title }}</option>
     {% endfor %}
   </select>
-  <select id="select_category" class="form-control" placeholder="Collection" style="margin-top: 10px;">
+  <select id="select_category" class="form-control" style="margin-top: 10px;">
     <option {% if '_' == category_id %}selected="selected"{% endif %} value="_">Tous nos articles</option>
     {% for category in categories %}
       <option {% if category.slug == category_id %}selected="selected"{% endif %} value="{{ category.slug }}">{{ category.name }}</option>

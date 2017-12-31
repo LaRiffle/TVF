@@ -1,19 +1,19 @@
 {% extends "TVFStoreBundle::layout.html.twig" %}
 {% block body %}
 {% set navbar = "TVFStoreBundle:Utils:nav.html.twig" %}
-{{ include(navbar, {'active': 'collection'}) }}
+{{ include(navbar, {'active': 'selection'}) }}
 <div class="container">
   <div class="row">
     <div class="col-sm-6 offset-sm-3">
       <form name="form" class="form-signin"
             method="post" enctype="multipart/form-data"
-            action="{{ path('tvf_record_collection_add',{'id': collectionId}) }}">
-        <h3 class="form-signin-heading">{% if collectionId == 0 %}Ajouter{% else %}Modifier{% endif %} une sélection</h3>
+            action="{{ path('tvf_record_selection_add',{'id': selectionId}) }}">
+        <h3 class="form-signin-heading">{% if selectionId == 0 %}Ajouter{% else %}Modifier{% endif %} une sélection</h3>
         {% set input_form="TVFAdminBundle:Utils:form_input.html.twig" %}
         {% set save_form="TVFAdminBundle:Utils:form_save.html.twig" %}
         {{ include(input_form, {'element': form.title, 'name':"Titre"}) }}
         {{ include(input_form, {'element': form.description, 'name':"Brève description de la sélection"}) }}
-        {% if collectionId != 0 and img != '' %}
+        {% if selectionId != 0 and img != '' %}
         <div style="margin-top: 1rem; font-weight: bold;">Modifier l'image</div>
         <img src="{{ asset('uploads/img/' ~ img) }}" class="img-thumbnail" width="300">
         {% endif %}

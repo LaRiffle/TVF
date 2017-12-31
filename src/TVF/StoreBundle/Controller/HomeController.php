@@ -39,13 +39,13 @@ class HomeController extends Controller
         $text['home']['vinyl']['title'] = $this->handler->fetchText('home:vinyl:title');
 
         $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository('TVFRecordBundle:Collection');
-        $collections = $repository->findBy(array(), array('id' => 'desc'));
+        $repository = $em->getRepository('TVFRecordBundle:Selection');
+        $selections = $repository->findBy(array(), array('id' => 'desc'));
         $imagehandler = $this->container->get('tvf_store.imagehandler');
-        foreach ($collections as $collection) {
-          $filename = $collection->getImage();
+        foreach ($selections as $selection) {
+          $filename = $selection->getImage();
           $path_small_image = $imagehandler->get_image_in_quality($filename, 'sm');
-          $collection->small_image = $path_small_image;
+          $selection->small_image = $path_small_image;
         }
 
         $repository = $em->getRepository('TVFRecordBundle:Vinyl');
@@ -77,7 +77,7 @@ class HomeController extends Controller
         }
         return $this->render($this->entityNameSpace.':home.html.twig', array(
           'data' => $text,
-          'collections' => $collections,
+          'selections' => $selections,
           'vinyls' => $vinyls,
           'clients' => $clients,
         ));
@@ -99,21 +99,21 @@ class HomeController extends Controller
       ));
     }
 
-    public function collectionAction()
+    public function selectionAction()
     {
         $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository('TVFRecordBundle:Collection');
-        $collections = $repository->findBy(array(), array('id' => 'desc'));
+        $repository = $em->getRepository('TVFRecordBundle:Selection');
+        $selections = $repository->findBy(array(), array('id' => 'desc'));
         $imagehandler = $this->container->get('tvf_store.imagehandler');
-        foreach ($collections as $collection) {
-          $em->persist($collection);
-          $filename = $collection->getImage();
+        foreach ($selections as $selection) {
+          $em->persist($selection);
+          $filename = $selection->getImage();
           $path_small_image = $imagehandler->get_image_in_quality($filename, 'sm');
-          $collection->small_image = $path_small_image;
+          $selection->small_image = $path_small_image;
         }
         $em->flush();
-        return $this->render($this->entityNameSpace.':collection.html.twig', array(
-          'collections' => $collections,
+        return $this->render($this->entityNameSpace.':selection.html.twig', array(
+          'selections' => $selections,
         ));
     }
 

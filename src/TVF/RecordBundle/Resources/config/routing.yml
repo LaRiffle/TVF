@@ -37,17 +37,17 @@ tvf_record_vinyl_add:
 tvf_record_vinyl_remove:
   path:     /record/vinyl/remove/{id}
   defaults: { _controller: TVFRecordBundle:Vinyl:remove}
-tvf_record_collection_add:
-  path:     /record/collection/add/{id}
-  defaults: { _controller: TVFRecordBundle:Collection:add, id:0 }
-tvf_record_collection_show:
-  path:     /record/collection/{id}
-  defaults: { _controller: TVFRecordBundle:Collection:show }
+tvf_record_selection_add:
+  path:     /record/selection/add/{id}
+  defaults: { _controller: TVFRecordBundle:Selection:add, id:0 }
+tvf_record_selection_show:
+  path:     /record/selection/{id}
+  defaults: { _controller: TVFRecordBundle:Selection:show }
   requirements:
       id:   \d+
-tvf_record_collection_remove:
-  path:     /record/collection/remove/{id}
-  defaults: { _controller: TVFRecordBundle:Collection:remove}
+tvf_record_selection_remove:
+  path:     /record/selection/remove/{id}
+  defaults: { _controller: TVFRecordBundle:Selection:remove}
 tvf_record_vinyl_attributes:
   path:     /record/attributes/
   defaults: { _controller: TVFRecordBundle:Attribute:index}

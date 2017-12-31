@@ -80,14 +80,14 @@
        img.removeClass('portrait');
     }
   }
-  {% if collection_id is not defined %}
-  {%   set collection_id = '_' %}
+  {% if selection_id is not defined %}
+  {%   set selection_id = '_' %}
   {% endif %}
   {% if category_id is not defined %}
   {%   set category_id = '_' %}
   {% endif %}
   var filter = {
-    collection: "{{ collection_id }}",
+    selection: "{{ selection_id }}",
     category: "{{ category_id }}",
     types: []
   }
@@ -95,10 +95,10 @@
   function icon_filter(){
     var visible_items = 0;
     $('.tvf-icon:not(.add-icon)').each(function(){
-      var collection = $(this).attr('data-collection');
+      var selection = $(this).attr('selection');
       var category = $(this).attr('data-category');
       var types = $(this).attr('data-type').split(',').map(Number);
-      var visible = (collection == filter.collection || filter.collection == '_')
+      var visible = (selection == filter.selection || filter.selection == '_')
       visible = visible && (category == filter.category || filter.category == '_')
       if(filter.types.length > 0){
         var has_one_type = false;
@@ -207,9 +207,9 @@
     icon_filter();
   });
 
-  $("#select_collection").change(function() {
+  $("#select_selection").change(function() {
     reorganize();
-    filter.collection = $(this).val();
+    filter.selection = $(this).val();
     icon_filter();
   });
   $("#select_category").change(function() {

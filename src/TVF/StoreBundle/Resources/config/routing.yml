@@ -22,9 +22,9 @@ tvf_store_customer_register_or_login:
 tvf_store_homepage:
     path:     /accueil
     defaults: { _controller: TVFStoreBundle:Home:homepage }
-tvf_store_collection:
-    path:     /collections
-    defaults: { _controller: TVFStoreBundle:Home:collection }
+tvf_store_selection:
+    path:     /selections
+    defaults: { _controller: TVFStoreBundle:Home:selection }
 tvf_store_history:
     path:     /histoire
     defaults: { _controller: TVFStoreBundle:Home:history }
@@ -39,12 +39,12 @@ tvf_store_join:
 tvf_store_show:
     path:     /show/{id}
     defaults: { _controller: TVFStoreBundle:Search:show, id:0 }
-tvf_store_selection:
-    path:     /selection
-    defaults: { _controller: TVFStoreBundle:Search:selection }
+tvf_store_loved:
+    path:     /votre-selection
+    defaults: { _controller: TVFStoreBundle:Search:loved }
 tvf_store_explore:
-    path:     /collection/{collection}/{category}
-    defaults: { _controller: TVFStoreBundle:Search:collection, collection:"_", category:"_" }
+    path:     /selection/{selection}/{category}
+    defaults: { _controller: TVFStoreBundle:Search:selection, selection:"_", category:"_" }
 tvf_store_vinyl:
     path:     /vinyl/
     defaults: { _controller: TVFStoreBundle:Search:indexVinyls}

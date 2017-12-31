@@ -5,9 +5,9 @@
   <div class="row">
     <div class="col-sm-12">
       <div id="nav_left_icon" class="top_circle_icon">
-        <a href="{{ path('tvf_store_selection') }}" style="color:#BA0020;">
+        <a href="{{ path('tvf_store_loved') }}" style="color:#BA0020;">
           <i class="fa fa-heart-o fa-2x" aria-hidden="true"></i>
-          <i class="fa fa-heart fa-2x full-heart" aria-hidden="true"></i>
+          <i class="fa fa-heart fa-2x full-heart" aria-hidden="true" style="bottom: 1.5rem;"></i>
         </a><br />
         <span id="nb_love" class="badge badge-danger">
           {{ render(controller('TVFStoreBundle:Customer:register_or_login')) }}
@@ -44,7 +44,7 @@
       <a class="nav-link {% if active != 'history' %}active{% endif %}" href="{{ path('tvf_store_history') }}">Concept</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link {% if active != 'collection' %}active{% endif %}" href="{{ path('tvf_store_collection')}}">Tendances</a>
+      <a class="nav-link {% if active != 'selection' %}active{% endif %}" href="{{ path('tvf_store_selection')}}">Tendances</a>
     </li>
     <li class="nav-item">
       <a class="nav-link {% if active != 'discover' %}active{% endif %}" href="{{ path('tvf_store_explore') }}">La collection</a>

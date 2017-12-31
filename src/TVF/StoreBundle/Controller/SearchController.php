@@ -64,7 +64,7 @@ class SearchController extends Controller
         ));
     }
 
-    public function collectionAction($collection = '_', $category = '_')
+    public function selectionAction($selection = '_', $category = '_')
     {
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository('TVFRecordBundle:Vinyl');
@@ -89,26 +89,26 @@ class SearchController extends Controller
         foreach ($genders as $gender) {
           $gender->types = $typeRepository->whereGender($gender->getId());
         }
-        $repository = $em->getRepository('TVFRecordBundle:Collection');
-        if($collection != '_'){
-          $collection_id = $repository->findOneBy(array('slug' => $collection))->getId();
+        $repository = $em->getRepository('TVFRecordBundle:Selection');
+        if($selection != '_'){
+          $selection_id = $repository->findOneBy(array('slug' => $selection))->getId();
         } else {
-          $collection_id = $collection;
+          $selection_id = $selection;
         }
 
-        $collections = $repository->findAll();
+        $selections = $repository->findAll();
         $repository = $em->getRepository('TVFAdminBundle:Category');
         $categories = $repository->findAll();
-        return $this->render($this->entityNameSpace.':collection.html.twig', array(
+        return $this->render($this->entityNameSpace.':selection.html.twig', array(
           'vinyls' => $vinyls,
           'genders' => $genders,
-          'collections' => $collections,
-          'collection_id' => $collection_id,
+          'selections' => $selections,
+          'selection_id' => $selection_id,
           'categories' => $categories,
           'category_id' => $category
         ));
     }
-    public function selectionAction()
+    public function lovedAction()
     {
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository('TVFRecordBundle:Vinyl');
@@ -134,15 +134,15 @@ class SearchController extends Controller
         foreach ($genders as $gender) {
           $gender->types = $typeRepository->whereGender($gender->getId());
         }
-        $repository = $em->getRepository('TVFRecordBundle:Collection');
-        $collections = $repository->findAll();
+        $repository = $em->getRepository('TVFRecordBundle:Selection');
+        $selections = $repository->findAll();
         $repository = $em->getRepository('TVFAdminBundle:Category');
         $categories = $repository->findAll();
-        return $this->render($this->entityNameSpace.':selection.html.twig', array(
+        return $this->render($this->entityNameSpace.':loved_items.html.twig', array(
             'vinyls' => $loved_vinyls,
             'genders' => $genders,
-            'collections' => $collections,
-            'collection_id' => '_',
+            'selections' => $selections,
+            'selection_id' => '_',
             'categories' => $categories,
             'category_id' => '_'
         ));
