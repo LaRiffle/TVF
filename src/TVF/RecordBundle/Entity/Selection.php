@@ -50,6 +50,12 @@ class Selection
      */
     private $image;
 
+    /**
+     * Collection of Vinyls
+     * @ORM\ManyToMany(targetEntity="TVF\RecordBundle\Entity\Vinyl", cascade={"persist"})
+     */
+    private $vinyls;
+
 
     /**
      * Get id
@@ -155,5 +161,46 @@ class Selection
     public function getImage()
     {
         return $this->image;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->vinyls = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add vinyl
+     *
+     * @param \TVF\RecordBundle\Entity\Vinyl $vinyl
+     *
+     * @return Selection
+     */
+    public function addVinyl(\TVF\RecordBundle\Entity\Vinyl $vinyl)
+    {
+        $this->vinyls[] = $vinyl;
+
+        return $this;
+    }
+
+    /**
+     * Remove vinyl
+     *
+     * @param \TVF\RecordBundle\Entity\Vinyl $vinyl
+     */
+    public function removeVinyl(\TVF\RecordBundle\Entity\Vinyl $vinyl)
+    {
+        $this->vinyls->removeElement($vinyl);
+    }
+
+    /**
+     * Get vinyls
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getVinyls()
+    {
+        return $this->vinyls;
     }
 }

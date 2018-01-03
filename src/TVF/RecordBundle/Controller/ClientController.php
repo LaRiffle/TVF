@@ -86,15 +86,15 @@ class ClientController extends Controller
         foreach ($genders as $gender) {
           $gender->types = $typeRepository->whereGender($gender->getId());
         }
-        $repository = $em->getRepository('TVFRecordBundle:Collection');
-        $collections = $repository->findAll();
+        $repository = $em->getRepository('TVFRecordBundle:Selection');
+        $selections = $repository->findAll();
         $repository = $em->getRepository('TVFAdminBundle:Category');
         $categories = $repository->findAll();
         return $this->render($this->entityNameSpace.':collection.html.twig', array(
             'vinyls' => $vinyls,
             'genders' => $genders,
-            'collections' => $collections,
-            'collection_id' => '_',
+            'selections' => $selections,
+            'selection_id' => '_',
             'categories' => $categories,
             'category_id' => '_'
         ));

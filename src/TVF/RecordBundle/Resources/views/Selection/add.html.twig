@@ -19,10 +19,135 @@
         {% endif %}
         {{ include(input_form, {'element': form.image, 'name':"Ajouter une image"}) }}
         <em>Attention, l'image doit respecter le format portrait</em>
-        {{ include(save_form, {'element': form.save, 'name':"Ajouter la sélection"}) }}
+        <hr />
+        <div style="margin-top: 10px;">
+          <h5>{{ form_label(form.vinyls, "Ajouter des vinyles") }}</h5>
+          {{ form_errors(form.vinyls) }}
+          <div class="input-group">
+            <input id="search_request" type="text" class="form-control" placeholder="Chercher des albums, des artistes...">
+            <span class="input-group-btn">
+              <a id="search_launch" class="btn btn-primary" type="button" href="#"><i class="fa fa-search" aria-hidden="true"></i></a>
+            </span>
+          </div>
+          <div style="margin-top: 10px;">
+            <h5>Résultats (<span id="nb_results">0</span>)</h5>
+            <div id="my_insta">
+              <div class="tvf-grid">
+                <div class="tvf-row" id="search_results">
+                </div>
+              </div>
+            </div>
+            <div id="icon_template" class="hide">
+              <div class="tvf-box tvf-icon" style="visibility: visible">
+                <div class="tvf-inner">
+                  <a class="show-vinyl" target="_blank" href="#">
+                    <img src="{{ asset('uploads/img/') }}" alt="" style="">
+                    <div class="caption">
+                      <h3>
+                      </h3>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="new_vinyls">
+            <h5>Derniers ajouts</h5>
+          </div>
+          <div id="input_rest" class="hide">
+            {% for vinyl in form.vinyls %}
+              {% set index = vinyl.vars.value %}
+              {% set entity = form.vinyls.vars.choices[index].data %}
+              {{ form_widget(vinyl) }}
+              {{ entity.artist.name }} >
+              {{ form_label(vinyl) }}<br />
+            {% endfor %}
+          </div>
+        </div>
+        {{ include(save_form, {'element': form.save, 'name': "Ajouter la sélection"}) }}
         {{ form_rest(form) }}
       </form>
     </div>
   </div>
 </div>
+{% endblock %}
+{% block script %}
+<script>
+function check_box(id, value){
+  setTimeout(function(){
+    $('#'+id).prop('checked', value);
+    console.log('checked');
+  }, 100);
+}
+$('body').on('click', '.show-vinyl', function(e){
+  $(this).find('.caption').css('opacity', '1');
+  var input = $(this).find('input');
+  e.preventDefault();
+  if(e.target.tagName != 'INPUT'){
+    input.prop('checked', !input.prop('checked'));
+  } else {
+    var value = input.prop('checked');
+    check_box(input.attr('id'), value);
+  }
+});
+function display_result(result){
+  var icon = $($('#icon_template').html());
+  var input = $('#form_vinyls_'+result.id).clone();
+  $('#form_vinyls_'+result.id).remove();
+  icon.find('.caption h3').html(result.name+'<br />').append(input);
+  icon.find('img').attr('src', icon.find('img').attr('src')+result.image);
+  $('#search_results').append(icon);
+  //$('#search_results').html($('#search_results').html() + '<li>'+result.name+'</li>');
+}
+function end_display_result(){
+  var nb_results = Number($('#nb_results').html());
+  var missing_icons = (3 - nb_results%3)%3;
+  for(var i = 0; i < missing_icons; i++){
+    var icon = $($('#icon_template').html());
+    icon.find('a').remove();
+    $('#search_results').append(icon);
+  }
+}
+function clear_results(){
+  $('#search_results').find('input').each(function(){
+    var input = $(this).clone();
+    $('#input_rest').append(input);
+    $(this).remove();
+  });
+  $('#search_results').html('');
+}
+function launch_search(){
+  var request = $('#search_request').val();
+  console.log('Search requested : "'+request+'"');
+  $.ajax({
+      url: "{{ path('tvf_store_search') }}",
+      type: "POST",
+      dataType: "json",
+      data: {
+        request: request
+      },
+      async: true,
+      success: function (data)
+      {
+          console.log('Response found');
+          var results = data.results;
+          $('#nb_results').html(results.length);
+          console.log(data.results);
+          clear_results();
+          for(var i = 0; i < results.length; i++){
+            var result = results[i];
+            display_result(result);
+          }
+          end_display_result();
+      }
+  });
+}
+$('#search_launch').on('click', function(e){
+  e.preventDefault();
+  launch_search();
+});
+$('#search_request').keyup(function(){
+  launch_search();
+});
+</script>
 {% endblock %}

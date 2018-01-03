@@ -15,6 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 class  SelectionController extends Controller
 {
@@ -55,6 +56,12 @@ class  SelectionController extends Controller
         ->add('title', TextType::class)
         ->add('description', TextareaType::class)
         ->add('image', FileType::class, array('label' => 'Image', 'required' => False))
+        ->add('vinyls', EntityType::class, array(
+                'class'        => 'TVFRecordBundle:Vinyl',
+                'choice_label' => 'name',
+                'multiple'     => true,
+                'expanded'     => true,
+                'required'     => false))
         ->add('save',	SubmitType::class)
         ->getForm();
 

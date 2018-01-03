@@ -36,6 +36,9 @@ tvf_store_join:
     defaults: { _controller: TVFStoreBundle:Home:join }
 
 # Search
+tvf_store_search:
+    path:     /search
+    defaults: { _controller: TVFStoreBundle:Search:search }
 tvf_store_show:
     path:     /show/{id}
     defaults: { _controller: TVFStoreBundle:Search:show, id:0 }

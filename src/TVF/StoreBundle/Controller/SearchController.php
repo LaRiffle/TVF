@@ -2,6 +2,10 @@
 
 namespace TVF\StoreBundle\Controller;
 
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
+
 use TVF\RecordBundle\Entity\Vinyl;
 use TVF\AdminBundle\Entity\Gender;
 use TVF\AdminBundle\Entity\Type;
@@ -13,6 +17,25 @@ class SearchController extends Controller
 {
     public $entityNameSpace = 'TVFStoreBundle:Search';
 
+    public function searchAction(Request $request)
+    {
+      $query = $request->request->get('request');
+
+      $em = $this->getDoctrine()->getManager();
+      $repository = $em->getRepository('TVFRecordBundle:Vinyl');
+      $vinyls = $repository->search($query);
+      $data = [];
+      foreach ($vinyls as $vinyl) {
+        $data[] = [
+          'id' => $vinyl->getId(),
+          'name' => $vinyl->getName(),
+          'image' => $vinyl->getImages()[0]
+        ];
+      }
+      /* Used to search for specific vinyls */
+      $data = ['results' => $data];
+      return new JsonResponse($data);
+    }
     public function indexVinylsAction()
     {
       /*

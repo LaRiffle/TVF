@@ -10,4 +10,17 @@ namespace TVF\RecordBundle\Repository;
  */
 class VinylRepository extends \Doctrine\ORM\EntityRepository
 {
+  public function search($query)
+  {
+    return $this->createQueryBuilder('e')
+          ->innerJoin('e.artist', 'a')
+          ->where('a.name LIKE :query_artist')
+          ->setParameter('query_artist', '%'.$query.'%')
+          ->orWhere('e.name LIKE :query')
+          ->setParameter('query', '%'.$query.'%')
+          ->orderBy('e.id', 'DESC')
+          ->getQuery()
+          ->getResult()
+    ;
+  }
 }
