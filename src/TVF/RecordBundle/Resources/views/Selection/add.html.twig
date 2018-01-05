@@ -21,6 +21,34 @@
         <em>Attention, l'image doit respecter le format portrait</em>
         <hr />
         <div style="margin-top: 10px;">
+          <h5>Vinyles sélectionnés (<span id="nb_selected">0</span>)</h5>
+          <div id="my_insta">
+            <div class="tvf-grid">
+              <div class="tvf-row" id="selected">
+                {% for vinyl in form.vinyls %}
+                  {% if vinyl.vars.data == '1' %}
+                  {% set index = vinyl.vars.value %}
+                  {% set entity = form.vinyls.vars.choices[index].data %}
+                    <div class="tvf-box tvf-icon" style="visibility: visible">
+                      <div class="tvf-inner">
+                        <a class="show-vinyl" target="_blank" href="#">
+                          <img src="{{ asset('uploads/img/' ~ entity.images[0]) }}" alt="" style="">
+                          <div class="caption" style="opacity:1;">
+                            <h3>
+                              {{ entity.name }}<br />
+                              <div style="margin-top: 8px;"><i data-id="{{ entity.id }}" class="fa fa-check-square-o mock-input" aria-hidden="true"></i></div>
+                            </h3>
+                          </div>
+                        </a>
+                      </div>
+                    </div>
+                  {% endif %}
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top: 10px;">
           <h5>{{ form_label(form.vinyls, "Ajouter des vinyles") }}</h5>
           {{ form_errors(form.vinyls) }}
           <div class="input-group">
@@ -51,10 +79,12 @@
               </div>
             </div>
           </div>
-          <div id="new_vinyls">
-            <h5>Derniers ajouts</h5>
+        </div>
+        <div style="margin-top: 10px;">
+          <div id="new_vinyls" class="hide">
+            <h5>Derniers ajouts (0)</h5>
           </div>
-          <div id="input_rest" class="hide">
+          <div id="input_group" class="hide">
             {% for vinyl in form.vinyls %}
               {% set index = vinyl.vars.value %}
               {% set entity = form.vinyls.vars.choices[index].data %}
@@ -73,31 +103,42 @@
 {% endblock %}
 {% block script %}
 <script>
-function check_box(id, value){
-  setTimeout(function(){
-    $('#'+id).prop('checked', value);
-    console.log('checked');
-  }, 100);
-}
 $('body').on('click', '.show-vinyl', function(e){
-  $(this).find('.caption').css('opacity', '1');
-  var input = $(this).find('input');
   e.preventDefault();
-  if(e.target.tagName != 'INPUT'){
-    input.prop('checked', !input.prop('checked'));
+  // modify display input
+  var display_input = $(this).find('.mock-input');
+  var input_id = display_input.attr('data-id');
+  var display_inputs = $('.caption i[data-id='+input_id+']');
+  display_inputs.parents('.caption').css('opacity', '1');
+  if(display_input.hasClass('fa-square-o')){
+    display_inputs.removeClass('fa-square-o');
+    display_inputs.addClass('fa-check-square-o');
   } else {
-    var value = input.prop('checked');
-    check_box(input.attr('id'), value);
+    display_inputs.removeClass('fa-check-square-o');
+    display_inputs.addClass('fa-square-o');
   }
+  // find id of the real input & modify real input
+  var input = $('#form_vinyls_'+input_id);
+  input.prop('checked', !input.prop('checked'));
+
+  // Add/remove the vinyl in the selected zone if necessary
+  // -- action deselect and icon in the selected zone
+  if(display_input.hasClass('fa-square-o') && $('#selected i[data-id='+input_id+']').length > 0){
+    $('#selected i[data-id='+input_id+']').parents('.tvf-box').remove();
+  } else if (display_input.hasClass('fa-check-square-o') && $('#selected i[data-id='+input_id+']').length == 0) {
+    console.log('add ifon');
+    var new_icon = display_input.parents('.tvf-box').clone();
+    $('#selected').append(new_icon);
+  }
+  complete_selected_zone_with_blank();
 });
 function display_result(result){
   var icon = $($('#icon_template').html());
-  var input = $('#form_vinyls_'+result.id).clone();
-  $('#form_vinyls_'+result.id).remove();
-  icon.find('.caption h3').html(result.name+'<br />').append(input);
+  var input = $('#form_vinyls_'+result.id);
+  var mock_input = $('<div style="margin-top: 8px;"><i data-id="'+ result.id +'" class="fa fa-'+(input.prop('checked') ? 'check-':'') +'square-o mock-input" aria-hidden="true"></i></div>');
+  icon.find('.caption h3').html(result.name+'<br />').append(mock_input);
   icon.find('img').attr('src', icon.find('img').attr('src')+result.image);
   $('#search_results').append(icon);
-  //$('#search_results').html($('#search_results').html() + '<li>'+result.name+'</li>');
 }
 function end_display_result(){
   var nb_results = Number($('#nb_results').html());
@@ -109,11 +150,6 @@ function end_display_result(){
   }
 }
 function clear_results(){
-  $('#search_results').find('input').each(function(){
-    var input = $(this).clone();
-    $('#input_rest').append(input);
-    $(this).remove();
-  });
   $('#search_results').html('');
 }
 function launch_search(){
@@ -146,8 +182,39 @@ $('#search_launch').on('click', function(e){
   e.preventDefault();
   launch_search();
 });
+/* Delay the search to activate search onyl when user has stopped typing */
+var last_key_up = -1;
+var delay = 600; // ms
 $('#search_request').keyup(function(){
-  launch_search();
+  var date = new Date();
+  last_key_up = date.getTime();
+  setTimeout(function(){
+    var date = new Date();
+    if(date.getTime() - last_key_up > delay - 50){
+      launch_search();
+    }
+  }, delay);
 });
+</script>
+<script>
+function complete_selected_zone_with_blank(){
+  /* Add the fake icons of the selected vinyls if any */
+  // Count number of icons
+  var nb_results = $('#selected .mock-input').length;
+  $('#nb_selected').html(nb_results);
+  // Remove the fake icons use to complete if any
+  $('#selected .template').remove();
+
+  console.log(nb_results);
+  // fill with the right nb of fake icons
+  var missing_icons = (3 - nb_results%3)%3;
+  for(var i = 0; i < missing_icons; i++){
+    var icon = $($('#icon_template').html());
+    icon.find('a').remove();
+    icon.addClass('template');
+    $('#selected').append(icon);
+  }
+}
+complete_selected_zone_with_blank();
 </script>
 {% endblock %}

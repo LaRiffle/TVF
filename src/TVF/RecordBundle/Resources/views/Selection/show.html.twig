@@ -3,6 +3,9 @@
   <h2>{{ selection.title }}</h2>
   <p>{{ selection.description }}</p>
   <img src="{{ asset('uploads/img/' ~ selection.image) }}" class="img-thumbnail" width="300">
+  {% for vinyl in selection.vinyls %}
+    {{ vinyl.name }} ;
+  {% endfor %}
 {% endblock %}
 {% block script %}
 {% endblock %}

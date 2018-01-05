@@ -25,7 +25,7 @@ tvf_record_artist_add:
   defaults: { _controller: TVFRecordBundle:Artist:add, id:0 }
 tvf_record_artist_show:
   path:     /record/artist/show/{id}
-  defaults: { _controller: TVFRecordBundle:Artist:show, id:0 }
+  defaults: { _controller: TVFRecordBundle:Artist:show }
 tvf_record_artist_remove:
   path:     /record/artist/remove/{id}
   defaults: { _controller: TVFRecordBundle:Artist:remove, id:0 }

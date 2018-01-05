@@ -27,7 +27,7 @@ class  SelectionController extends Controller
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository($this->entityNameSpace);
         $selection = $repository->find($id);
-        return $this->render('TVFStoreBundle:Selection:show.html.twig', array(
+        return $this->render('TVFRecordBundle:Selection:show.html.twig', array(
           'selection' => $selection,
         ));
     }
