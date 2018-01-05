@@ -946,3 +946,22 @@ footer .row > div {
 .vinyl-overview a {
   color: inherit !important;
 }
+
+/* About box */
+.badge-title {
+  position: absolute;
+  top: 20px;
+}
+.badge-title .badge-light {
+  background-color: rgba(0,0,0,0.5);
+  font-weight: lighter;
+  padding: 22px;
+  padding-top: 11px;
+  padding-bottom: 9px;
+}
+#box-page .price {
+  font-size: 1.4rem;
+}
+#box-page a:hover li {
+  background-color: rgba(2,117,216,.125);
+}

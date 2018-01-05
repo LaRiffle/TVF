@@ -15,21 +15,21 @@
               <h2 class="card-title">{{ include(text, {'element': data.home.title.left }) }}</h2>
               <p class="card-text">{{ include(text, {'element': data.home.text.left }) }}</p>
               <div class="center">
-                <a href="{{ path('tvf_store_explore', {'category': 'lecteur'}) }}" id="vinyl-explore" class="btn btn-primary">
+                <a href="{{ path('tvf_store_explore', {'category': 'vinyle'}) }}" id="vinyl-explore" class="btn btn-primary">
                   {{ include(text, {'element': data.home.btn.left }) }}
                 </a>
               </div>
             </div>
           </div>
           <div class="card">
-            <a href="{{ path('tvf_store_explore', {'category': 'accessoire'}) }}">
+            <a href="{{ path('tvf_store_discover_box') }}">
             {{ include(image, {'element': data.home.right_img, 'style': 'width: 100%', 'class': 'card-img-top'}) }}
             </a>
             <div class="card-block">
               <h2 class="card-title">{{ include(text, {'element': data.home.title.right }) }}</h2>
               <p class="card-text">{{ include(text, {'element': data.home.text.right }) }}</p>
               <div class="center">
-                <a href="{{ path('tvf_store_explore', {'category': 'accessoire'}) }}" class="btn btn-primary">
+                <a href="{{ path('tvf_store_discover_box') }}" class="btn btn-primary">
                   {{ include(text, {'element': data.home.btn.right }) }}
                 </a>
               </div>
@@ -37,16 +37,7 @@
           </div>
         </div>
       </div>
-      <div class="offset-sm-0 col-sm-12 offset-md-1 col-md-10 offset-lg-2 col-lg-8">
-        <div class="card">
-          <div class="card-block">
-            <h2 class="card-title" style="color: #BA0020;">{{ include(text, {'element': data.home.collection.title }) }}</h2>
-            {% set carousel = "TVFStoreBundle:Selection:index.html.twig" %}
-            {{ include(carousel) }}
-          </div>
-        </div>
-      </div>
-      <div id="new-vinyls" class="offset-sm-0 col-sm-12 offset-md-1 col-md-10 offset-lg-2 col-lg-8" style="margin-top: 20px;">
+      <div id="new-vinyls" class="offset-sm-0 col-sm-12 offset-md-1 col-md-10 offset-lg-2 col-lg-8">
         <div class="card">
           <div class="card-block">
             <div class="horizontal-scroller" style="margin-top: -5px; float: right;">
@@ -58,6 +49,15 @@
             <div class="horizontal-scroller" style="margin-top: 15px; float: right;">
               <a href="{{ path('tvf_store_explore') }}" class="visible-to-xs show-lateral btn btn-default"><i class="fa fa-search" aria-hidden="true"></i> Rechercher des vinyles</a>
             </div>
+          </div>
+        </div>
+      </div>
+      <div class="offset-sm-0 col-sm-12 offset-md-1 col-md-10 offset-lg-2 col-lg-8"  style="margin-top: 20px;">
+        <div class="card">
+          <div class="card-block">
+            <h2 class="card-title" style="color: #BA0020;">{{ include(text, {'element': data.home.collection.title }) }}</h2>
+            {% set carousel = "TVFStoreBundle:Selection:index.html.twig" %}
+            {{ include(carousel) }}
           </div>
         </div>
       </div>

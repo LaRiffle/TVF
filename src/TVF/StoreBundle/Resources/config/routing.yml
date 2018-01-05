@@ -35,6 +35,11 @@ tvf_store_join:
     path:     /join
     defaults: { _controller: TVFStoreBundle:Home:join }
 
+# Box
+tvf_store_discover_box:
+    path:     /abonnements
+    defaults: { _controller: TVFStoreBundle:Box:discover }
+
 # Search
 tvf_store_search:
     path:     /search

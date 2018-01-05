@@ -1,0 +1,62 @@
+{% extends "TVFStoreBundle::layout.html.twig" %}
+{% block title %}
+  | Les abonnements
+{% endblock %}
+{% block body %}
+<div id="box-page">
+  {% set navbar = "TVFStoreBundle:Utils:nav.html.twig" %}
+  {% set text = "TVFStoreBundle:Utils:text.html.twig" %}
+  {% set image = "TVFStoreBundle:Utils:image.html.twig" %}
+  {{ include(navbar, {'active': 'contact'}) }}
+  <div class="container">
+    <div class="row" style="margin-top: 25px; margin-bottom: 25px;">
+      <div class="offset-sm-0 col-sm-12 offset-md-1 col-md-10 offset-lg-2 col-lg-8">
+        <div class="card-deck">
+          <div class="card">
+            <a href="#">
+              {{ include(image, {'element': data.amateur.image, 'style': 'width: 100%', 'class': 'card-img-top'}) }}
+            </a>
+            <div class="card-block">
+              <h2 class="card-title badge-title">
+                <span class="badge badge-light badge-pill">
+                  {{ include(text, {'element': data.amateur.title }) }}
+                </span>
+              </h2>
+              <h2 class="card-title">{{ include(text, {'element': data.amateur.price }) }} <span class="price">/ mois</span></h2>
+              <p class="card-text">{{ include(text, {'element': data.amateur.content }) }}</p>
+            </div>
+            <ul class="list-group list-group-flush">
+              <a href="#"><li class="list-group-item"><i class="fa fa-circle-thin" aria-hidden="true"></i> &nbsp; 6 mois</li></a>
+              <a href="#"><li class="list-group-item"><i class="fa fa-circle-thin" aria-hidden="true"></i> &nbsp; 12 mois</li></a>
+            </ul>
+          </div>
+          <div class="card">
+            <a href="#">
+            {{ include(image, {'element': data.connaisseur.image, 'style': 'width: 100%', 'class': 'card-img-top'}) }}
+            </a>
+            <div class="card-block">
+              <h2 class="card-title badge-title">
+                <span class="badge badge-light badge-pill">
+                  {{ include(text, {'element': data.connaisseur.title }) }}
+                </span>
+              </h2>
+              <h2 class="card-title">{{ include(text, {'element': data.connaisseur.price }) }} <span class="price">/ mois</span></h2>
+              <p class="card-text">{{ include(text, {'element': data.connaisseur.content }) }}</p>
+            </div>
+            <ul class="list-group list-group-flush">
+              <a href="#"><li class="list-group-item"><i class="fa fa-circle-thin" aria-hidden="true"></i> &nbsp; 6 mois</li></a>
+              <a href="#"><li class="list-group-item"><i class="fa fa-circle-thin" aria-hidden="true"></i> &nbsp; 12 mois</li></a>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block script %}
+{% if is_granted('ROLE_ADMIN') %}
+  {% set edit_script = "TVFAdminBundle:Utils:edit-handler.html.twig" %}
+  {{ include(edit_script) }}
+{% endif %}
+{% endblock %}
