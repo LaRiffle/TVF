@@ -2,7 +2,7 @@
 {% block body %}
 {% set navbar = "TVFStoreBundle:Utils:nav.html.twig" %}
 {{ include(navbar, {'active': 'selection'}) }}
-<div class="container">
+<div class="container" style="margin-bottom: 20px;">
   <div class="row">
     <div class="col-sm-6 offset-sm-3">
       <form name="form" class="form-signin"
@@ -48,6 +48,7 @@
             </div>
           </div>
         </div>
+        <hr />
         <div style="margin-top: 10px;">
           <h5>{{ form_label(form.vinyls, "Ajouter des vinyles") }}</h5>
           {{ form_errors(form.vinyls) }}
@@ -57,8 +58,8 @@
               <a id="search_launch" class="btn btn-primary" type="button" href="#"><i class="fa fa-search" aria-hidden="true"></i></a>
             </span>
           </div>
-          <div style="margin-top: 10px;">
-            <h5>Résultats (<span id="nb_results">0</span>)</h5>
+          <div style="margin-top: 15px;">
+            <h5 id="info_results"></h5><span id="nb_results" class="hide">0</span>
             <div id="my_insta">
               <div class="tvf-grid">
                 <div class="tvf-row" id="search_results">
@@ -138,6 +139,9 @@ function display_result(result){
   var mock_input = $('<div style="margin-top: 8px;"><i data-id="'+ result.id +'" class="fa fa-'+(input.prop('checked') ? 'check-':'') +'square-o mock-input" aria-hidden="true"></i></div>');
   icon.find('.caption h3').html(result.name+'<br />').append(mock_input);
   icon.find('img').attr('src', icon.find('img').attr('src')+result.image);
+  if(input.prop('checked')){
+    icon.find('.caption').css('opacity', '1');
+  }
   $('#search_results').append(icon);
 }
 function end_display_result(){
@@ -152,7 +156,9 @@ function end_display_result(){
 function clear_results(){
   $('#search_results').html('');
 }
+var loading_message = '<i class="fa fa-circle-o-notch fa-spin fa-fw"></i> Loading...'
 function launch_search(){
+  $('#info_results').html(loading_message);
   var request = $('#search_request').val();
   console.log('Search requested : "'+request+'"');
   $.ajax({
@@ -168,6 +174,14 @@ function launch_search(){
           console.log('Response found');
           var results = data.results;
           $('#nb_results').html(results.length);
+          if(results.length == 0){
+            $('#info_results').html('Pas de résultat :/');
+          } else if (results.length == 1) {
+            $('#info_results').html('Notre résultat');
+          } else {
+            $('#info_results').html(results.length +' résultats');
+          }
+          $('#info_results')
           console.log(data.results);
           clear_results();
           for(var i = 0; i < results.length; i++){

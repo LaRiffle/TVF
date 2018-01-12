@@ -2,6 +2,15 @@
   <div id="no_results"><h4>Pas de résultats</h4></div>
   <div class="tvf-grid">
     <div class="tvf-row">
+      {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_RECORD') %}
+        <div class="tvf-box tvf-icon add-icon" style="z-index: {{vinyls|length + 1}};">
+          <div class="tvf-inner">
+            <a href="{{ path('tvf_record_vinyl_add') }}" style="text-align: center; height: auto;">
+                <h4 style="color: #BA0020;"><i class="fa fa-plus" aria-hidden="true"></i> Ajouter un vinyl</h4>
+            </a>
+          </div>
+        </div>
+      {% endif %}
       {% for vinyl in vinyls %}
       <div class="tvf-box tvf-icon"
           data-index="{{ loop.index0 }}"
@@ -42,14 +51,7 @@
       </div>
       {% if loop.last %}
         {% set index = loop.index %}
-        {% if is_granted('ROLE_ADMIN') %}
-          <div class="tvf-box tvf-icon add-icon" style="z-index: {{vinyls|length + 1}};">
-            <div class="tvf-inner">
-              <a href="{{ path('tvf_record_vinyl_add') }}" style="text-align: center; height: auto;">
-                  <h4 style="color: #BA0020;"><i class="fa fa-plus" aria-hidden="true"></i> Ajouter un vinyl</h4>
-              </a>
-            </div>
-          </div>
+        {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_RECORD') %}
           {% set index = index + 1 %}
         {% endif %}
         {% if filterable == 'no'%}
