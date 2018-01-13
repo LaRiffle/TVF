@@ -73,6 +73,9 @@ class TVFImagehandler {
       if(!file_exists($filename_image_small)){
         list($width, $height) = getimagesize($filename);
         switch ($size) {
+            case 'xxs':
+                $w = 150;
+                break;
             case 'xs':
                 $w = 300;
                 break;

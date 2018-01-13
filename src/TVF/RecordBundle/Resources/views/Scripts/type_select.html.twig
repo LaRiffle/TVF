@@ -1,0 +1,108 @@
+<script>
+  function reshape_image(obj){
+    var img = $(obj).find('img');
+    var img_width = img.width();
+    var img_height = img.height();
+    if(img_width < img_height){
+       img.addClass('portrait');
+    } else {
+       img.removeClass('portrait');
+    }
+  }
+  {% if selection_id is not defined %}
+  {%   set selection_id = '_' %}
+  {% endif %}
+  {% if category_id is not defined %}
+  {%   set category_id = '_' %}
+  {% endif %}
+  var filter = {
+    selection: "{{ selection_id }}",
+    category: "{{ category_id }}",
+    types: []
+  }
+  $(document).ready(function(){
+    $('#music_types input').each(function(){
+      if($(this).prop('checked')){
+        $('#menu_lateral #'+$(this).attr('id')).parents('a').click();
+      }
+    });
+    $('#menu_lateral input').each(function(){
+      if($(this).prop('checked')){
+        $(this).parents('.gender').removeClass('hide');
+      }
+    });
+    $('#music_types').remove();
+  });
+  var select_all = true;
+  $('#menu_lateral a.toggle-all').on('click', function(e){
+    e.preventDefault();
+    var links = $(this).parents('.gender').first().find('a.filter');
+    links.each(function(){
+      var link = $(this);
+      var input = link.find("input").first();
+      if(select_all && !input.prop("checked")) {
+        link.click();
+      }
+      if(!select_all && input.prop("checked")) {
+        link.click();
+      }
+    });
+    if(select_all) {
+      $(this).find('.text').html('Tout déselectionner');
+    } else {
+      $(this).find('.text').html('Tout sélectionner');
+    }
+    select_all = !select_all;
+  });
+  $('#menu_lateral a.filter').on('click', function(e){
+    e.preventDefault();
+    var $input = $(this).find("input").first();
+    $input.prop("checked", !$input.prop("checked"));
+    var type_id = Number(this.href.split('-')[this.href.split('-').length-1]);
+    if($input.prop("checked")){
+      filter.types.push(type_id);
+      $(this).find('i').removeClass('fa-circle-thin').addClass('fa-circle');
+    } else {
+      var index = filter.types.indexOf(type_id);
+      if (index > -1) {
+          filter.types.splice(index, 1);
+      }
+      $(this).find('i').removeClass('fa-circle').addClass('fa-circle-thin');
+    }
+  });
+</script>
+<script>
+$(document).ready(function(){
+  $('.toggler').on('click', function(e){
+    e.preventDefault();
+    id = $(this).attr('data-toggle');
+    console.log(id);
+    if($('#'+id).is(":visible")){
+      $('#'+id).slideUp();
+      $(this).css('border-color','rgba(0,0,0,.125)');
+    } else {
+      $('.toggler').each(function(){
+        $(this).css('border-color','rgba(0,0,0,.125)');
+      });
+      $('.gender').each(function(){
+        $(this).find('input:checkbox').each(function(){
+          var $input = $(this);
+          $input.prop("checked", false);
+          console.log($input.parent());
+          var type_id = Number($input.parent().attr('href').split('-')[1]);
+          var index = filter.types.indexOf(type_id);
+          if (index > -1) {
+              filter.types.splice(index, 1);
+          }
+          $input.parent().find('i').removeClass('fa-circle').addClass('fa-circle-thin');
+        });
+        if($(this).attr('id') != id){
+          $(this).hide();
+        }
+      });
+      $(this).css('border-color','rgb(2, 117, 216)');
+      $('#'+id).slideDown();
+    }
+  });
+});
+</script>

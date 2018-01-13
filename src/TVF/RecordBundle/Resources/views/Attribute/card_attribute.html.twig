@@ -14,7 +14,7 @@
       <p style="width: 100%;">
         <span data-toggle="tooltip" data-placement="top" title="#{{attribute.value}}" class="color-choice" style="float: none; margin: auto; background-color:#{{attribute.value}};"></span>
         {% if widget is defined %}
-          {{ widget|raw }}
+          <span class="hide">{{ widget|raw }}</span>
         {% endif %}
       </p>
       <p class="card-text"><b>{{attribute.name}}</b></p>
@@ -22,7 +22,7 @@
       <h4 class="card-title">
         {{attribute.name}}
         {% if widget is defined %}
-          <br />{{ widget|raw }}
+          <span class="hide">{{ widget|raw }}</span>
         {% endif %}
       </h4>
       <p class="card-text">{{attribute.value}}</p>
@@ -30,7 +30,7 @@
       <h5 class="card-title" style="text-align: left; margin-left: 10px; margin-bottom: 0;">
         {{attribute.name}}
         {% if widget is defined %}
-          {{ widget|raw }}
+          <span class="hide">{{ widget|raw }}</span>
         {% endif %}
       </h5>
       <p class="card-text" style="text-align: left; margin-left: 10px;">{{attribute.value}}</p>

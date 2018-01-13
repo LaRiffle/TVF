@@ -34,6 +34,9 @@ class  VinylController extends Controller
         $em = $this->getDoctrine()->getManager();
         if($id == 0) {
             $vinyl = new Vinyl();
+            $category_repository = $em->getRepository('TVFAdminBundle:Category');
+            $category = $category_repository->findOneBy(array('slug' => 'vinyle'));
+            $vinyl->setCategory($category);
         } else {
             $repository = $em->getRepository($this->entityNameSpace);
             $vinyl = $repository->find($id);
@@ -50,7 +53,7 @@ class  VinylController extends Controller
             $new_vinyl->setDescription($vinyl->getDescription());
             $new_vinyl->setOnsold($vinyl->getOnsold());
             $new_vinyl->setPrice($vinyl->getPrice());
-            $new_vinyl->setCategory($vinyl->getCategory());
+            //$new_vinyl->setCategory($vinyl->getCategory());
             $new_vinyl->setClient($vinyl->getClient());
             foreach($vinyl->getTypes() as $type){
               $new_vinyl->addType($type);
@@ -59,14 +62,18 @@ class  VinylController extends Controller
               $new_vinyl->addAttribute($type);
             }
         }
+        /* Set low quality imgs for the already existing img in the form */
+        $imagehandler = $this->container->get('tvf_store.imagehandler');
+        $vinyl_images = [];
+        foreach ($vinyl->getImages() as $image) {
+          $fileName = basename($image);
+          $path_small_image = $imagehandler->get_image_in_quality($fileName, 'xxs');
+          $vinyl_images[] = $path_small_image;
+        }
         $form = $this->get('form.factory')->createBuilder(FormType::class, ($id == 0 ? $vinyl : $new_vinyl))
         ->add('name', TextType::class)
         ->add('artist', EntityType::class, array(
                 'class'        => 'TVFRecordBundle:Artist',
-                'choice_label' => 'name',
-        ))
-        ->add('category', EntityType::class, array(
-                'class'        => 'TVFAdminBundle:Category',
                 'choice_label' => 'name',
         ))
         ->add('description', TextareaType::class)
@@ -91,7 +98,7 @@ class  VinylController extends Controller
           'mapped' => false,
           'multiple' => true,
           'expanded' => true,
-          'choices' => $vinyl->getImages(),
+          'choices' => $vinyl_images,
           'choice_label' => function ($value, $key, $index) {
               return $value;
           }
@@ -143,7 +150,8 @@ class  VinylController extends Controller
               // On met les ancienns images gardées
               $old_files = $form['imgs']->getData();
               foreach ($old_files as $old_file) {
-                $fileName = $old_file->getFilename();
+                //$fileName = $old_file->getFilename();
+                $fileName = str_replace(['-xxs', '-xs', '-sm', '-md', '-lg'],'', $old_file);
                 $vinyl->addImage($fileName);
               }
               // And the new ones
@@ -172,7 +180,7 @@ class  VinylController extends Controller
               $vinyl->setDescription($new_vinyl->getDescription());
               $vinyl->setOnsold($new_vinyl->getOnsold());
               $vinyl->setPrice($new_vinyl->getPrice());
-              $vinyl->setCategory($new_vinyl->getCategory());
+              //$vinyl->setCategory($new_vinyl->getCategory());
               $vinyl->emptyTypes();
               foreach($new_vinyl->getTypes() as $type){
                 $vinyl->addType($type);
@@ -193,9 +201,18 @@ class  VinylController extends Controller
             //return new Response();
             return $this->redirect($this->generateUrl('tvf_store_explore'));
         }
+
+        $repository = $em->getRepository('TVFAdminBundle:Gender');
+        $genders = $repository->findAll();
+        $typeRepository = $em->getRepository('TVFAdminBundle:Type');
+        foreach ($genders as $gender) {
+          $gender->types = $typeRepository->whereGender($gender->getId());
+        }
+
         return $this->render($this->entityNameSpace.':add.html.twig', array(
             'form' => $form->createView(),
-            'id' => $id
+            'id' => $id,
+            'genders' => $genders,
         ));
     }
     public function removeAction(Request $request, $id){

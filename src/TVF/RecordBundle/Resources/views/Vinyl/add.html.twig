@@ -1,66 +1,83 @@
-{% extends "TVFStoreBundle::layout.html.twig" %}
+{% extends "TVFStoreBundle:Search:layout.html.twig" %}
 {% block body %}
 
 <div id="add-creation-page">
   {% set navbar = "TVFStoreBundle:Utils:nav.html.twig" %}
   {{ include(navbar, {'active': 'collection'}) }}
-  <div class="container">
+  <div class="container" style="margin-bottom: 50px;">
     <form name="form" class="form-signin" method="post" enctype="multipart/form-data" action="{{ path('tvf_record_vinyl_add',{'id': id}) }}">
     <div class="row">
       <div class="col-sm-6 offset-sm-3">
         <h3 class="form-signin-heading">{% if id == 0 %}Ajouter{% else %}Modifier{% endif %} un album vinyle</h3>
         {% set input_form="TVFAdminBundle:Utils:form_input.html.twig" %}
         {% set save_form="TVFAdminBundle:Utils:form_save.html.twig" %}
-        <div class="h1">{{ include(input_form, {'element': form.name, 'name':"Nom de l'album"}) }}</div>
+        <div class="h3">{{ include(input_form, {'element': form.name, 'name':"Nom de l'album"}) }}</div>
         <h5>Artiste</h5>
-        <div class="h2">{{ include(input_form, {'element': form.artist, 'name':"Artiste"}) }}</div>
-        <h5>Type d'article</h5>
-        <div class="h2">{{ include(input_form, {'element': form.category, 'name':"Catégorie"}) }}</div>
+        <div>{{ include(input_form, {'element': form.artist, 'name':"Artiste"}) }}</div>
         <hr />
-        <div class="h2">Description</div>
-        {{ include(input_form, {'element': form.description, 'name':"Description brève"}) }}
+        <a href="#" class="internal-link" data-target="box_description">
+          <h5><i class="fa fa-plus" aria-hidden="true"></i> Description</h5>
+        </a>
+        <div id="box_description" class="hide">
+          <h5>Description</h5>
+          {{ include(input_form, {'element': form.description, 'name':"Description brève"}) }}
+        </div>
         <hr />
+        {% set form_image_icon = "TVFRecordBundle:Vinyl:form_image_icon.html.twig" %}
         <div style="margin-top: 10px; {% if id == 0 %}display: none;{% endif %}">
-          <h5>{{ form_label(form.imgs, "Images existantes") }}</h5>
+          <h5 style="margin-bottom: -0.5rem;">{{ form_label(form.imgs, "Illustrations") }}</h5>
           {{ form_errors(form.imgs) }}
           {% for img in form.imgs %}
             <div style="visibility: hidden; height:0px;">{{ form_label(img, null, {'label_attr' : {'id': loop.index0 , 'class': 'icon-label'}}) }}</div>
             <div class="img-thumbnail creation-icon" style="width: calc(102px + 0.5rem);">
               <div class="img-cadre" style="width: 100px; height: 100px;">
                 <img src="{{ asset('uploads/img/') }}" id="img-{{ loop.index0 }}" style="margin-bottom: -65px;">
-                <div class="caption">
-                  <h4>{{ form_widget(img) }}</h4>
+                <div class="caption" style="background-image: none">
+                  <div class="delete-img"><p><a href="#">Supprimer</a></p></div>
+                  <span class="hide">{{ form_widget(img) }}</span>
                 </div>
               </div>
             </div>
           {% endfor %}
         </div>
-        <div style="clear:both; height: 10px;"></div>
         {# store the prototype on the data-prototype attribute #}
-        <h5>{{ form_label(form.images, 'Nouvelles images', {'label_attr' : {'class': ''}}) }}</h5>
-        <ul id="image-fields-list"
-            data-prototype="{{ form_widget(form.images.vars.prototype)|e }}">
+        <span class="hide">{{ form_label(form.images, 'Nouvelles images', {'label_attr' : {'class': ''}}) }}</span>
+        <div id="image-fields-list"
+            data-prototype='{{ include(form_image_icon, {'widget':form_widget(form.images.vars.prototype)|e}) }}'>
         {% for imageField in form.images %}
             <li>
                 {{ form_errors(imageField) }}
                 {{ form_widget(imageField) }}
             </li>
         {% endfor %}
-        </ul>
-        <a href="#" id="add-another-image">+ Ajouter une image</a><br/>
-        <em>Ne pas dépasser 5 à 6 images, de même format (<a target="_blank" href="http://www.fotor.com/features/crop.html">site pour modifier les photos</a>), choisies de bonne qualité (largeur > 600px ou fichier >= 1Mo)</em>
+        </div>
+        <div class="img-thumbnail creation-icon" style="width: calc(102px + 0.5rem);">
+          <div class="img-cadre" style="width: 100px; height: 100px;">
+            <div class="caption" style="background-image: none">
+              <p style="margin-top: 25px; text-align: center;">
+                <a href="#" id="add-another-image" style="color: #0275d8">+ Ajouter une image</a>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div style="clear:both; height: 10px;"></div>
         <hr />
         <div style="margin-top: 10px;">
           {{ form_errors(form.onsold) }}
-          {{ form_widget(form.onsold, {'attr': {'class': 'internal-link keep', 'data-target': '#price'}}) }}
-          {{ form_label(form.onsold, "En vente", {'label_attr' : {'class': 'internal-link keep', 'data-target': '#price'}}) }}
+          <a href="#" class="btn btn-default btn-tvf internal-link keep add-price" data-target="price">
+            En vente
+          </a>
+          <div class="hide">
+            {{ form_widget(form.onsold, {'attr': {'class': 'internal-link keep', 'data-target': 'price'}}) }}
+            {{ form_label(form.onsold, "En vente", {'label_attr' : {'class': 'internal-link keep', 'data-target': 'price'}}) }}
+          </div>
         </div>
         <div id="price" style="display:none;">
           <div style="margin-top: 10px;">
             <div class="input-group">
               {{ form_label(form.price, 'Prix €', {'label_attr' : {'class': 'sr-only'}}) }}
               {{ form_errors(form.price) }}
-              {{ form_widget(form.price, {'attr': {'class': 'form-control', 'placeholder': 'Prix en € (Mettre que le nombre !)'}}) }}
+              {{ form_widget(form.price, {'attr': {'class': 'form-control', 'placeholder': 'Prix en € (Ne pas mettre l\'unité)'}}) }}
               <span class="input-group-addon">€</span>
             </div>
           </div>
@@ -68,21 +85,47 @@
         <hr />
         <div style="margin-top: 10px;">
           <h5>{{ form_label(form.types, "Genre musical") }}</h5>
-          {{ form_errors(form.types) }}
-          {% for type in form.types %}
-            {% set index = type.vars.value %}
-            {% set entity = form.types.vars.choices[index].data %}
-            {{ form_widget(type) }}
-            {{ entity.gender.name }} >
-            {{ form_label(type) }}<br />
+        </div>
+        <ul class="list-group">
+          <li class="list-group-item" style="padding: 5px; padding-right:0px;">
+            <div class="horizontal-scroll">
+              {% for gender in genders %}
+              <a href="#" data-toggle="gender{{ gender.id }}" class="toggler btn btn-default btn-tvf">{{ gender.name }}</a>
+              {% endfor %}
+            </div>
+          </li>
+        </ul>
+        <div id="menu_lateral">
+          {% for gender in genders %}
+          <div id="gender{{ gender.id }}" class="gender hide">
+            <li class="list-group-item justify-content-between">
+              <a href="#" class="toggle-all">
+                <i class="fa fa-dot-circle-o" aria-hidden="true"></i>&nbsp;
+                 <span class="text">Tout sélectionner</span>
+              </a>
+            </li>
+          {% for type in gender.types %}
+            <li class="list-group-item justify-content-between">
+              <a href="#type-{{ type.id }}" class="filter">
+                <i class="fa fa-circle-thin" aria-hidden="true"></i>&nbsp;
+                 <input id="form_types_{{ type.id }}" name="form[types][]" value="{{ type.id }}" type="checkbox" class="hide">
+                 {{ type.name }}
+              </a>
+            </li>
+          {% endfor %}
+          </div>
           {% endfor %}
         </div>
         <hr />
+        {% set card="TVFRecordBundle:Attribute:card_attribute.html.twig" %}
         <div style="margin-top: 10px;">
           <h4>Déclinaisons du modèle</h4>
-          <a target="_blank" href="{{ path('tvf_record_vinyl_attributes') }}">Modifier le choix de déclinaisons</a><br /><br />
+          <div style="margin-bottom: 10px;">
+            <a target="_blank" href="{{ path('tvf_record_vinyl_attributes') }}">
+              Modifier le choix de déclinaisons
+            </a>
+          </div>
           <h5>{{ form_label(form.attributes, "Tailles disponibles") }}</h5>
-          {% set card="TVFRecordBundle:Attribute:card_attribute.html.twig" %}
           {{ form_errors(form.attributes) }}
           {% for attribute in form.attributes %}
             {% set index = attribute.vars.value %}
@@ -93,7 +136,6 @@
           {% endfor %}
           <div style="clear: both;"></div>
           <h5 style="margin-top: 10px;">{{ form_label(form.attributes, "Couleurs disponibles") }}</h5>
-          {% set card="TVFRecordBundle:Attribute:card_attribute.html.twig" %}
           {{ form_errors(form.attributes) }}
           {% for attribute in form.attributes %}
             {% set index = attribute.vars.value %}
@@ -104,7 +146,6 @@
           {% endfor %}
           <div style="clear: both;"></div>
           <h5 style="margin-top: 10px;">{{ form_label(form.attributes, "Attributs spéciaux") }}</h5>
-          {% set card="TVFRecordBundle:Attribute:card_attribute.html.twig" %}
           {{ form_errors(form.attributes) }}
           {% for attribute in form.attributes %}
             {% set index = attribute.vars.value %}
@@ -116,6 +157,10 @@
         </div>
         <div style="clear: both;"></div>
         {{ include(save_form, {'element': form.save, 'name':"Publier"}) }}
+        <div id="music_types" class="hide">
+          {{ form_widget(form.types) }}
+        </div>
+        {{ form_widget(form._token) }}
         <div style="display:none">
           {{ form_rest(form) }}
         </div>
@@ -126,6 +171,90 @@
 </div>
 {% endblock %}
 {% block script %}
+{% set type_select = "TVFRecordBundle:Scripts:type_select.html.twig" %}
+{{ include(type_select) }}
+<script type="text/javascript">
+  /* Handle the multi image upload */
+
+  // keep track of how many image fields have been rendered
+  var imageCount = '{{ form.images|length }}';
+  jQuery(document).ready(function() {
+      $('#add-another-image').click(function(e) {
+          e.preventDefault();
+          var imageList = $('#image-fields-list');
+          // grab the prototype template
+          var newWidget = imageList.attr('data-prototype');
+          // replace the "__name__" used in the id and name of the prototype
+          // with a number that's unique to your images
+          // end name attribute looks like name="contact[images][2]"
+          newWidget = newWidget.replace(/__name__/g, imageCount);
+          imageCount++;
+          // create a new element and add it to the list
+          var newElmt = $(newWidget);
+          newElmt.appendTo(imageList);
+          newElmt.find('input').click();
+      });
+  })
+  function readURL(input) {
+    if (input.files && input.files[0]) {
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var caption_box = $(input).parents('.caption');
+        caption_box.find('p').hide();
+        caption_box.prepend($('<img src="'+e.target.result+'">'));
+        caption_box.prepend($('<div class="delete-img"><p><a href="#">Supprimer</a></p></div>'));
+        setTimeout(function(){
+          var img = caption_box.find('img').first();
+          var width = img.width();
+          var height = img.height();
+          console.log(width+ ' '+ height);
+          if(width < height){
+             img.addClass('portrait');
+          }
+          img.show();
+        }, 100);
+      }
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+  $('body').on('change', '.dyn_image_form input', function(){
+    readURL(this);
+  });
+  $('body').on('click', '.delete-img a', function(e){
+    e.preventDefault();
+    var icon = $(this).parents('.creation-icon');
+    if(icon.find('input[type=checkbox]').length > 0){
+      icon.find('input[type=checkbox]').prop('checked', false);
+      icon.hide();
+    } else if(icon.find('input[type=file]').length > 0){
+      icon.remove();
+    }
+  });
+</script>
+<script>
+  /* Handle card-attribute selection */
+  $('.attribute-card').on('click', function(){
+    var selected = ($(this).attr('data-selected') == '1');
+    if(selected){
+      $(this).removeClass('card-selected');
+      $(this).attr('data-selected', '0');
+    } else {
+      $(this).addClass('card-selected');
+      $(this).attr('data-selected', '1');
+    }
+    $(this).find('input').prop('checked', !selected);
+  });
+  $('.attribute-card').each(function(){
+    var selected = $(this).find('input').prop('checked');
+    if(selected){
+      $(this).addClass('card-selected');
+      $(this).attr('data-selected', '1');
+    } else {
+      $(this).removeClass('card-selected');
+      $(this).attr('data-selected', '0');
+    }
+  });
+</script>
 <script>
   //$("#carousel .carousel-item").zoom({ on:'grab' });
   $('#carousel img')
@@ -148,9 +277,21 @@
   });
 </script>
 <script>
+  /* Handle onsold */
   var onsold = $('#form_onsold').prop("checked");
   if(onsold){
     $('#price').show();
   }
+  $('.add-price').on('click', function(e){
+    onsold = !onsold;
+    if(onsold){
+      $('#price').show();
+      $(this).addClass('link-selected');
+    } else {
+      $('#price').hide();
+      $(this).removeClass('link-selected');
+    }
+    $('#form_onsold').prop('checked', onsold);
+  });
 </script>
 {% endblock %}

@@ -21,6 +21,9 @@
 body, button, input, optgroup, select, textarea {
   font-family: "Avenir-Light", "Avenir-Light_IE", "-apple-system",system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
 }
+textarea {
+  min-height: 58px;
+}
 .hide {
   display: none;
 }
@@ -110,9 +113,6 @@ a:hover, a:visited, a:link, a:active {
     bottom: 1.74rem;
   }
 }
-h3 {
-  font-size: 2.5rem;
-}
 h2 {
   font-size: 2.5rem;
 }
@@ -134,8 +134,8 @@ h2 {
 .special-font5 {
   font-family: "Run_Wild";
 }
-.h1 input {
-  font-size: 2rem !important;
+.h3 input, .h3 select {
+  font-size: 1.25rem !important;
 }
 .h2 input {
   font-size: 1.5rem !important;
@@ -626,6 +626,28 @@ a.filter:hover, a.filter:focus  {
   width: 100%;
   height: auto;
 }
+.creation-icon .delete-img {
+  position: absolute;
+  z-index: 1;
+  width: 90%;
+  top: 50%;
+  -webkit-transform: translate(0%,-50%);
+      -ms-transform: translate(0%,-50%);
+          transform: translate(0%,-50%);
+}
+.creation-icon .delete-img p {
+  display: none;
+  text-align: center;
+  margin: 0;
+  background-color: rgba(255,255,255,0.5);
+  border-radius: 5px;
+}
+.creation-icon:hover .delete-img p {
+  display: block;
+}
+.creation-icon .delete-img p a {
+  color: #0275d8 !important;
+}
 ul.edition-btn {
   list-style: none;
   float: right;
@@ -761,6 +783,10 @@ ul.edition-btn li:after {
   margin-right: 10px;
   margin-bottom: 10px;
 }
+.card-selected {
+  margin-bottom: 8px;
+  border: 2px solid #0275d8;
+}
 .attribute-card .card-block {
   padding-top: 1rem;
   padding-left: 0rem;
@@ -850,6 +876,9 @@ ul.edition-btn li:after {
 }
 .horizontal-scroller a:last-of-type {
   margin-right: 0px;
+}
+.link-selected {
+  border: 2px solid #0275d8;
 }
 @media screen and (max-width: 576px) {
   .tvf-box .tvf-inner h4, .tvf-box .tvf-inner h3 {

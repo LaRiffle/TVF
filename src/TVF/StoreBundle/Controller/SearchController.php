@@ -81,9 +81,21 @@ class SearchController extends Controller
           $vinyluser->setVinyl($vinyl);
         }
         $vinyluser->setNbViews($vinyluser->getNbViews() + 1);
+        $em->persist($vinyluser);
+        $em->flush();
         $vinyl->love = $vinyluser->getLover();
+
+        $is_owner = false;
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_RECORD')) {
+          $repository = $em->getRepository('TVFRecordBundle:Client');
+          $client = $repository->findOneBy(array('user' => $user));
+          if($vinyl->getClient()->getId() == $client->getId()){
+            $is_owner = true;
+          }
+        }
         return $this->render($this->entityNameSpace.':show.html.twig', array(
           'vinyl' => $vinyl,
+          'is_owner' => $is_owner,
         ));
     }
 

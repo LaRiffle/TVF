@@ -30,7 +30,7 @@
         {{ include(carousel, {'url': vinyl.images}) }}
       </div>
       <div class="col-sm-5 col-md-4">
-        {% if is_granted('ROLE_ADMIN') %}
+        {% if is_granted('ROLE_ADMIN') or is_owner %}
           {% set edition_buttons="TVFAdminBundle:Utils:edition.html.twig" %}
           {{ include(edition_buttons, {'edit': path('tvf_record_vinyl_add', {'id': vinyl.id}), 'remove': path('tvf_record_vinyl_remove', {'id': vinyl.id}) }) }}
         {% endif %}

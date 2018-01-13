@@ -2,7 +2,7 @@
 {% block body %}
 {% set navbar = "TVFStoreBundle:Utils:nav.html.twig" %}
 {{ include(navbar, {'active': 'selection'}) }}
-<div class="container">
+<div class="container" style="margin-bottom: 50px;">
   <div class="row">
     <div class="col-sm-6 offset-sm-3">
       <form name="form" class="form-signin"
@@ -56,7 +56,6 @@
           {{ form_widget(form.types) }}
         </div>
         {{ form_widget(form._token) }}
-        <br /><br /><br /><br /><br /><br /><br /><br />
       </form>
     </div>
   </div>

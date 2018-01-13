@@ -1,10 +1,11 @@
 {% extends "TVFStoreBundle::layout.html.twig" %}
 {% block title %}
-  | Créations
+  | Créations 
 {% endblock %}
 {% block body %}
 {% endblock %}
 {% block script %}
+{% if not is_granted('ROLE_RECORD') and not is_granted('ROLE_ADMIN') %}
 <script>
   var icon_per_row = 3;
   function Icon(x, y) {
@@ -69,6 +70,7 @@
       icons.push(icon);
   })
 </script>
+{% endif %}
 <script>
   function reshape_image(obj){
     var img = $(obj).find('img');

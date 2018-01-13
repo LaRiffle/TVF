@@ -3,12 +3,14 @@
     <li class="list-group-item collapse-toggle justify-content-between">
       <h5 style="margin-bottom: 0px; width: 100%;">
         <div style="float: right; margin-top: 2px;">
-          <a href="#" alt="Fermer le volet" class="close-lateral visible-to-md">
+          <a href="#" title="Fermer le volet" class="close-lateral visible-to-md">
             <i class="fa fa-chevron-right" aria-hidden="true"></i>
           </a>
-          <a href="#" alt="Aligner les icones" class="reorder-btn visible-from-lg">
+          {% if not is_granted('ROLE_RECORD') and not is_granted('ROLE_ADMIN') %}
+          <a href="#" title="Aligner les icones" class="reorder-btn visible-from-lg">
             <i class="fa fa-th" aria-hidden="true"></i>
           </a>
+          {% endif %}
         </div>
         Filtres <span id="number_results"></span>
       </h5>

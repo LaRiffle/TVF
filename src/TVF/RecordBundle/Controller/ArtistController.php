@@ -58,7 +58,8 @@ class ArtistController extends Controller
         }
         $form = $this->get('form.factory')->createBuilder(FormType::class, $artist)
         ->add('name', TextType::class)
-        ->add('bio', TextareaType::class)
+        ->add('bio', TextareaType::class, array(
+                'required'     => false))
         ->add('image', FileType::class, array('label' => 'Image', 'required' => False))
         ->add('types', EntityType::class, array(
                 'class'        => 'TVFAdminBundle:Type',

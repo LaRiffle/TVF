@@ -1,0 +1,12 @@
+<div class="img-thumbnail creation-icon" style="width: calc(102px + 0.5rem);">
+  <div class="img-cadre" style="width: 100px; height: 100px;">
+    <div class="caption" style="background-image: none">
+      <p style="margin-top: 10px;">
+        Sélectionnez<br />
+        {% if widget is defined %}
+          <span class="dyn_image_form">{{ widget|raw }}</span>
+        {% endif %}
+      </p>
+    </div>
+  </div>
+</div>
