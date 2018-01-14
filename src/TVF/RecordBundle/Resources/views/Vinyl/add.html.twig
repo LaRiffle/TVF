@@ -11,7 +11,17 @@
         <h3 class="form-signin-heading">{% if id == 0 %}Ajouter{% else %}Modifier{% endif %} un album vinyle</h3>
         {% set input_form="TVFAdminBundle:Utils:form_input.html.twig" %}
         {% set save_form="TVFAdminBundle:Utils:form_save.html.twig" %}
-        <div class="h3">{{ include(input_form, {'element': form.name, 'name':"Nom de l'album"}) }}</div>
+        <div class="h3">
+          {{ form_label(form.name, "Nom de l'album", {'label_attr' : {'class': 'sr-only'}}) }}
+          {{ form_errors(form.name) }}
+        <div class="input-group">
+          {{ form_widget(form.name, {'attr': {'class': 'form-control', 'placeholder': "Nom de l'album"}}) }}
+          <span class="input-group-btn">
+            <a id="search_launch" class="btn btn-primary" type="button" href="#"><i class="fa fa-search" aria-hidden="true"></i></a>
+          </span>
+        </div>
+        </div>
+        <div id="album_results"></div>
         <h5>Artiste</h5>
         <div>{{ include(input_form, {'element': form.artist, 'name':"Artiste"}) }}</div>
         <hr />
@@ -173,6 +183,76 @@
 {% block script %}
 {% set type_select = "TVFRecordBundle:Scripts:type_select.html.twig" %}
 {{ include(type_select) }}
+<script>
+/* handle the search of the artist and meta data with Spotify API */
+var authorization = "";
+/*$.ajax({
+    url: 'https://accounts.spotify.com/api/token',
+    headers: {
+      'Authorization': 'Basic ' + authorization
+    },
+    data: {
+      'grant_type': 'client_credentials'
+    },
+    success: function(response) {
+      console.log(response);
+      console.log('done');
+    }
+});*/
+$('#form_name').attr('autocomplete', 'off');
+var token = '{{ token }}';
+function search_artists() {
+  var album = $('#form_name').val();
+  $.ajax({
+      url: 'https://api.spotify.com/v1/search?q='+album+'&type=album',
+      headers: {
+        'Authorization': 'Bearer ' + token
+      },
+      success: function(response) {
+        console.log(response);
+        results = response.albums.items;
+        var list = $('<ul class="list-group"></ul>');
+        for(index in results){
+          if(index < 10){
+            var name = results[index].name;
+            var artists = results[index].artists;
+            console.log(results[index].name);
+            var item = $('<li class="list-group-item">');
+            item.html('<span class="album">'+ name + '</span> ·&nbsp;<span class="secondary artist"> '+artists[0].name+'</span>');
+            item.appendTo(list);
+          }
+        }
+        $('#album_results').html('');
+        $('#album_results').append(list);
+      }
+  });
+}
+$('#search_launch').on('click', function(e){
+  e.preventDefault();
+  search_artists();
+});
+/* Delay the search to activate search only when user has stopped typing */
+var last_key_up = -1;
+var delay = 600; // ms
+$('#form_name').keyup(function(){
+  var date = new Date();
+  last_key_up = date.getTime();
+  setTimeout(function(){
+    var date = new Date();
+    if(date.getTime() - last_key_up > delay - 50){
+      search_artists();
+    }
+  }, delay);
+});
+// When click on a suggested item
+$('body').on('click', '#album_results li', function(){
+  var album = $(this).find('.album').html();
+  album = album.replace(/&amp;/g, '&');
+  var artist = $(this).find('.artist').html();
+  $('#form_name').val(album);
+  $('#album_results').html('');
+});
+</script>
 <script type="text/javascript">
   /* Handle the multi image upload */
 

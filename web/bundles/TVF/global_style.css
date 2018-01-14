@@ -898,6 +898,28 @@ ul.edition-btn li:after {
     font-size: 1.5rem;
   }
 }
+/* Auto complete */
+#album_results {
+  position: absolute;
+  top: 80px;
+  width: calc(100% - 30px);
+}
+#album_results ul {
+  width: 100%;
+}
+#album_results li {
+  z-index: 3;
+}
+#album_results h5 {
+  margin-top: 20px;
+}
+#album_results li.list-group-item:hover {
+  background-color: #DFEEFA;
+  cursor: pointer;
+}
+.secondary {
+  color: #AEAEAE;
+}
 
 /* Chatbot */
 .modal-body {
