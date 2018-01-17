@@ -899,9 +899,12 @@ ul.edition-btn li:after {
   }
 }
 /* Auto complete */
+#search_launch {
+  padding-top: 11px;
+}
 #album_results {
   position: absolute;
-  top: 80px;
+  top: 82px;
   width: calc(100% - 30px);
 }
 #album_results ul {

@@ -1,6 +1,8 @@
 {% extends "TVFStoreBundle:Search:layout.html.twig" %}
+{% block head %}
+  <link rel="stylesheet" href="{{ asset('bundles/TVF/magicsuggest.css') }}">
+{% endblock %}
 {% block body %}
-
 <div id="add-creation-page">
   {% set navbar = "TVFStoreBundle:Utils:nav.html.twig" %}
   {{ include(navbar, {'active': 'collection'}) }}
@@ -23,7 +25,8 @@
         </div>
         <div id="album_results"></div>
         <h5>Artiste</h5>
-        <div>{{ include(input_form, {'element': form.artist, 'name':"Artiste"}) }}</div>
+        <div id="artist_suggest"></div>
+        <div class="hide">{{ include(input_form, {'element': form.artists, 'name':"Artiste"}) }}</div>
         <hr />
         <a href="#" class="internal-link" data-target="box_description">
           <h5><i class="fa fa-plus" aria-hidden="true"></i> Description</h5>
@@ -82,7 +85,7 @@
             {{ form_label(form.onsold, "En vente", {'label_attr' : {'class': 'internal-link keep', 'data-target': 'price'}}) }}
           </div>
         </div>
-        <div id="price" style="display:none;">
+        <div id="price" class="hide">
           <div style="margin-top: 10px;">
             <div class="input-group">
               {{ form_label(form.price, 'Prix €', {'label_attr' : {'class': 'sr-only'}}) }}
@@ -181,6 +184,7 @@
 </div>
 {% endblock %}
 {% block script %}
+<script src="{{ asset('bundles/TVF/js/magicsuggest.js') }}"></script>
 {% set type_select = "TVFRecordBundle:Scripts:type_select.html.twig" %}
 {{ include(type_select) }}
 <script>
@@ -223,7 +227,7 @@ function search_artists() {
           }
         }
         $('#album_results').html('');
-        $('#album_results').append(list);
+        $('#album_results').append(list).show();
       }
   });
 }
@@ -252,6 +256,74 @@ $('body').on('click', '#album_results li', function(){
   $('#form_name').val(album);
   $('#album_results').html('');
 });
+// When click outside of the results, clsoe the results suggestions
+$(document).mouseup(function(e){
+    var container = $('#album_results');
+    // if the target of the click isn't the container nor a descendant of the container
+    if (!container.is(e.target) && container.has(e.target).length === 0) {
+        container.hide();
+    }
+});
+</script>
+<script>
+  var data_artists = [
+    {% for artist in artists %}
+      {'id': '{{ artist.id }}', 'name': '{{ artist.name }}'}{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ];
+  var name_artists = {
+    {% for artist in artists %}
+      {{ artist.id }}: '{{ artist.name }}'{% if not loop.last %},{% endif %}
+    {% endfor %}
+  };
+  var list_artists = {
+    {% for artist in artists %}
+      '{{ artist.name }}': {{ artist.id }}{% if not loop.last %},{% endif %}
+    {% endfor %}
+  };
+  /* Handle the selection of artists */
+  var ms = $('#artist_suggest').magicSuggest({
+      data : data_artists
+  });
+  // Add the artists already binded in the input
+  var former_artists = $('#form_artists').val();
+  var former_selection = [];
+  for(var i=0; i < former_artists.length; i++){
+    var id = former_artists[i];
+    former_selection.push({id: id, name: name_artists[id]});
+  }
+  ms.addToSelection(former_selection);
+
+  var existing_artists = [];
+  $(ms).on('selectionchange', function(){
+    var selected_artists = this.getValue();
+    existing_artists = [];
+    for (var i = 0; i < selected_artists.length; i++) {
+      var artist = selected_artists[i];
+      select_artist(artist);
+    }
+    //console.log(existing_artists);
+    $('#form_artists').val(existing_artists);
+  });
+
+  function select_artist(artist){
+    // Test if is a know id, elseif a known name, else ask to register the artist
+    if(name_artists[artist] != undefined) {
+      existing_artists.push(artist);
+    } else if(list_artists[artist] != undefined) {
+      var id = list_artists[artist];
+      existing_artists.push(id);
+    } else {
+      // in normal condition this shouldn't be an id but an artist name
+      register_artist(artist);
+    }
+  }
+
+  function register_artist(artist){
+    console.log(artist + ' must be added to the database...');
+    // Add the artist to our local db: name_artists, list_artists
+  }
+
 </script>
 <script type="text/javascript">
   /* Handle the multi image upload */

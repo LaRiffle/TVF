@@ -45,7 +45,7 @@
             </div>
             <h2 class="card-title" style="color: #BA0020;">{{ include(text, {'element': data.home.vinyl.title }) }}</h2>
             {% set icons = "TVFStoreBundle:Search:index_insta.html.twig" %}
-            {{ include(icons, {'vinyls': vinyls,  'filterable': 'no'}) }}
+            {{ include(icons, {'vinyls': vinyls,  'filterable': 'no', 'no_add': 'true'}) }}
             <div class="horizontal-scroller" style="margin-top: 15px; float: right;">
               <a href="{{ path('tvf_store_explore') }}" class="visible-to-xs show-lateral btn btn-default"><i class="fa fa-search" aria-hidden="true"></i> Rechercher des vinyles</a>
             </div>

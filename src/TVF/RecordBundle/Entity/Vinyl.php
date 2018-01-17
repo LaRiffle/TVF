@@ -17,6 +17,7 @@ class Vinyl
      */
     public function __construct()
     {
+        $this->artists = new \Doctrine\Common\Collections\ArrayCollection();
         $this->types = new \Doctrine\Common\Collections\ArrayCollection();
         $this->images = new \Doctrine\Common\Collections\ArrayCollection();
         $this->sizes = new \Doctrine\Common\Collections\ArrayCollection();
@@ -41,7 +42,7 @@ class Vinyl
     /**
      * @var string
      *
-     * @ORM\Column(name="description", type="text")
+     * @ORM\Column(name="description", type="text", nullable=true)
      */
     private $description;
 
@@ -95,10 +96,9 @@ class Vinyl
     private $client;
 
     /**
-     * @ORM\ManyToOne(targetEntity="TVF\RecordBundle\Entity\Artist")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\ManyToMany(targetEntity="TVF\RecordBundle\Entity\Artist", cascade={"persist"})
      */
-    private $artist;
+    private $artists;
 
     /**
      * Get id
@@ -419,26 +419,41 @@ class Vinyl
     }
 
     /**
-     * Set artist
+     * Add artist
      *
      * @param \TVF\RecordBundle\Entity\Artist $artist
      *
      * @return Vinyl
      */
-    public function setArtist(\TVF\RecordBundle\Entity\Artist $artist)
+    public function addArtist(\TVF\RecordBundle\Entity\Artist $artist)
     {
-        $this->artist = $artist;
+        $this->artists[] = $artist;
 
         return $this;
     }
 
     /**
-     * Get artist
+     * Remove artist
      *
-     * @return \TVF\RecordBundle\Entity\Artist
+     * @param \TVF\RecordBundle\Entity\Artist $artist
      */
-    public function getArtist()
+    public function removeArtist(\TVF\RecordBundle\Entity\Artist $artist)
     {
-        return $this->artist;
+        $this->artists->removeElement($artist);
+    }
+
+    /**
+     * Get artists
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getArtists()
+    {
+        return $this->artists;
+    }
+
+    public function emptyArtists()
+    {
+        $this->artists = [];
     }
 }

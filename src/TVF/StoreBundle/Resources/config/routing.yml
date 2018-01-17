@@ -61,3 +61,6 @@ tvf_store_vinyl_show:
     defaults: { _controller: TVFStoreBundle:Search:showVinyl }
     requirements:
         id:   \d+
+tvf_store_artist_search:
+  path:     /about/{artist}
+  defaults: { _controller: TVFRecordBundle:Artist:Search, artist: '' }

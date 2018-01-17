@@ -2,7 +2,7 @@
   <div id="no_results"><h4>Pas de résultats</h4></div>
   <div class="tvf-grid">
     <div class="tvf-row">
-      {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_RECORD') %}
+      {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_RECORD') and no_add is not defined %}
         <div class="tvf-box tvf-icon add-icon" style="z-index: {{vinyls|length + 1}};">
           <div class="tvf-inner">
             <a href="{{ path('tvf_record_vinyl_add') }}" style="text-align: center; height: auto;">
@@ -17,7 +17,7 @@
           data-id="{{ vinyl.id }}"
           data-img="{{ vinyl.small_image }}"
           data-name="{{ vinyl.name }}"
-          data-artist="{{ vinyl.artist.name }}"
+          data-artists="{% for artist in vinyl.artists %}{{artist.name}}{% if not loop.last %},{% endif %}{% endfor %}"
           data-price="{{ vinyl.price }}"
           data-onsold="{{ vinyl.onsold }}"
           data-description="{{ vinyl.description|nl2br }}"
@@ -51,7 +51,7 @@
       </div>
       {% if loop.last %}
         {% set index = loop.index %}
-        {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_RECORD') %}
+        {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_RECORD')  and no_add is not defined %}
           {% set index = index + 1 %}
         {% endif %}
         {% if filterable == 'no'%}
@@ -100,7 +100,7 @@
               </h4>
             </div>
             <h4><b><span class="vinyl-name"></span></b></h4>
-            <h5>Par <span class="vinyl-artist"></span></h5>
+            <h5>Par <span class="vinyl-artists"></span></h5>
             <p><span class="vinyl-description"></span></p>
             <h6 class=""><a href="#" data-href="{{ path('tvf_record_client_present', {'slug':''}) }}" class="vinyl-disquaire-link"><span class="vinyl-disquaire">Noir de jais</span></a></h6>
           </div>

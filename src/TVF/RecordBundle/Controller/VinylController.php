@@ -49,12 +49,14 @@ class  VinylController extends Controller
             }
             $new_vinyl = new Vinyl();
             $new_vinyl->setName($vinyl->getName());
-            $new_vinyl->setArtist($vinyl->getArtist());
             $new_vinyl->setDescription($vinyl->getDescription());
             $new_vinyl->setOnsold($vinyl->getOnsold());
             $new_vinyl->setPrice($vinyl->getPrice());
             //$new_vinyl->setCategory($vinyl->getCategory());
             $new_vinyl->setClient($vinyl->getClient());
+            foreach($vinyl->getArtists() as $artist){
+              $new_vinyl->addArtist($artist);
+            }
             foreach($vinyl->getTypes() as $type){
               $new_vinyl->addType($type);
             }
@@ -72,11 +74,14 @@ class  VinylController extends Controller
         }
         $form = $this->get('form.factory')->createBuilder(FormType::class, ($id == 0 ? $vinyl : $new_vinyl))
         ->add('name', TextType::class)
-        ->add('artist', EntityType::class, array(
+        ->add('artists', EntityType::class, array(
                 'class'        => 'TVFRecordBundle:Artist',
                 'choice_label' => 'name',
+                'multiple'     => true
         ))
-        ->add('description', TextareaType::class)
+        ->add('description', TextareaType::class, array(
+          'required' => false
+        ))
         ->add('onsold', CheckboxType::class, array(
           'required' => false
         ))
@@ -176,11 +181,14 @@ class  VinylController extends Controller
                 }
               }
               $vinyl->setName($new_vinyl->getName());
-              $vinyl->setArtist($new_vinyl->getArtist());
               $vinyl->setDescription($new_vinyl->getDescription());
               $vinyl->setOnsold($new_vinyl->getOnsold());
               $vinyl->setPrice($new_vinyl->getPrice());
               //$vinyl->setCategory($new_vinyl->getCategory());
+              $vinyl->emptyArtists();
+              foreach($new_vinyl->getArtists() as $artist){
+                $vinyl->addArtist($artist);
+              }
               $vinyl->emptyTypes();
               foreach($new_vinyl->getTypes() as $type){
                 $vinyl->addType($type);
@@ -209,6 +217,9 @@ class  VinylController extends Controller
           $gender->types = $typeRepository->whereGender($gender->getId());
         }
 
+        $repository = $em->getRepository('TVFRecordBundle:Artist');
+        $artists = $repository->findBy(array(), array('name'=>'ASC'));
+
         /* Get credential for spotify API */
         //$authorization = base64_encode($this->getParameter('client_id').':'.$this->getParameter('client_secret'));
         $token = $this->getParameter('token');
@@ -217,12 +228,17 @@ class  VinylController extends Controller
             'form' => $form->createView(),
             'id' => $id,
             'genders' => $genders,
+            'artists' => $artists,
             'token' => $token,
         ));
     }
     public function removeAction(Request $request, $id){
         $em = $this->getDoctrine()->getManager();
         $vinyl = $em->getRepository($this->entityNameSpace)->find($id);
+        $vinyl_users = $em->getRepository('TVFStoreBundle:VinylUser')->findBy(array('vinyl' => $vinyl));
+        foreach ($vinyl_users as $vinyl_user) {
+          $em->remove($vinyl_user);
+        }
         $em->remove($vinyl);
         $em->flush();
         return $this->redirect($this->generateUrl('tvf_store_explore'));

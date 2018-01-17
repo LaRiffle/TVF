@@ -112,7 +112,12 @@ $('a.show-vinyl').on('click', function(e){
 
 function update_content_overview($vinyl, index, after_index){
   $("#vinyl_overview .vinyl-name").html($vinyl.attr('data-name'));
-  $("#vinyl_overview .vinyl-artist").html($vinyl.attr('data-artist'));
+  var artists = $vinyl.attr('data-artists').split(',').join(', ');
+  var artists_html = '';
+  for(var i=0; i<artists.length; i++){
+    artists_html += '<a href="{{ path('tvf_store_artist_search') }}/'+artists[i]+'">'+artists[i]+'</a>';
+  }
+  $("#vinyl_overview .vinyl-artists").html(artists_html);
   $("#vinyl_overview .vinyl-description").html($vinyl.attr('data-description'));
   $("#vinyl_overview .vinyl-disquaire").html($vinyl.attr('data-disquaire'));
   // Set price
