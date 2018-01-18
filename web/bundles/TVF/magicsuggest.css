@@ -53,6 +53,8 @@
 }
 .ms-ctn .ms-sel-ctn input{
     float: left;
+    margin-top: 4px;
+    min-width: 100px;
 }
 .ms-ctn-disabled input{
     cursor: not-allowed;

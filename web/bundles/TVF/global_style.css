@@ -924,6 +924,19 @@ ul.edition-btn li:after {
   color: #AEAEAE;
 }
 
+#artists_choice li {
+  padding: .75rem .75rem;
+}
+#artists_choice img {
+  width: 100px;
+}
+#artists_choice h5 {
+  margin-bottom: 0.2rem;
+}
+#artists_choice p {
+  margin-bottom: 0.4rem;
+}
+
 /* Chatbot */
 .modal-body {
   max-height: calc(100vh - 200px);

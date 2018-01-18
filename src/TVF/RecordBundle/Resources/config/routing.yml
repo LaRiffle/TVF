@@ -29,6 +29,9 @@ tvf_record_artist_show:
 tvf_record_artist_remove:
   path:     /record/artist/remove/{id}
   defaults: { _controller: TVFRecordBundle:Artist:remove, id:0 }
+tvf_record_artist_search:
+  path:     /record/artist/search/{spotify_id}
+  defaults: { _controller: TVFRecordBundle:Artist:search, spotify_id:0 }
 
 
 tvf_record_vinyl_add:

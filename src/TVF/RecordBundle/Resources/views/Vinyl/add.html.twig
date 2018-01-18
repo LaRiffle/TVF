@@ -25,7 +25,10 @@
         </div>
         <div id="album_results"></div>
         <h5>Artiste</h5>
-        <div id="artist_suggest"></div>
+        <div id="artist_suggest">
+          <i class="fa fa-circle-o-notch fa-spin fa-2x fa-fw"></i>
+          <span class="sr-only">Loading...</span>
+        </div>
         <div class="hide">{{ include(input_form, {'element': form.artists, 'name':"Artiste"}) }}</div>
         <hr />
         <a href="#" class="internal-link" data-target="box_description">
@@ -297,6 +300,7 @@ $(document).mouseup(function(e){
   var existing_artists = [];
   $(ms).on('selectionchange', function(){
     var selected_artists = this.getValue();
+    console.log(selected_artists);
     existing_artists = [];
     for (var i = 0; i < selected_artists.length; i++) {
       var artist = selected_artists[i];
@@ -307,6 +311,7 @@ $(document).mouseup(function(e){
   });
 
   function select_artist(artist){
+    console.log('Select artist '+artist);
     // Test if is a know id, elseif a known name, else ask to register the artist
     if(name_artists[artist] != undefined) {
       existing_artists.push(artist);
@@ -315,13 +320,118 @@ $(document).mouseup(function(e){
       existing_artists.push(id);
     } else {
       // in normal condition this shouldn't be an id but an artist name
-      register_artist(artist);
+      select_new_artist(artist);
     }
   }
 
-  function register_artist(artist){
+  function select_new_artist(artist){
     console.log(artist + ' must be added to the database...');
-    // Add the artist to our local db: name_artists, list_artists
+    $.ajax({
+        url: 'https://api.spotify.com/v1/search?q='+artist+'&type=artist',
+        headers: {
+          'Authorization': 'Bearer ' + token
+        },
+        success: function(response) {
+          var found_artists = response.artists.items;
+          display_artists_choice(found_artists);
+          console.log(found_artists);
+        }
+    });
+  }
+  function display_artists_choice(artists){
+    var content = $('<ul/>', {
+      id: 'artists_choice',
+      class: 'list-group'
+    });
+    if(artists.length == 0){
+      var see_more = $('<li/>').addClass('list-group-item');
+      see_more.html("Nous n'avons pas trouvé de résultats. :/ <br />Essayez peut-être avec une autre orthographe.");
+      content.append(see_more);
+    }
+    for(var i=0; i<artists.length; i++){
+      if(i == 1){
+        var see_more = $('<li/>').addClass('list-group-item');
+        see_more.html('<a href="#" id="see_more_artists">+ Voir plus de résultats</a>');
+        content.append(see_more);
+      }
+      var artist = artists[i];
+      var url = '...';
+      if(artist.images.length > 0){
+        url = artist.images[0].url;
+      }
+      var artist_node = $('<li/>').addClass('list-group-item');
+      if(i > 0){
+        artist_node.addClass('hide');
+      }
+      $(`<div class="media">
+        <img alt="Pas d'aperçu" src="`+ url +`" class="d-flex mr-3">
+        <div class="media-body">
+          <h5 class="mt-0">`+ artist.name +`</h5>
+          <p class="secondary">`+ artist.genres.join(' · ') +`</p>
+          <a href="#" class="btn btn-primary register-artist" id="`+ artist.id +`">Sélectionner</a>
+        </div>
+      </div>`).appendTo(artist_node);
+      content.append(artist_node);
+    }
+    bootbox.confirm({
+        title: "À quel artiste pensez-vous ?",
+        message: content,
+        buttons: {
+          confirm: {
+            label: 'Confirmer'
+          },
+          cancel: {
+            label: 'Annuler'
+          }
+        },
+        callback: function(result) {
+          if(result == 0){
+            console.log('Cancel artist selection...');
+            $('#artist_suggest .ms-sel-item:last').fadeOut('slow');
+            setTimeout(function(){
+              $('#artist_suggest .ms-sel-item:last .ms-close-btn').click();
+            }, 1000);
+          } else {
+            console.log('Artist chosen.');
+          }
+        }
+    });
+    $('body').on('click', '#see_more_artists', function(e){
+      e.preventDefault();
+      $('#artists_choice li.hide').slideDown().css('display', 'block');
+      $('#see_more_artists').parents('li').hide();
+    });
+    $('body').on('click', '#artists_choice .register-artist', function(e){
+      e.preventDefault();
+      register_artist(this.id);
+    });
+  }
+  function register_artist(spotify_id){
+    $('button[data-bb-handler=confirm]').click();
+    $.ajax({
+        url: '{{ path('tvf_record_artist_search') }}/' + spotify_id,
+        success: function(response) {
+          console.log('Registration response:');
+          console.log(response);
+          var id = response.id;
+          var name = response.name;
+          var option = $('<option value="'+id+'" selected="selected">'+name+'</option></select>');
+          $('#form_artists').append(option);
+          data_artists.push({'id': id, 'name':name});
+          name_artists[id] = name;
+          // Update the ms component
+          var ids = ms.getValue();
+          var real_ids = []
+          ms.clear();
+          for(i=0; i<ids.length; i++){
+            if(name_artists[ids[i]] != undefined){
+              ms.addToSelection({id: ids[i], name:name_artists[ids[i]]});
+            }
+          }
+          ms.setValue(real_ids);
+          ms.addToSelection({id: id, name:name});
+        }
+    });
   }
 
 </script>

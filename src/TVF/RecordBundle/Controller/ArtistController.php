@@ -5,6 +5,7 @@ namespace TVF\RecordBundle\Controller;
 use TVF\RecordBundle\Entity\Artist;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
@@ -13,6 +14,9 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+
+use SpotifyWebAPI\Session;
+use SpotifyWebAPI\SpotifyWebAPI;
 
 class ArtistController extends Controller
 {
@@ -26,6 +30,41 @@ class ArtistController extends Controller
         return $this->render($this->entityNameSpace.':index.html.twig', array(
           'artists' => $artists,
         ));
+    }
+    public function searchAction($spotify_id)
+    {
+      $session = new Session(
+          $this->getParameter('client_id'),
+          $this->getParameter('client_secret')
+      );
+      $session->requestCredentialsToken();
+      $accessToken = $session->getAccessToken();
+
+      $api = new SpotifyWebAPI();
+      $api->setAccessToken($accessToken);
+      try{
+        $artist_info = $api->getArtist($spotify_id);
+        //var_dump($artist_info);
+        $artist = new Artist();
+        $artist->setName($artist_info->name);
+        if(count($artist_info->images) >= 3){
+          $artist->setImage($artist_info->images[2]->url);
+        } elseif (count($artist_info->images) > 0) {
+          $artist->setImage($artist_info->images[0]->url);
+        } else {
+          $artist->setImage('');
+        }
+        // TODO: Add types
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($artist);
+        $em->flush();
+        return new JsonResponse([
+          'id' => $artist->getId(),
+          'name' => $artist->getName()
+        ]);
+      } catch(\SpotifyWebAPI\SpotifyWebAPIException  $e){
+        return new JsonResponse(['Error' => 'Invalid spotify id: '.$spotify_id]);
+      }
     }
     public function showAction($id)
     {
