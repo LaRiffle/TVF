@@ -225,7 +225,14 @@ function search_artists() {
             var artists = results[index].artists;
             console.log(results[index].name);
             var item = $('<li class="list-group-item">');
-            item.html('<span class="album">'+ name + '</span> ·&nbsp;<span class="secondary artist"> '+artists[0].name+'</span>');
+            var artists_label = '';
+            for(var i=0; i<artists.length; i++){
+              artists_label += artists[i].name;
+              if(i+1 < artists.length){
+                artists_label += ', ';
+              }
+            }
+            item.html('<span class="album">'+ name + '</span>&nbsp;·&nbsp;<span class="secondary artist"> '+artists_label+'</span>');
             item.appendTo(list);
           }
         }
@@ -255,9 +262,18 @@ $('#form_name').keyup(function(){
 $('body').on('click', '#album_results li', function(){
   var album = $(this).find('.album').html();
   album = album.replace(/&amp;/g, '&');
-  var artist = $(this).find('.artist').html();
   $('#form_name').val(album);
   $('#album_results').html('');
+  var artists = $(this).find('.artist').html().split(', ');
+  for(var i=0; i<artists.length; i++){
+    var artist = artists[i].trim();
+    var id = artist;
+    // if artist exists, fetch its id
+    if(list_artists[artist] != undefined) {
+      id = list_artists[artist];
+    }
+    ms.addToSelection({id: id, name: artist});
+  }
 });
 // When click outside of the results, clsoe the results suggestions
 $(document).mouseup(function(e){
@@ -269,19 +285,20 @@ $(document).mouseup(function(e){
 });
 </script>
 <script>
+  var stack_select_new_artist = [];
   var data_artists = [
     {% for artist in artists %}
-      {'id': '{{ artist.id }}', 'name': '{{ artist.name }}'}{% if not loop.last %},{% endif %}
+      {'id': '{{ artist.id }}', 'name': "{{ artist.name|raw }}"}{% if not loop.last %},{% endif %}
     {% endfor %}
   ];
   var name_artists = {
     {% for artist in artists %}
-      {{ artist.id }}: '{{ artist.name }}'{% if not loop.last %},{% endif %}
+      {{ artist.id }}: "{{ artist.name|raw }}"{% if not loop.last %},{% endif %}
     {% endfor %}
   };
   var list_artists = {
     {% for artist in artists %}
-      '{{ artist.name }}': {{ artist.id }}{% if not loop.last %},{% endif %}
+      "{{ artist.name|raw }}": {{ artist.id }}{% if not loop.last %},{% endif %}
     {% endfor %}
   };
   /* Handle the selection of artists */
@@ -311,16 +328,30 @@ $(document).mouseup(function(e){
   });
 
   function select_artist(artist){
-    console.log('Select artist '+artist);
+    if (typeof artist === 'string' || artist instanceof String){
+        artist = artist.trim();
+    }
+    console.log('Select artist :'+artist+':');
     // Test if is a know id, elseif a known name, else ask to register the artist
     if(name_artists[artist] != undefined) {
+      console.log('Id ok');
       existing_artists.push(artist);
     } else if(list_artists[artist] != undefined) {
+      console.log('Name ok');
       var id = list_artists[artist];
       existing_artists.push(id);
     } else {
       // in normal condition this shouldn't be an id but an artist name
-      select_new_artist(artist);
+      if($.inArray(artist, stack_select_new_artist) == -1){
+        stack_select_new_artist.unshift(artist);
+        if(stack_select_new_artist.length == 1){
+            select_new_artist(artist);
+        }
+      } else {
+        console.log(stack_select_new_artist);
+        console.log('Attempt to add '+artist+' in stack, already there');
+        console.log($.inArray(artist, stack_select_new_artist));
+      }
     }
   }
 
@@ -430,6 +461,17 @@ $(document).mouseup(function(e){
           }
           ms.setValue(real_ids);
           ms.addToSelection({id: id, name:name});
+          // check if other artists in stack to add
+          stack_select_new_artist.pop();
+          console.log('Check queue');
+          console.log(stack_select_new_artist);
+          var len = stack_select_new_artist.length;
+          if(len > 0){
+            var artist = stack_select_new_artist[len-1];
+            console.log('Treat other artist in queue :'+artist);
+            select_new_artist(artist);
+          }
+
         }
     });
   }

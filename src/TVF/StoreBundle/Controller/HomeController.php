@@ -54,7 +54,11 @@ class HomeController extends Controller
         $user = $this->getUser();
         foreach ($vinyls as $vinyl) {
           $fileNames = $vinyl->getImages();
-          $path_small_image = $imagehandler->get_image_in_quality($fileNames[0], 'xs');
+          if(count($fileNames) > 0){
+            $path_small_image = $imagehandler->get_image_in_quality($fileNames[0], 'xs');
+          } else {
+            $path_small_image = '';
+          }
           $vinyl->small_image = $path_small_image;
           $vinyluser = $love_repository->findOneBy(array('vinyl' => $vinyl, 'user' => $user));
           if($vinyluser === null) {
