@@ -224,7 +224,18 @@ function search_artists() {
                 artists_label += ', ';
               }
             }
-            item.html('<span class="album">'+ name + '</span>&nbsp;·&nbsp;<span class="secondary artist"> '+artists_label+'</span>');
+            var images = results[index].images;
+            var image;
+            var height = 0;
+            for(var i=0; i<images.length; i++){
+              if(images[i].height >= height){
+                image = images[i].url;
+                height = images[i].height
+              }
+            }
+            item.html(`<span class="album">`+ name + `</span>
+            &nbsp;·&nbsp;<span class="secondary artist"> `+artists_label+`</span>
+            <span class="image hide">`+image+ `</span>`);
             item.appendTo(list);
           }
         }
@@ -362,6 +373,8 @@ $('body').on('click', '#album_results li', function(){
   album = album.replace(/&amp;/g, '&');
   $('#form_name').val(album);
   $('#album_results').html('');
+  var image = $(this).find('.image').html();
+  add_image_from_url(image);
   var artists = $(this).find('.artist').html().split(', ');
   for(var i=0; i<artists.length; i++){
     var artist = artists[i].trim();
@@ -589,27 +602,42 @@ $(document).mouseup(function(e){
           newElmt.find('input').click();
       });
   })
+  function add_image_from_url(url){
+    var imageList = $('#image-fields-list');
+    var newWidget = imageList.attr('data-prototype');
+    newWidget = newWidget.replace(/__name__/g, imageCount);
+    imageCount++;
+    var newElmt = $(newWidget);
+    newElmt.appendTo(imageList);
+    var input = newElmt.find('input');
+    input.attr('type', 'text');
+    input.val(url);
+    create_thumbnail(input, url);
+  }
   function readURL(input) {
     if (input.files && input.files[0]) {
       var reader = new FileReader();
       reader.onload = function(e) {
-        var caption_box = $(input).parents('.caption');
-        caption_box.find('p').hide();
-        caption_box.prepend($('<img src="'+e.target.result+'">'));
-        caption_box.prepend($('<div class="delete-img"><p><a href="#">Supprimer</a></p></div>'));
-        setTimeout(function(){
-          var img = caption_box.find('img').first();
-          var width = img.width();
-          var height = img.height();
-          console.log(width+ ' '+ height);
-          if(width < height){
-             img.addClass('portrait');
-          }
-          img.show();
-        }, 100);
+        create_thumbnail(input, e.target.result);
       }
       reader.readAsDataURL(input.files[0]);
     }
+  }
+  function create_thumbnail(input, src) {
+    var caption_box = $(input).parents('.caption');
+    caption_box.find('p').hide();
+    caption_box.prepend($('<img src="'+src+'">'));
+    caption_box.prepend($('<div class="delete-img"><p><a href="#">Supprimer</a></p></div>'));
+    setTimeout(function(){
+      var img = caption_box.find('img').first();
+      var width = img.width();
+      var height = img.height();
+      console.log(width+ ' '+ height);
+      if(width < height){
+         img.addClass('portrait');
+      }
+      img.show();
+    }, 100);
   }
   $('body').on('change', '.dyn_image_form input', function(){
     readURL(this);

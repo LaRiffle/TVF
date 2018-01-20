@@ -7,6 +7,15 @@ class TVFImagehandler {
   {
       $this->img_dir = $img_dir;
   }
+  public function download_image($url, $fileName){
+    $ch = curl_init($url);
+    $fp = fopen($this->img_dir.'/'.$fileName, 'wb');
+    curl_setopt($ch, CURLOPT_FILE, $fp);
+    curl_setopt($ch, CURLOPT_HEADER, 0);
+    curl_exec($ch);
+    curl_close($ch);
+    fclose($fp);
+  }
   public function check_image_small_copies($path){
       $path_no_ext = preg_replace('/\\.[^.\\s]{3,4}$/', '', $path);
       list($width, $height) = getimagesize($path);

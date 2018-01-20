@@ -129,22 +129,30 @@ class  VinylController extends Controller
               $files = $vinyl->getImages();
               $vinyl->emptyImages();
               if($files != null) {
+                $imagehandler = $this->container->get('tvf_store.imagehandler');
+                $fileName;
                 foreach ($files as $file) {
-                  // Generate a unique name for the file before saving it
-                  $fileName = md5(uniqid()).'.'.$file->guessExtension();
+                  // File can be either a real image or the url of an image
+                  if(is_string($file)) {
+                    $extension = 'jpg';
+                    $fileName = md5(uniqid()).'.'.$extension;
+                    $file = $imagehandler->download_image($file, $fileName);
+                  } else {
+                    // Generate a unique name for the file before saving it
+                    $fileName = md5(uniqid()).'.'.$file->guessExtension();
 
-                  // Move the file to the directory where images are stored
-                  $file->move(
-                      $this->getParameter('img_dir'),
-                      $fileName
-                  );
-                  // Check orientation
-                  $path = $this->getParameter('img_dir').'/'.$fileName;
-                  $imagehandler = $this->container->get('tvf_store.imagehandler');
-                  $imagehandler->image_fix_orientation($path);
+                    // Move the file to the directory where images are stored
+                    $file->move(
+                        $this->getParameter('img_dir'),
+                        $fileName
+                    );
+                    // Check orientation
+                    $path = $this->getParameter('img_dir').'/'.$fileName;
+                    $imagehandler->image_fix_orientation($path);
 
-                  // Update the 'image' property to store the file name
-                  // instead of its contents
+                    // Update the 'image' property to store the file name
+                    // instead of its contents
+                  }
                   $vinyl->addImage($fileName);
                 }
               }
