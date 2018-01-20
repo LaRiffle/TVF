@@ -192,22 +192,14 @@
 {{ include(type_select) }}
 <script>
 /* handle the search of the artist and meta data with Spotify API */
-var authorization = "";
-/*$.ajax({
-    url: 'https://accounts.spotify.com/api/token',
-    headers: {
-      'Authorization': 'Basic ' + authorization
-    },
-    data: {
-      'grant_type': 'client_credentials'
-    },
-    success: function(response) {
-      console.log(response);
-      console.log('done');
-    }
-});*/
 $('#form_name').attr('autocomplete', 'off');
-var token = '{{ token }}';
+var token = null;
+$.ajax({
+    url: '{{ path('tvf_record_client_token') }}',
+    success: function(response) {
+      token = response.token;
+    }
+});
 function search_artists() {
   var album = $('#form_name').val();
   $.ajax({

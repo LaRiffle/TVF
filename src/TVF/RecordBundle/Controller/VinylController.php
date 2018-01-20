@@ -220,16 +220,11 @@ class  VinylController extends Controller
         $repository = $em->getRepository('TVFRecordBundle:Artist');
         $artists = $repository->findBy(array(), array('name'=>'ASC'));
 
-        /* Get credential for spotify API */
-        //$authorization = base64_encode($this->getParameter('client_id').':'.$this->getParameter('client_secret'));
-        $token = $this->getParameter('token');
-
         return $this->render($this->entityNameSpace.':add.html.twig', array(
             'form' => $form->createView(),
             'id' => $id,
             'genders' => $genders,
             'artists' => $artists,
-            'token' => $token,
         ));
     }
     public function removeAction(Request $request, $id){

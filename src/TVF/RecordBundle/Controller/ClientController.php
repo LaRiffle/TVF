@@ -5,6 +5,7 @@ namespace TVF\RecordBundle\Controller;
 use TVF\RecordBundle\Entity\Client;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -16,6 +17,8 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+
+use SpotifyWebAPI\Session;
 
 class ClientController extends Controller
 {
@@ -29,6 +32,18 @@ class ClientController extends Controller
         return $this->render($this->entityNameSpace.':index.html.twig', array(
           'clients' => $clients
         ));
+    }
+    public function tokenAction() {
+      if (!$this->get('security.authorization_checker')->isGranted('ROLE_RECORD')) {
+        throw new AccessDeniedException('Accès limité.');
+      }
+      $session = new Session(
+          $this->getParameter('client_id'),
+          $this->getParameter('client_secret')
+      );
+      $session->requestCredentialsToken();
+      $accessToken = $session->getAccessToken();
+      return new JsonResponse(['token' => $accessToken]);
     }
     public function showAction($id = 0){
         if ($this->get('security.authorization_checker')->isGranted('ROLE_RECORD')) {
