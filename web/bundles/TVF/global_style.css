@@ -913,6 +913,9 @@ ul.edition-btn li:after {
 #album_results li {
   z-index: 3;
 }
+#album_results li.item-selected {
+  background-color: #DFEEFA;
+}
 #album_results h5 {
   margin-top: 20px;
 }

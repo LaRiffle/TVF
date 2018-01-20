@@ -248,15 +248,121 @@ $('#search_launch').on('click', function(e){
 /* Delay the search to activate search only when user has stopped typing */
 var last_key_up = -1;
 var delay = 600; // ms
-$('#form_name').keyup(function(){
-  var date = new Date();
-  last_key_up = date.getTime();
-  setTimeout(function(){
-    var date = new Date();
-    if(date.getTime() - last_key_up > delay - 50){
-      search_artists();
+var dropdown = {
+  active: false,
+  _user_value: '',
+  select: function(){
+    var item;
+    if(dropdown.active){
+      var item = dropdown._get_item();
+      item.click();
     }
-  }, delay);
+  },
+  movedown: function(){
+    if(!dropdown.active){
+      dropdown.active = true;
+      dropdown._user_value = $(dropdown._input_id).val();
+      dropdown._set_item(0);
+    } else {
+      var item = dropdown._next_item();
+      if(item === null){
+        dropdown.clear();
+        $(dropdown._input_id).val(dropdown._user_value);
+      } else {
+        dropdown._activate_item(item);
+      }
+    }
+  },
+  moveup: function(){
+    if(!dropdown.active){
+      dropdown.active = true;
+      n_item = $(dropdown._id + ' li').length;
+      dropdown._set_item(n_item - 1);
+    } else {
+      var item = dropdown._previous_item();
+      if(item === null){
+        dropdown.clear();
+        $(dropdown._input_id).val(dropdown._user_value);
+      } else {
+        dropdown._activate_item(item);
+      }
+    }
+  },
+  _id: '#album_results',
+  _input_id: '#form_name',
+  _activate_item: function(item){
+    $(dropdown._id + ' li').removeClass('item-selected');
+    item.addClass('item-selected');
+    $(dropdown._input_id).val(item.find('.album').html());
+  },
+  _set_item: function(index){
+    var item = $(dropdown._id + ' li:eq('+index+')');
+    dropdown._activate_item(item);
+    return item;
+  },
+  _get_item: function(){
+    var item = $(dropdown._id + ' li.item-selected').first();
+    if(item.length > 0){
+      return item;
+    } else {
+      return $(dropdown._id + ' li').first();
+    }
+  },
+  _next_item: function(){
+    var item = dropdown._get_item();
+    var next_item = item.next();
+    return (next_item.length > 0) ? next_item : null;
+  },
+  _previous_item: function(){
+    var item = dropdown._get_item();
+    var previous_item = item.prev();
+    return (previous_item.length > 0) ? previous_item : null;
+  },
+  clear: function(){
+    dropdown.active = false;
+    $(dropdown._id + ' li').removeClass('item-selected');
+  }
+}
+$(dropdown._id).mousemove(function(){
+  dropdown.clear();
+});
+$('#form_name').keypress(function(e){
+  var KEYCODES = {
+      BACKSPACE: 8,
+      TAB: 9,
+      ENTER: 13,
+      CTRL: 17,
+      ESC: 27,
+      SPACE: 32,
+      UPARROW: 38,
+      DOWNARROW: 40,
+      COMMA: 188
+  };
+  switch(e.keyCode) {
+    case KEYCODES.ENTER:
+        e.preventDefault();
+        console.log('BLOCK SELECTION');
+        dropdown.select();
+        break;
+    case KEYCODES.DOWNARROW:
+        e.preventDefault();
+        dropdown.movedown();
+        break;
+    case KEYCODES.UPARROW:
+        e.preventDefault();
+        dropdown.moveup();
+        break;
+    default:
+        var date = new Date();
+        last_key_up = date.getTime();
+        setTimeout(function(){
+          var date = new Date();
+          if(date.getTime() - last_key_up > delay - 50){
+            search_artists();
+          }
+        }, delay);
+        break;
+    }
 });
 // When click on a suggested item
 $('body').on('click', '#album_results li', function(){
@@ -334,10 +440,8 @@ $(document).mouseup(function(e){
     console.log('Select artist :'+artist+':');
     // Test if is a know id, elseif a known name, else ask to register the artist
     if(name_artists[artist] != undefined) {
-      console.log('Id ok');
       existing_artists.push(artist);
     } else if(list_artists[artist] != undefined) {
-      console.log('Name ok');
       var id = list_artists[artist];
       existing_artists.push(id);
     } else {
@@ -347,10 +451,6 @@ $(document).mouseup(function(e){
         if(stack_select_new_artist.length == 1){
             select_new_artist(artist);
         }
-      } else {
-        console.log(stack_select_new_artist);
-        console.log('Attempt to add '+artist+' in stack, already there');
-        console.log($.inArray(artist, stack_select_new_artist));
       }
     }
   }
@@ -365,7 +465,6 @@ $(document).mouseup(function(e){
         success: function(response) {
           var found_artists = response.artists.items;
           display_artists_choice(found_artists);
-          console.log(found_artists);
         }
     });
   }
@@ -418,6 +517,7 @@ $(document).mouseup(function(e){
         callback: function(result) {
           if(result == 0){
             console.log('Cancel artist selection...');
+            proceed_to_next_artist();
             $('#artist_suggest .ms-sel-item:last').fadeOut('slow');
             setTimeout(function(){
               $('#artist_suggest .ms-sel-item:last .ms-close-btn').click();
@@ -437,13 +537,20 @@ $(document).mouseup(function(e){
       register_artist(this.id);
     });
   }
+  function proceed_to_next_artist(){
+    // check if other artists in stack to add
+    stack_select_new_artist.pop();
+    var len = stack_select_new_artist.length;
+    if(len > 0){
+      var artist = stack_select_new_artist[len-1];
+      select_new_artist(artist);
+    }
+  }
   function register_artist(spotify_id){
     $('button[data-bb-handler=confirm]').click();
     $.ajax({
         url: '{{ path('tvf_record_artist_search') }}/' + spotify_id,
         success: function(response) {
-          console.log('Registration response:');
-          console.log(response);
           var id = response.id;
           var name = response.name;
           var option = $('<option value="'+id+'" selected="selected">'+name+'</option></select>');
@@ -462,16 +569,7 @@ $(document).mouseup(function(e){
           ms.setValue(real_ids);
           ms.addToSelection({id: id, name:name});
           // check if other artists in stack to add
-          stack_select_new_artist.pop();
-          console.log('Check queue');
-          console.log(stack_select_new_artist);
-          var len = stack_select_new_artist.length;
-          if(len > 0){
-            var artist = stack_select_new_artist[len-1];
-            console.log('Treat other artist in queue :'+artist);
-            select_new_artist(artist);
-          }
-
+          proceed_to_next_artist();
         }
     });
   }
