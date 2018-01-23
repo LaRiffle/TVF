@@ -238,7 +238,7 @@
             /**
              * The default placeholder text when nothing has been entered
              */
-            placeholder: "Tapez le nom de l'artiste",
+            placeholder: "Ajoutez un artiste...",
 
             /**
              * A function used to define how the items will be presented in the combo

@@ -13,6 +13,7 @@
     position: relative;
     padding: 4px 17px;
     height: auto;
+    min-height: 40px;
 }
 .ms-inv{
     border: 1px solid #CC0000;

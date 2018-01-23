@@ -17,14 +17,13 @@
           {{ form_label(form.name, "Nom de l'album", {'label_attr' : {'class': 'sr-only'}}) }}
           {{ form_errors(form.name) }}
         <div class="input-group">
-          {{ form_widget(form.name, {'attr': {'class': 'form-control', 'placeholder': "Nom de l'album"}}) }}
+          {{ form_widget(form.name, {'attr': {'class': 'form-control', 'placeholder': "Indiquez le nom de l'album..."}}) }}
           <span class="input-group-btn">
             <a id="search_launch" class="btn btn-primary" type="button" href="#"><i class="fa fa-search" aria-hidden="true"></i></a>
           </span>
         </div>
         </div>
         <div id="album_results"></div>
-        <h5>Artiste</h5>
         <div id="artist_suggest">
           <i class="fa fa-circle-o-notch fa-spin fa-2x fa-fw"></i>
           <span class="sr-only">Loading...</span>
@@ -32,11 +31,10 @@
         <div class="hide">{{ include(input_form, {'element': form.artists, 'name':"Artiste"}) }}</div>
         <hr />
         <a href="#" class="internal-link" data-target="box_description">
-          <h5><i class="fa fa-plus" aria-hidden="true"></i> Description</h5>
+          <h5>+ Ajouter une description</h5>
         </a>
         <div id="box_description" class="hide">
-          <h5>Description</h5>
-          {{ include(input_form, {'element': form.description, 'name':"Description brève"}) }}
+          {{ include(input_form, {'element': form.description, 'name':"Donnez quelques éléments à propos de cet album"}) }}
         </div>
         <hr />
         {% set form_image_icon = "TVFRecordBundle:Vinyl:form_image_icon.html.twig" %}
@@ -78,22 +76,22 @@
         </div>
         <div style="clear:both; height: 10px;"></div>
         <hr />
-        <div style="margin-top: 10px;">
-          {{ form_errors(form.onsold) }}
-          <a href="#" class="btn btn-default btn-tvf internal-link keep add-price" data-target="price">
-            En vente
-          </a>
-          <div class="hide">
-            {{ form_widget(form.onsold, {'attr': {'class': 'internal-link keep', 'data-target': 'price'}}) }}
-            {{ form_label(form.onsold, "En vente", {'label_attr' : {'class': 'internal-link keep', 'data-target': 'price'}}) }}
-          </div>
-        </div>
-        <div id="price" class="hide">
-          <div style="margin-top: 10px;">
-            <div class="input-group">
+        <div style="margin-top: 10px; display: flex;">
+          <div>
+            {{ form_errors(form.onsold) }}
+            <a href="#" class="btn btn-default btn-tvf internal-link keep add-price" data-target="price">
+              En vente
+            </a>
+            <div class="hide">
+              {{ form_widget(form.onsold) }}
+              {{ form_label(form.onsold, "En vente") }}
               {{ form_label(form.price, 'Prix €', {'label_attr' : {'class': 'sr-only'}}) }}
               {{ form_errors(form.price) }}
-              {{ form_widget(form.price, {'attr': {'class': 'form-control', 'placeholder': 'Prix en € (Ne pas mettre l\'unité)'}}) }}
+            </div>
+          </div>
+          <div id="price" class="hide" style="width: 100%;">
+            <div class="input-group">
+              {{ form_widget(form.price, {'attr': {'class': 'form-control', 'placeholder': 'Prix (sans unité)'}}) }}
               <span class="input-group-addon">€</span>
             </div>
           </div>
@@ -133,9 +131,14 @@
           {% endfor %}
         </div>
         <hr />
+        {{ include(save_form, {'element': form.save, 'name':"Publier"}) }}
         {% set card="TVFRecordBundle:Attribute:card_attribute.html.twig" %}
-        <div style="margin-top: 10px;">
-          <h4>Déclinaisons du modèle</h4>
+        <a href="#" class="internal-link" data-target="panel_options">
+          <h6 style="margin-top: 10px;">+ Ajouter des informations supplémentaires</h6>
+        </a>
+        <div id="panel_options" style="margin-top: 10px;" class="hide">
+          <hr />
+          <h5>Déclinaisons du modèle</h5>
           <div style="margin-bottom: 10px;">
             <a target="_blank" href="{{ path('tvf_record_vinyl_attributes') }}">
               Modifier le choix de déclinaisons
@@ -172,7 +175,6 @@
           {% endfor %}
         </div>
         <div style="clear: both;"></div>
-        {{ include(save_form, {'element': form.save, 'name':"Publier"}) }}
         <div id="music_types" class="hide">
           {{ form_widget(form.types) }}
         </div>
@@ -650,6 +652,8 @@ $(document).mouseup(function(e){
       icon.hide();
     } else if(icon.find('input[type=file]').length > 0){
       icon.remove();
+    } else if(icon.find('input[type=text]').length > 0){
+      icon.remove();
     }
   });
 </script>
@@ -707,11 +711,11 @@ $(document).mouseup(function(e){
   $('.add-price').on('click', function(e){
     onsold = !onsold;
     if(onsold){
-      $('#price').show();
       $(this).addClass('link-selected');
+      $('#price').css('display', 'flex');
     } else {
-      $('#price').hide();
       $(this).removeClass('link-selected');
+      $('#price').css('display', 'none');
     }
     $('#form_onsold').prop('checked', onsold);
   });

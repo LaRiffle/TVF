@@ -1,6 +1,6 @@
 {% extends "TVFStoreBundle::layout.html.twig" %}
 {% block title %}
-  | Créations 
+  | Créations
 {% endblock %}
 {% block body %}
 {% endblock %}
@@ -96,7 +96,7 @@
 
   function icon_filter(){
     var visible_items = 0;
-    $('.tvf-icon:not(.add-icon)').each(function(){
+    $('.tvf-icon:not(.add-icon):not(.no-count)').each(function(){
       var selection = $(this).attr('selection');
       var category = $(this).attr('data-category');
       var types = $(this).attr('data-type').split(',').map(Number);
