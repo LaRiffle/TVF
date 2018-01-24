@@ -91,17 +91,40 @@
   var filter = {
     selection: "{{ selection_id }}",
     category: "{{ category_id }}",
-    types: []
+    types: [],
+    search: []
+  }
+
+  function icon_sort(attribute){
+    var toSort = $('.tvf-icon:not(.add-icon):not(.no-count):not(.hide)');
+    toSort = Array.prototype.slice.call(toSort, 0);
+    $('.tvf-icon:not(.add-icon):not(.no-count):not(.hide)').remove();
+    toSort.sort(function(a, b) {
+        var aord = +a.getAttribute(attribute);
+        var bord = +b.getAttribute(attribute);
+        return aord - bord;
+    });
+
+    var box;
+    if($('#my_insta .tvf-box.hide').first().length > 0){
+      box = $('#my_insta .tvf-box.hide').first();
+    } else {
+      box = $('#my_insta .tvf-box:not(.tvf-icon)').first();
+    }
+    for(var i = 0, l = toSort.length; i < l; i++) {
+        $(toSort[i]).insertBefore(box);
+    }
   }
 
   function icon_filter(){
     var visible_items = 0;
     $('.tvf-icon:not(.add-icon):not(.no-count)').each(function(){
+      var id = $(this).attr('data-id');
       var selection = $(this).attr('selection');
       var category = $(this).attr('data-category');
       var types = $(this).attr('data-type').split(',').map(Number);
-      var visible = (selection == filter.selection || filter.selection == '_')
-      visible = visible && (category == filter.category || filter.category == '_')
+      var visible = (selection == filter.selection || filter.selection == '_');
+      visible = visible && (category == filter.category || filter.category == '_');
       if(filter.types.length > 0){
         var has_one_type = false;
         for(i in types){
@@ -110,12 +133,13 @@
         }
         visible = visible && has_one_type;
       }
+      visible = visible && (filter.search.includes(id)|| filter.search.length == 0);
       if(visible){
-        $(this).css('display', 'block');
+        $(this).removeClass('hide');
         reshape_image(this);
         visible_items++;
       } else {
-        $(this).css('display', 'none');
+        $(this).addClass('hide');
       }
     });
     if(visible_items > 0){
@@ -129,6 +153,10 @@
       $('.vetement_filter').hide();
     } else {
       $('.vetement_filter').show();
+    }
+    /* In this case we sort */
+    if(filter.search.length > 0){
+      icon_sort(by='data-distance');
     }
     return visible_items;
   }
@@ -219,6 +247,76 @@
     filter.category = $(this).val();
     icon_filter();
   });
+</script>
+<script>
+String.prototype.levenstein = function(string) {
+    var a = this, b = string + "", m = [], i, j, min = Math.min;
+
+    if (!(a && b)) return (b || a).length;
+
+    for (i = 0; i <= b.length; m[i] = [i++]);
+    for (j = 0; j <= a.length; m[0][j] = j++);
+
+    for (i = 1; i <= b.length; i++) {
+        for (j = 1; j <= a.length; j++) {
+            m[i][j] = b.charAt(i - 1) == a.charAt(j - 1)
+                ? m[i - 1][j - 1]
+                : m[i][j] = min(
+                    m[i - 1][j - 1] + 1,
+                    min(m[i][j - 1] + 1, m[i - 1 ][j] + 1))
+        }
+    }
+
+    return m[b.length][a.length];
+}
+/* Search artists or albums */
+$('#search_input').keyup(function(e){
+    if(e.keyCode == 13){
+        $('#search_launch').click();
+    }
+    if($(this).val() == ''){
+        $('#search_launch').click();
+    }
+});
+$('#search_launch').on('click', function(e){
+  e.preventDefault();
+  var query = $('#search_input').val().toLowerCase();
+  var scores = [];
+  filter.search = [];
+  if(query != ''){
+    var sep;
+    if(query.split(' ').length > 1){
+      sep = ',';
+    } else {
+      sep = /[\s,]+/;
+    }
+    $('.tvf-icon:not(.add-icon):not(.no-count)').each(function(){
+      var id = $(this).attr('data-id');
+      var keywords = []
+      keywords.push($(this).attr('data-name'));
+      var album_artists = $(this).attr('data-artists').split(sep);
+      for(var i =0; i<album_artists.length; i++){
+        keywords.push(album_artists[i]);
+      }
+      console.log(keywords);
+      var distance = 10e5;
+      for(var i =0; i<keywords.length; i++){
+        var keyword = keywords[i].toLowerCase();
+        distance = Math.min(distance, query.levenstein(keyword));
+      }
+      $(this).attr('data-distance', distance);
+      scores.push(distance);
+      if(distance <= 1) {
+        filter.search.push(id);
+      }
+    });
+    if(filter.search.length == 0){
+      filter.search = [-1];
+    }
+  }
+  icon_filter();
+  console.log(scores);
+});
 </script>
 <script>
 /* Put on top vinyl on which we hover with the mouse */
