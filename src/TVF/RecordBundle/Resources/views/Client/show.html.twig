@@ -29,7 +29,57 @@
 </div>
 {% endblock %}
 {% block script %}
+{% if first_visit %}
+<style>
+.tooltip:hover {
+  cursor: pointer;
+}
+.tooltip-inner {
+  padding: 15px 15px;
+}
+</style>
 <script>
-
+$( document ).ready(function() {
+  bootbox.confirm({
+      title: "Bienvenue sur Le bon sillon !",
+      message: "Voici votre espace dédié pour gérer votre offre de vinyles.<br />Voulez-vous découvrir rapidement comment interagir avec la plateforme ?",
+      backdrop: true,
+      buttons: {
+          cancel: {
+              label: 'Non, merci'
+          },
+          confirm: {
+              label: "C'est parti !"
+          }
+      },
+      callback: function (discover) {
+        var steps = ['profile', 'collection', 'selection', 'nav_left_icon', 'nav_right_icon'];
+        var placement = ['bottom', 'bottom', 'bottom', 'right', 'left']
+        var step = 0;
+        var message = {
+          next: '\n[Cliquez pour continuer]',
+          profile: "La page Profil vous permet de gérer les informations sur votre enseigne.",
+          collection: "La page Collection regroupe tous vos vinyles, et permet d'en ajouter de nouveaux.",
+          selection: "La page Sélection vous permet de regrouper des vinyles selon vos critères.",
+          nav_left_icon: "Ici vous pouvez retourner sur le site public",
+          nav_right_icon: "Ici vous pouvez vous déconnecter. Voilà c'est tout, bonne découverte!"
+        }
+        function set_tooltip(step){
+          $('#'+steps[step]).attr('title', '('+(step+1)+'/'+steps.length+') ' + message[steps[step]] + (step <= 1 ? message.next : ''))
+                       .attr('data-toggle',"tooltip").attr('data-placement', placement[step]).attr('data-trigger', 'manual')
+                       .tooltip("show");
+        }
+        if(discover){
+          set_tooltip(step);
+          $('body').on('click', '.tooltip', function(){
+            $('#'+steps[step]).tooltip('hide');
+            step++;
+            set_tooltip(step);
+          });
+        }
+      }
+  });
+});
 </script>
+{% endif %}
 {% endblock %}

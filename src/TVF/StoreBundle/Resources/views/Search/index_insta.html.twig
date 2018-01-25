@@ -6,10 +6,17 @@
         <div class="tvf-box tvf-icon add-icon" style="z-index: {{vinyls|length + 1}};">
           <div class="tvf-inner">
             <a href="{{ path('tvf_record_vinyl_add') }}" style="text-align: center; height: auto;">
-                <h4 style="color: #BA0020;"><i class="fa fa-plus" aria-hidden="true"></i> Ajouter un vinyle</h4>
+              <h4 style="color: #BA0020;" class="badge-title">
+                <span class="badge badge-light badge-pill">
+                <i class="fa fa-plus" aria-hidden="true"></i> Ajouter un vinyle
+                </span>
+              </h4>
             </a>
           </div>
         </div>
+      {% endif %}
+      {% if is_owner is not defined %}
+        {% set is_owner = false %}
       {% endif %}
       {% for vinyl in vinyls %}
       <div class="tvf-box tvf-icon"
@@ -28,8 +35,14 @@
           data-loved="{{ vinyl.loved }}"
           style="z-index: {{vinyls|length - loop.index0}}">
         <div class="tvf-inner">
+          <div class="tvf-edition">
+            {% if is_granted('ROLE_ADMIN') or is_owner %}
+              {{ include(edition_buttons, {'edit': path('tvf_record_vinyl_add', {'id': vinyl.id}), 'remove': path('tvf_record_vinyl_remove', {'id': vinyl.id}) }) }}
+            {% endif %}
+          </div>
           <a class="show-vinyl" href="{{ path('tvf_store_vinyl_show', {'id': vinyl.id}) }}">
             <img src="{{ asset('uploads/img/' ~ vinyl.small_image) }}" alt="" style="">
+            {% if not is_granted('ROLE_ADMIN') and not is_owner %}
             <div class="caption">
               <!--<h3>{{ vinyl.name }}</h3>
               {% if vinyl.onsold %}<h5>{{ vinyl.price }} €</h5>{% endif %}-->
@@ -43,9 +56,18 @@
                     <i class="fa fa-heart fa-2x full-heart" aria-hidden="true"></i>
                   {% endif %}
                 </div>
-                {% if vinyl.onsold %}<span class="icon_insta_price">{{ vinyl.price }} €</span>{% endif %}
+                {% if vinyl.onsold %}
+                  <span class="icon_insta_price badge badge-primary badge-pill">
+                      {{ vinyl.price }} €
+                  </span>
+                {% endif %}
               </h3>
             </div>
+            {% else %}
+            <div class="caption" style="opacity: 1">
+              <h3 style="position: absolute; bottom: 15px; width: 100%;">{{ vinyl.name }}</h3>
+            </div>
+            {% endif %}
           </a>
         </div>
       </div>
@@ -71,13 +93,13 @@
     </div>
   </div>
 </div>
-<div id="vinyl_overview"><div id="vinyl_slider" class="hide">
+<div id="vinyl_overview" class="hide"><div id="vinyl_slider" class="hide">
   <div class="vinyl-overview">
     <div class="tvf-row">
       <div class="caret"></div>
       <div class="window container">
         <div class="row">
-          <div class="col-sm-4" style="padding: 0;">
+          <div class="col-sm-4 visible-from-sm" style="padding: 0;">
             <div class="tvf-grid">
               <div class="tvf-row">
                 <div class="tvf-box tvf-icon no-count">

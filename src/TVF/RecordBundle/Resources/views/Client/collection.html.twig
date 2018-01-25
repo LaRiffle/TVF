@@ -11,7 +11,13 @@
       <div class="row">
         {{ include(lateral_navbar) }}
         <div id="display_icons" class="col-lg-8 col-xl-9">
-          <h2 class="selection-title">Votre collection ({{ vinyls|length }})</h2>
+          <h4 class="special-font">
+            {% if vinyls|length == 0 %}
+              Vous n'avez pas encore ajouté de vinyles. Essayez, c'est très simple !
+            {% else %}
+              Votre collection de {{ vinyls|length }} vinyle{% if vinyls|length > 1 %}s{% endif %}
+            {% endif %}
+          </h4>
           <div class="horizontal-scroller" style="margin-bottom: 3px;">
             <a href="#" id="show_lateral" class="show-lateral visible-to-md btn btn-default" style="z-index: 200;"><i class="fa fa-filter" aria-hidden="true"></i> Filtrer les créations</a>
           </div>

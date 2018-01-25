@@ -67,13 +67,22 @@ class ClientController extends Controller
           'client' => $client
         ));
     }
-    public function myAccountAction() {
+    public function myAccountAction(Request $request) {
         $user = $this->getUser();
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository($this->entityNameSpace);
         $client = $repository->findOneBy(array('user' => $user));
+        if($client == null){
+          return $this->redirect($this->generateUrl('login'));
+        }
+        if($request->query->get('premiere_connexion')){
+          $first_visit = true;
+        } else {
+          $first_visit = false;
+        }
         return $this->render($this->entityNameSpace.':show.html.twig', array(
-          'client' => $client
+          'client' => $client,
+          'first_visit' => $first_visit
         ));
     }
 
@@ -107,6 +116,7 @@ class ClientController extends Controller
         $categories = $repository->findAll();
         return $this->render($this->entityNameSpace.':collection.html.twig', array(
             'vinyls' => $vinyls,
+            'is_owner' => true,
             'genders' => $genders,
             'selections' => $selections,
             'selection_id' => '_',
@@ -130,6 +140,7 @@ class ClientController extends Controller
         $em->flush();
         return $this->render($this->entityNameSpace.':selection.html.twig', array(
           'selections' => $selections,
+          'is_owner' => true
         ));
     }
 
@@ -217,7 +228,7 @@ class ClientController extends Controller
             $client->setUser($user);
             $em->persist($client);
             $em->flush();
-            return $this->redirect($this->generateUrl('tvf_record_my_account'));
+            return $this->redirect($this->generateUrl('tvf_record_my_account').'?premiere_connexion=1');
         }
         return $this->render($this->entityNameSpace.':add.html.twig', array(
             'form' => $form->createView(),

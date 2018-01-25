@@ -325,7 +325,11 @@ button.navbar-toggler:hover {
 .icon_insta_price {
   position: relative;
   left: 5px;
-  bottom: 4px;
+  bottom: 7px;
+  padding: 16px;
+  padding-top: 10px;
+  padding-bottom: 9px;
+  font-size: 1.3rem;
 }
 #nb_love {
   position: relative;
@@ -823,6 +827,15 @@ ul.edition-btn li:after {
     margin: 1px;
     visibility: visible;
 }
+.tvf-edition {
+  z-index: 1;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+}
+.tvf-edition a {
+  color: white !important;
+}
 @media screen and (max-width: 576px) {
   #new-vinyls {
     padding-left: 1px;
@@ -840,6 +853,9 @@ ul.edition-btn li:after {
   }
   .tvf-inner .caption {
     /*opacity: 1 !important;*/
+  }
+  .tvf-edition {
+    display: none;
   }
 }
 .tvf-box:after {
@@ -940,6 +956,12 @@ ul.edition-btn li:after {
   margin-bottom: 0.4rem;
 }
 
+/* Client page */
+.tooltip-inner {
+  max-width: 250px;
+  font-family: "Avenir-Light", "Avenir-Light_IE", "-apple-system",system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+
 /* Chatbot */
 .modal-body {
   max-height: calc(100vh - 200px);
@@ -1022,12 +1044,25 @@ footer .row > div {
   position: absolute;
   top: 20px;
 }
+#my_insta .badge-title {
+  position: inherit;
+}
 .badge-title .badge-light {
   background-color: rgba(0,0,0,0.5);
   font-weight: lighter;
   padding: 22px;
   padding-top: 11px;
   padding-bottom: 9px;
+}
+#my_insta .badge-title .badge-light {
+  background-color: rgba(186, 0, 32, 0.9);
+  padding-bottom: 11px;
+}
+#my_insta .badge-title .badge-light:hover {
+  background-color: rgba(186, 0, 32, 1);
+}
+#box-page .card {
+  margin-bottom: 20px;
 }
 #box-page .price {
   font-size: 1.4rem;
