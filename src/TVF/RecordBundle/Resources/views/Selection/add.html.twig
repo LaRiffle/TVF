@@ -90,7 +90,7 @@
               {% set index = vinyl.vars.value %}
               {% set entity = form.vinyls.vars.choices[index].data %}
               {{ form_widget(vinyl) }}
-              {{ entity.artist.name }} >
+              {% for artist in entity.artists %}{{artist.name}}{% if not loop.last %}, {% endif %}{% endfor %} >
               {{ form_label(vinyl) }}<br />
             {% endfor %}
           </div>
@@ -156,7 +156,7 @@ function end_display_result(){
 function clear_results(){
   $('#search_results').html('');
 }
-var loading_message = '<i class="fa fa-circle-o-notch fa-spin fa-fw"></i> Loading...'
+var loading_message = '<i class="fa fa-circle-o-notch fa-spin fa-fw"></i> Chargement...'
 function launch_search(){
   $('#info_results').html(loading_message);
   var request = $('#search_request').val();
@@ -175,7 +175,8 @@ function launch_search(){
           var results = data.results;
           $('#nb_results').html(results.length);
           if(results.length == 0){
-            $('#info_results').html('Pas de résultat :/');
+            var see_all = '<a href="#" id="see_all">Voir tous les vinyles</a>'
+            $('#info_results').html('Pas de résultat :/ '+see_all);
           } else if (results.length == 1) {
             $('#info_results').html('Notre résultat');
           } else {
@@ -192,6 +193,11 @@ function launch_search(){
       }
   });
 }
+$('body').on('click', '#see_all', function(e){
+  e.preventDefault();
+  $('#search_request').val('');
+  launch_search();
+});
 $('#search_launch').on('click', function(e){
   e.preventDefault();
   launch_search();
@@ -199,15 +205,21 @@ $('#search_launch').on('click', function(e){
 /* Delay the search to activate search only when user has stopped typing */
 var last_key_up = -1;
 var delay = 600; // ms
-$('#search_request').keyup(function(){
-  var date = new Date();
-  last_key_up = date.getTime();
-  setTimeout(function(){
+$('#search_request').keypress(function(e){
+  if(e.keyCode == 13){
+    e.preventDefault();
+    last_key_up = new Date() + delay + 50; // kill the setimouts if any
+    launch_search();
+  } else {
     var date = new Date();
-    if(date.getTime() - last_key_up > delay - 50){
-      launch_search();
-    }
-  }, delay);
+    last_key_up = date.getTime();
+    setTimeout(function(){
+      var date = new Date();
+      if(date.getTime() - last_key_up > delay - 50){
+        launch_search();
+      }
+    }, delay);
+  }
 });
 </script>
 <script>

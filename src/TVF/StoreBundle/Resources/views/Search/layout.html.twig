@@ -94,6 +94,14 @@
     types: [],
     search: []
   }
+  // Dict of all the selections
+  var selections = { {% for selection in selections %}'{{selection.id}}':[{% for vinyl in selection.vinyls %}{{ vinyl.id }}{% if not loop.last %},{% endif %}{% endfor %}]{% if not loop.last %},{% endif %}{% endfor %} }
+
+  function in_selection(vinyl_id, selection_id){
+    if(selection_id == '_')
+      return true;
+    return selections[selection_id].includes(Number(vinyl_id));
+  }
 
   function icon_sort(attribute){
     var toSort = $('.tvf-icon:not(.add-icon):not(.no-count):not(.hide)');
@@ -120,10 +128,9 @@
     var visible_items = 0;
     $('.tvf-icon:not(.add-icon):not(.no-count)').each(function(){
       var id = $(this).attr('data-id');
-      var selection = $(this).attr('selection');
       var category = $(this).attr('data-category');
       var types = $(this).attr('data-type').split(',').map(Number);
-      var visible = (selection == filter.selection || filter.selection == '_');
+      var visible = (in_selection(id, filter.selection) || filter.selection == '_');
       visible = visible && (category == filter.category || filter.category == '_');
       if(filter.types.length > 0){
         var has_one_type = false;
@@ -279,6 +286,7 @@ $('#search_input').keyup(function(e){
     }
 });
 $('#search_launch').on('click', function(e){
+  reorganize();
   e.preventDefault();
   var query = $('#search_input').val().toLowerCase();
   var scores = [];

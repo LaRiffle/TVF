@@ -56,6 +56,12 @@ class Selection
      */
     private $vinyls;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="TVF\RecordBundle\Entity\Client")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $client;
+
 
     /**
      * Get id
@@ -202,5 +208,29 @@ class Selection
     public function getVinyls()
     {
         return $this->vinyls;
+    }
+
+    /**
+     * Set client
+     *
+     * @param \TVF\RecordBundle\Entity\Client $client
+     *
+     * @return Vinyl
+     */
+    public function setClient(\TVF\RecordBundle\Entity\Client $client)
+    {
+        $this->client = $client;
+
+        return $this;
+    }
+
+    /**
+     * Get client
+     *
+     * @return \TVF\RecordBundle\Entity\Client
+     */
+    public function getClient()
+    {
+        return $this->client;
     }
 }

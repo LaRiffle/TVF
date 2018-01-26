@@ -19,6 +19,7 @@ class SearchController extends Controller
 
     public function searchAction(Request $request)
     {
+      $imagehandler = $this->container->get('tvf_store.imagehandler');
       $query = $request->request->get('request');
 
       $em = $this->getDoctrine()->getManager();
@@ -26,10 +27,16 @@ class SearchController extends Controller
       $vinyls = $repository->search($query);
       $data = [];
       foreach ($vinyls as $vinyl) {
+        $fileNames = $vinyl->getImages();
+        if(count($fileNames) > 0){
+          $path_small_image = $imagehandler->get_image_in_quality($fileNames[0], 'xs');
+        } else {
+          $path_small_image = '';
+        }
         $data[] = [
           'id' => $vinyl->getId(),
           'name' => $vinyl->getName(),
-          'image' => $vinyl->getImages()[0]
+          'image' => $path_small_image
         ];
       }
       /* Used to search for specific vinyls */

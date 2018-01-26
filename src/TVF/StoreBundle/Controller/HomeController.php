@@ -49,7 +49,7 @@ class HomeController extends Controller
         }
 
         $repository = $em->getRepository('TVFRecordBundle:Vinyl');
-        $vinyls = $repository->findBy(array(), array('id' => 'desc'));
+        $vinyls = $repository->findBy(array(), array('id' => 'desc'), 12);
         $love_repository = $em->getRepository('TVFStoreBundle:VinylUser');
         $user = $this->getUser();
         foreach ($vinyls as $vinyl) {

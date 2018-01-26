@@ -8,7 +8,7 @@
             <h5 class="title-widget">Les disquaires</h5>
             <ul class="list-unstyled clear-margins">
               {% for client in clients %}
-                  <li><a href="/disquaire/{{ client.id }}">{{ client.name }}</a></li>
+                  <li><a href="/disquaire/{{ client.slug }}">{{ client.name }}</a></li>
               {% endfor %}
               <li><a  href="{{ path('tvf_store_join') }}"><i class="fa fa-plus" aria-hidden="true"></i> Nous rejoindre</a></li>
             </ul>

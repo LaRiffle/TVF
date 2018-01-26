@@ -7,12 +7,12 @@
   </div>
 </li>
 <li class="list-group-item justify-content-between">
-  <label class="" for="select_selection">
+  <label class="{% if '_' != selection_id %}hide{% endif %}" for="select_selection">
     <a href="#" class="internal-link" data-target="select_selection">
       <h6 style="margin-bottom: -9px;"><i class="fa fa-th-list" aria-hidden="true"></i> Afficher les sélections</h6>
     </a>
   </label>
-  <select id="select_selection" class="form-control hide">
+  <select id="select_selection" class="form-control {% if '_' == selection_id %}hide{% endif %}">
     <option {% if '_' == selection_id %}selected="selected"{% endif %} value="_">Toute la collection</option>
     {% for selection in selections %}
       <option {% if selection.id == selection_id %}selected="selected"{% endif %} value="{{ selection.id }}">{{ selection.title }}</option>
@@ -26,6 +26,7 @@
   </select>
 </li>
 <li class="list-group-item" style="padding: 5px; padding-right:0px;">
+  <div class="horizontal-scroller-more"><i class="fa fa-chevron-right" aria-hidden="true"></i></div>
   <div class="horizontal-scroll">
     {% for gender in genders %}
     <a href="#" data-toggle="gender{{ gender.id }}" class="toggler btn btn-default btn-tvf">{{ gender.name }}</a>

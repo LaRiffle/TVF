@@ -7,6 +7,7 @@ use TVF\RecordBundle\Entity\Selection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -33,13 +34,21 @@ class  SelectionController extends Controller
     }
 
     public function addAction(Request $request, $id = 0) {
+        if (!$this->get('security.authorization_checker')->isGranted('ROLE_RECORD')) {
+          throw new AccessDeniedException('Accès limité.');
+        }
         $em = $this->getDoctrine()->getManager();
         $oldFileName = null;
         if($id == 0) {
             $selection = new Selection();
         } else {
-            $repository = $em->getRepository($this->entityNameSpace);
-            $selection = $repository->find($id);
+            $user = $this->getUser();
+            $repository = $em->getRepository('TVFRecordBundle:Client');
+            $client = $repository->findOneBy(array('user' => $user));
+            $selection = $em->getRepository($this->entityNameSpace)->find($id);
+            if($client->getId() != $selection->getClient()->getId()){
+              throw new AccessDeniedException('Accès limité.');
+            }
             if($selection->getImage() != ''){
               $oldFileName = $selection->getImage();
               $selection->setImage(
@@ -97,7 +106,12 @@ class  SelectionController extends Controller
             $slug = $slughandler->slugify($selection->getTitle());
             $selection->setSlug($slug);
 
-            $em = $this->getDoctrine()->getManager();
+            if($id == 0){
+              $user = $this->getUser();
+              $repository = $em->getRepository('TVFRecordBundle:Client');
+              $client = $repository->findOneBy(array('user' => $user));
+              $selection->setClient($client);
+            }
             $em->persist($selection);
             $em->flush();
             return $this->redirect($this->generateUrl('tvf_store_selection'));
@@ -109,8 +123,17 @@ class  SelectionController extends Controller
         ));
     }
     public function removeAction(Request $request, $id){
+        if (!$this->get('security.authorization_checker')->isGranted('ROLE_RECORD')) {
+          throw new AccessDeniedException('Accès limité.');
+        }
+        $user = $this->getUser();
         $em = $this->getDoctrine()->getManager();
+        $repository = $em->getRepository('TVFRecordBundle:Client');
+        $client = $repository->findOneBy(array('user' => $user));
         $selection = $em->getRepository($this->entityNameSpace)->find($id);
+        if($client->getId() != $selection->getClient()->getId()){
+          throw new AccessDeniedException('Accès limité.');
+        }
         $em->remove($selection);
         $em->flush();
         return $this->redirect($this->generateUrl('tvf_store_selection'));
