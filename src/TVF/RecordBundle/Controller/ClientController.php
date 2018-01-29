@@ -88,6 +88,9 @@ class ClientController extends Controller
 
     public function collectionAction()
     {
+        if (!$this->get('security.authorization_checker')->isGranted('ROLE_RECORD')) {
+          throw new AccessDeniedException('Accès limité.');
+        }
         $user = $this->getUser();
         $em = $this->getDoctrine()->getManager();
 
@@ -127,19 +130,28 @@ class ClientController extends Controller
 
     public function selectionAction()
     {
+        if (!$this->get('security.authorization_checker')->isGranted('ROLE_RECORD')) {
+          throw new AccessDeniedException('Accès limité.');
+        }
+        $user = $this->getUser();
         $em = $this->getDoctrine()->getManager();
+        $repository = $em->getRepository('TVFRecordBundle:Client');
+        $client = $repository->findOneBy(array('user' => $user));
+
         $repository = $em->getRepository('TVFRecordBundle:Selection');
         $selections = $repository->findBy(array(), array('id' => 'desc'));
         $imagehandler = $this->container->get('tvf_store.imagehandler');
+        $client_selections = [];
         foreach ($selections as $selection) {
-          $em->persist($selection);
-          $filename = $selection->getImage();
-          $path_small_image = $imagehandler->get_image_in_quality($filename, 'sm');
-          $selection->small_image = $path_small_image;
+          if($client->getId() == $selection->getClient()->getId()){
+            $filename = $selection->getImage();
+            $path_small_image = $imagehandler->get_image_in_quality($filename, 'sm');
+            $selection->small_image = $path_small_image;
+            $client_selections[] = $selection;
+          }
         }
-        $em->flush();
         return $this->render($this->entityNameSpace.':selection.html.twig', array(
-          'selections' => $selections,
+          'selections' => $client_selections,
           'is_owner' => true
         ));
     }
@@ -228,7 +240,7 @@ class ClientController extends Controller
             $client->setUser($user);
             $em->persist($client);
             $em->flush();
-            return $this->redirect($this->generateUrl('tvf_record_my_account').'?premiere_connexion=1');
+            return $this->redirect($this->generateUrl('tvf_record_my_account').(($id == 0) ? '?premiere_connexion=1':''));
         }
         return $this->render($this->entityNameSpace.':add.html.twig', array(
             'form' => $form->createView(),

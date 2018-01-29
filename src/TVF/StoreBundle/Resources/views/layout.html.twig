@@ -153,18 +153,34 @@
     });
     </script>
     <script>
+    $('#vinyl_overview').removeClass('hide');
     var active_index = -1;
     $('a.show-vinyl').on('click', function(e){
       e.preventDefault();
+      if (typeof reorganize === "function") {
+          reorganize();
+      }
       var $vinyl = $(this).closest('.tvf-box');
       selected_id = $vinyl.attr('data-id');
-      var index = Number($vinyl.attr('data-index'));
+      var row_index = Number($vinyl.attr('data-index'));
+      /* Remove the icons hidden that dont count for the index */
+      var index = row_index;
+      $('#my_insta .tvf-box.hide').each(function(){
+        if(Number($(this).attr('data-index')) < row_index){
+          index--;
+        }
+      });
+      {% if is_granted('ROLE_RECORD') or is_granted('ROLE_ADMIN') %}
+      if($('.add-vinyl-btn').length > 0){
+          index += 1;
+      }
+      {% endif %}
       if(index == active_index){
         $('#vinyl_slider').slideUp();
         active_index = -1;
       } else {
         var after_index = index - index%3 + 2;
-        var $after_box = $($('#my_insta .tvf-box:not(.no-count) .tvf-inner')[after_index]).parent('.tvf-box');
+        var $after_box = $($('#my_insta .tvf-box:not(.no-count):not(.hide) .tvf-inner')[after_index]).parent('.tvf-box');
         // If different row, need to slide up the overview :
         if(active_index == -1 || after_index != (active_index - active_index%3 + 2)){
             $('#vinyl_slider').slideUp('fast', function() {

@@ -3,9 +3,9 @@
   <link rel="stylesheet" href="{{ asset('bundles/TVF/magicsuggest.css') }}">
 {% endblock %}
 {% block body %}
-<div id="add-creation-page">
-  {% set navbar = "TVFStoreBundle:Utils:nav.html.twig" %}
-  {{ include(navbar, {'active': 'collection'}) }}
+<div id="record-page">
+  {% set navbar = "TVFRecordBundle:Utils:nav.html.twig" %}
+  {{ include(navbar, {'active': 'selection'}) }}}
   <div class="container" style="margin-bottom: 50px;">
     <form name="form" class="form-signin" method="post" enctype="multipart/form-data" action="{{ path('tvf_record_vinyl_add',{'id': id}) }}">
     <div class="row">

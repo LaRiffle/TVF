@@ -1,6 +1,7 @@
 {% extends "TVFStoreBundle::layout.html.twig" %}
 {% block body %}
-{% set navbar = "TVFStoreBundle:Utils:nav.html.twig" %}
+<div id="record-page">
+{% set navbar = "TVFRecordBundle:Utils:nav.html.twig" %}
 {{ include(navbar, {'active': 'selection'}) }}
 <div class="container" style="margin-bottom: 20px;">
   <div class="row">
@@ -60,7 +61,7 @@
           </div>
           <div style="margin-top: 15px;">
             <h5 id="info_results"></h5><span id="nb_results" class="hide">0</span>
-            <div id="my_insta">
+            <div id="my_insta" class="my_insta">
               <div class="tvf-grid">
                 <div class="tvf-row" id="search_results">
                 </div>
@@ -82,8 +83,35 @@
           </div>
         </div>
         <div style="margin-top: 10px;">
-          <div id="new_vinyls" class="hide">
-            <h5>Derniers ajouts (0)</h5>
+          <div id="" class="">
+            <h5>Derniers ajouts</h5>
+          </div>
+          <div id="my_insta" class="my_insta">
+            <div class="tvf-grid">
+              <div class="tvf-row" id="new_vinyls">
+                {% set nb_vinyls = 0 %}
+                {% for vinyl in form.vinyls %}
+                  {% set index = vinyl.vars.value %}
+                  {% set entity = form.vinyls.vars.choices[index].data %}
+                  {% if entity.client.id == client_id  and vinyl.vars.data == '0' and nb_vinyls < 9 %}
+                    {% set nb_vinyls = nb_vinyls + 1 %}
+                    <div class="tvf-box tvf-icon" style="visibility: visible">
+                      <div class="tvf-inner">
+                        <a class="show-vinyl" target="_blank" href="#">
+                          <img src="{{ asset('uploads/img/' ~ entity.images[0]) }}" alt="" style="">
+                          <div class="caption" style="opacity:1;">
+                            <h3>
+                              {{ entity.name }}<br />
+                              <div style="margin-top: 8px;"><i data-id="{{ entity.id }}" class="fa fa-square-o mock-input" aria-hidden="true"></i></div>
+                            </h3>
+                          </div>
+                        </a>
+                      </div>
+                    </div>
+                  {% endif %}
+                {% endfor %}
+              </div>
+            </div>
           </div>
           <div id="input_group" class="hide">
             {% for vinyl in form.vinyls %}
@@ -100,6 +128,7 @@
       </form>
     </div>
   </div>
+</div>
 </div>
 {% endblock %}
 {% block script %}
@@ -131,7 +160,7 @@ $('body').on('click', '.show-vinyl', function(e){
     var new_icon = display_input.parents('.tvf-box').clone();
     $('#selected').append(new_icon);
   }
-  complete_selected_zone_with_blank();
+  complete_selected_zone_with_blank('selected');
 });
 function display_result(result){
   var icon = $($('#icon_template').html());
@@ -149,7 +178,7 @@ function end_display_result(){
   var missing_icons = (3 - nb_results%3)%3;
   for(var i = 0; i < missing_icons; i++){
     var icon = $($('#icon_template').html());
-    icon.find('a').remove();
+    icon.find('.tvf-inner').remove();
     $('#search_results').append(icon);
   }
 }
@@ -223,13 +252,13 @@ $('#search_request').keypress(function(e){
 });
 </script>
 <script>
-function complete_selected_zone_with_blank(){
+function complete_selected_zone_with_blank(zone_id){
   /* Add the fake icons of the selected vinyls if any */
   // Count number of icons
-  var nb_results = $('#selected .mock-input').length;
+  var nb_results = $('#'+zone_id+' .mock-input').length;
   $('#nb_selected').html(nb_results);
   // Remove the fake icons use to complete if any
-  $('#selected .template').remove();
+  $('#'+zone_id+' .template').remove();
 
   console.log(nb_results);
   // fill with the right nb of fake icons
@@ -238,9 +267,10 @@ function complete_selected_zone_with_blank(){
     var icon = $($('#icon_template').html());
     icon.find('a').remove();
     icon.addClass('template');
-    $('#selected').append(icon);
+    $('#'+zone_id).append(icon);
   }
 }
-complete_selected_zone_with_blank();
+complete_selected_zone_with_blank('selected');
+complete_selected_zone_with_blank('new_vinyls');
 </script>
 {% endblock %}

@@ -1056,7 +1056,7 @@ footer .row > div {
   position: absolute;
   top: 20px;
 }
-#my_insta .badge-title {
+#record-page .badge-title, #my_insta .badge-title {
   position: inherit;
 }
 .badge-title .badge-light {
@@ -1066,11 +1066,11 @@ footer .row > div {
   padding-top: 11px;
   padding-bottom: 9px;
 }
-#my_insta .badge-title .badge-light {
+#record-page .badge-title .badge-light, #my_insta .badge-title .badge-light {
   background-color: rgba(186, 0, 32, 0.9);
   padding-bottom: 11px;
 }
-#my_insta .badge-title .badge-light:hover {
+#record-page .badge-title .badge-light:hover, #my_insta .badge-title .badge-light:hover {
   background-color: rgba(186, 0, 32, 1);
 }
 #box-page .card {

@@ -5,7 +5,7 @@
     <div class="tvf-row">
       {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_RECORD') and no_add is not defined %}
         <div class="tvf-box tvf-icon add-icon" style="z-index: {{vinyls|length + 1}};">
-          <div class="tvf-inner">
+          <div class="tvf-inner add-vinyl-btn">
             <a href="{{ path('tvf_record_vinyl_add') }}" style="text-align: center; height: auto;">
               <h4 style="color: #BA0020;" class="badge-title">
                 <span class="badge badge-light badge-pill">

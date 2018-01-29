@@ -19,25 +19,36 @@ class SearchController extends Controller
 
     public function searchAction(Request $request)
     {
+      if (!$this->get('security.authorization_checker')->isGranted('ROLE_RECORD')) {
+        throw new AccessDeniedException('Accès limité.');
+      }
       $imagehandler = $this->container->get('tvf_store.imagehandler');
       $query = $request->request->get('request');
 
+      $user = $this->getUser();
       $em = $this->getDoctrine()->getManager();
+      $repository = $em->getRepository('TVFRecordBundle:Client');
+      $client = $repository->findOneBy(array('user' => $user));
+      if($client == null){
+        throw new AccessDeniedException('Accès limité.');
+      }
       $repository = $em->getRepository('TVFRecordBundle:Vinyl');
       $vinyls = $repository->search($query);
       $data = [];
       foreach ($vinyls as $vinyl) {
-        $fileNames = $vinyl->getImages();
-        if(count($fileNames) > 0){
-          $path_small_image = $imagehandler->get_image_in_quality($fileNames[0], 'xs');
-        } else {
-          $path_small_image = '';
+        if($vinyl->getClient()->getId() == $client->getId()){
+          $fileNames = $vinyl->getImages();
+          if(count($fileNames) > 0){
+            $path_small_image = $imagehandler->get_image_in_quality($fileNames[0], 'xs');
+          } else {
+            $path_small_image = '';
+          }
+          $data[] = [
+            'id' => $vinyl->getId(),
+            'name' => $vinyl->getName(),
+            'image' => $path_small_image
+          ];
         }
-        $data[] = [
-          'id' => $vinyl->getId(),
-          'name' => $vinyl->getName(),
-          'image' => $path_small_image
-        ];
       }
       /* Used to search for specific vinyls */
       $data = ['results' => $data];

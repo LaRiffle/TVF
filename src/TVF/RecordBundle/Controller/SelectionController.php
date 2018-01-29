@@ -38,13 +38,13 @@ class  SelectionController extends Controller
           throw new AccessDeniedException('Accès limité.');
         }
         $em = $this->getDoctrine()->getManager();
+        $user = $this->getUser();
+        $repository = $em->getRepository('TVFRecordBundle:Client');
+        $client = $repository->findOneBy(array('user' => $user));
         $oldFileName = null;
         if($id == 0) {
             $selection = new Selection();
         } else {
-            $user = $this->getUser();
-            $repository = $em->getRepository('TVFRecordBundle:Client');
-            $client = $repository->findOneBy(array('user' => $user));
             $selection = $em->getRepository($this->entityNameSpace)->find($id);
             if($client->getId() != $selection->getClient()->getId()){
               throw new AccessDeniedException('Accès limité.');
@@ -114,12 +114,13 @@ class  SelectionController extends Controller
             }
             $em->persist($selection);
             $em->flush();
-            return $this->redirect($this->generateUrl('tvf_store_selection'));
+            return $this->redirect($this->generateUrl('tvf_record_selection'));
         }
         return $this->render($this->entityNameSpace.':add.html.twig', array(
             'form' => $form->createView(),
             'selectionId' => $id,
             'img' => $selection_img_url,
+            'client_id' => $client->getId(),
         ));
     }
     public function removeAction(Request $request, $id){
@@ -136,6 +137,6 @@ class  SelectionController extends Controller
         }
         $em->remove($selection);
         $em->flush();
-        return $this->redirect($this->generateUrl('tvf_store_selection'));
+        return $this->redirect($this->generateUrl('tvf_record_selection'));
     }
   }

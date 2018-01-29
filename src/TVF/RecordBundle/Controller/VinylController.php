@@ -215,7 +215,7 @@ class  VinylController extends Controller
             $em->persist($vinyl);
             $em->flush();
             //return new Response();
-            return $this->redirect($this->generateUrl('tvf_store_explore'));
+            return $this->redirect($this->generateUrl('tvf_record_collection'));
         }
 
         $repository = $em->getRepository('TVFAdminBundle:Gender');
@@ -244,6 +244,6 @@ class  VinylController extends Controller
         }
         $em->remove($vinyl);
         $em->flush();
-        return $this->redirect($this->generateUrl('tvf_store_explore'));
+        return $this->redirect($this->generateUrl('tvf_record_collection'));
     }
   }
