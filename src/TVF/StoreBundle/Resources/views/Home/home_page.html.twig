@@ -51,6 +51,9 @@ $('#vinyl-explore').on('click', function(e){
         }
     }
   });
+  var modal_window = $('.modal-dialog').first();
+  var btn = modal_window.find('button[data-bb-handler="main"]');
+  btn.attr('disabled', 'disabled');
 });
 </script>
 <script>
@@ -69,8 +72,24 @@ $('body').on('click', 'a.interactive', function(e){
 
 
   current_section = target;
+  if(target == 'chat-2') {
+    $('#chatbot_launch_search').on('click', function(e){
+      e.preventDefault();
+      var request = $('#chatbot_input_search').val();
+      url = $(this).attr('href') + '?q='+request;
+      window.location = url;
+    });
+    $('#chatbot_input_search').keyup(function(e){
+        if(e.keyCode == 13){
+            $('#chatbot_launch_search').click();
+        }
+    });
+  }
   if(target == 'chat-5'){
     /* TODO: Here save preferences */
+    var modal_window = $('.modal-dialog').first();
+    var btn = modal_window.find('button[data-bb-handler="main"]');
+    btn.attr('disabled', false);
     setTimeout(function(){
        window.location = '{{ path('tvf_store_explore', {'category': 'vinyle'}) }}';
     }, 1000);

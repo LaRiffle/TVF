@@ -67,6 +67,13 @@ class  SelectionController extends Controller
         ->add('image', FileType::class, array('label' => 'Image', 'required' => False))
         ->add('vinyls', EntityType::class, array(
                 'class'        => 'TVFRecordBundle:Vinyl',
+                'query_builder' => function (\Doctrine\ORM\EntityRepository $er) use ( $client ){
+                    return $er->createQueryBuilder('u')
+                        ->innerJoin('u.client', 'c')
+                        ->where('c.id = :client_id')
+                        ->setParameter('client_id', $client->getId())
+                        ->orderBy('u.id', 'DESC');
+                },
                 'choice_label' => 'name',
                 'multiple'     => true,
                 'expanded'     => true,

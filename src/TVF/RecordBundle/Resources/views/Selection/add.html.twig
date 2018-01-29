@@ -93,7 +93,7 @@
                 {% for vinyl in form.vinyls %}
                   {% set index = vinyl.vars.value %}
                   {% set entity = form.vinyls.vars.choices[index].data %}
-                  {% if entity.client.id == client_id  and vinyl.vars.data == '0' and nb_vinyls < 9 %}
+                  {% if vinyl.vars.data == '0' and nb_vinyls < 9 %}
                     {% set nb_vinyls = nb_vinyls + 1 %}
                     <div class="tvf-box tvf-icon" style="visibility: visible">
                       <div class="tvf-inner">

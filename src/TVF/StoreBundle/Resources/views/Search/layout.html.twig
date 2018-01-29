@@ -142,11 +142,11 @@
       }
       visible = visible && (filter.search.includes(id)|| filter.search.length == 0);
       if(visible){
-        $(this).removeClass('hide');
+        $(this).removeClass('hide').show();
         reshape_image(this);
         visible_items++;
       } else {
-        $(this).addClass('hide');
+        $(this).addClass('hide').hide();
       }
     });
     if(visible_items > 0){
@@ -325,6 +325,9 @@ $('#search_launch').on('click', function(e){
   icon_filter();
   console.log(scores);
 });
+if($('#search_input').val() != ''){
+    $('#search_launch').click();
+}
 </script>
 <script>
 /* Put on top vinyl on which we hover with the mouse */

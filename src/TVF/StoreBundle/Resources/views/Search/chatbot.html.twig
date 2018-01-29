@@ -8,6 +8,8 @@
 </section>
 <section id="chat-1" class="hide">
 <hr />
+<div><p class="tvf-bubble">Une idée de cadeau ? <a href="{{ path('tvf_store_discover_box') }}">On offre des abonnements !</a></p></div>
+<hr />
 <div><p class="tvf-bubble">Que cherches-tu ?</p></div>
 <div>
   <div style="display: flex; flex-direction: row; margin-bottom: 0.5rem;">
@@ -17,67 +19,13 @@
       </p>
       <div class="tvf-grid">
         <div class="tvf-row">
+          {% for vinyl in chat_data.recent_vinyls %}
           <div class="tvf-box-small tvf-box tvf-icon">
             <div class="tvf-inner">
-                <img src="https://vinyl-factory.com/t/web/uploads/img/d9ea3e5219ca3968c9027a29ba1c717a-xs.png" alt="" style="">
+                <img src="{{ asset('uploads/img/' ~ vinyl.small_image) }}" alt="Visuel indisponible" style="color: black;">
             </div>
           </div>
-          <div class="tvf-box-small tvf-box tvf-icon">
-            <div class="tvf-inner">
-              <a href="#">
-                <img src="https://vinyl-factory.com/t/web/uploads/img/d9ea3e5219ca3968c9027a29ba1c717a-xs.png" alt="" style="">
-              </a>
-            </div>
-          </div>
-          <div class="tvf-box-small tvf-box tvf-icon">
-            <div class="tvf-inner">
-              <a href="#">
-                <img src="https://vinyl-factory.com/t/web/uploads/img/9267b7fc40ad8a452eb99020ee866ca0-xs.png" alt="" style="">
-              </a>
-            </div>
-          </div>
-          <div class="tvf-box-small tvf-box tvf-icon">
-            <div class="tvf-inner">
-              <a href="#">
-                <img src="https://vinyl-factory.com/t/web/uploads/img/3f3ae9652f96ce3d5df13d0c19ad9bb3-xs.png" alt="" style="">
-              </a>
-            </div>
-          </div>
-          <div class="tvf-box-small tvf-box tvf-icon">
-            <div class="tvf-inner">
-              <a href="#">
-                <img src="https://vinyl-factory.com/t/web/uploads/img/3f3ae9652f96ce3d5df13d0c19ad9bb3-xs.png" alt="" style="">
-              </a>
-            </div>
-          </div>
-          <div class="tvf-box-small tvf-box tvf-icon">
-            <div class="tvf-inner">
-              <a href="#">
-                <img src="https://vinyl-factory.com/t/web/uploads/img/f814316796fa4a9aaeb9880fb8ea143e-xs.png" alt="" style="">
-              </a>
-            </div>
-          </div>
-          <div class="tvf-box-small tvf-box tvf-icon">
-            <div class="tvf-inner">
-              <a href="#">
-                <img src="https://vinyl-factory.com/t/web/uploads/img/3f3ae9652f96ce3d5df13d0c19ad9bb3-xs.png" alt="" style="">
-              </a>
-            </div>
-          </div>
-          <div class="tvf-box-small tvf-box tvf-icon">
-            <div class="tvf-inner">
-              <a href="#">
-                <img src="https://vinyl-factory.com/t/web/uploads/img/f814316796fa4a9aaeb9880fb8ea143e-xs.png" alt="" style="">
-              </a>
-            </div>
-          </div>
-          <div class="tvf-box-small tvf-box tvf-icon">
-            <div class="tvf-inner">
-              <a href="#">
-                <img src="https://vinyl-factory.com/t/web/uploads/img/84ffdb36ad11eafaf810e197552e18bc-xs.jpeg" alt="" style="">
-              </a>
-            </div>
-          </div>
+          {% endfor %}
         </div>
       </div>
     </div>
@@ -87,84 +35,28 @@
       </p>
       <div class="tvf-grid">
         <div class="tvf-row">
+          {% for vinyl in chat_data.classic_vinyls %}
           <div class="tvf-box-small tvf-box tvf-icon">
             <div class="tvf-inner">
-              <a href="#">
-                <img src="https://vinyl-factory.com/t/web/uploads/img/9267b7fc40ad8a452eb99020ee866ca0-xs.png" alt="" style="">
-              </a>
+                <img src="{{ asset('uploads/img/' ~ vinyl.small_image) }}" alt="Visuel indisponible" style="color: black;">
             </div>
           </div>
-          <div class="tvf-box-small tvf-box tvf-icon">
-            <div class="tvf-inner">
-              <a href="#">
-                <img src="https://vinyl-factory.com/t/web/uploads/img/84ffdb36ad11eafaf810e197552e18bc-xs.jpeg" alt="" style="">
-              </a>
-            </div>
-          </div>
-          <div class="tvf-box-small tvf-box tvf-icon">
-            <div class="tvf-inner">
-              <a href="#">
-                <img src="https://vinyl-factory.com/t/web/uploads/img/a86c0dda8b8c9e6259a1164416827215-xs.png" alt="" style="">
-              </a>
-            </div>
-          </div>
-          <div class="tvf-box-small tvf-box tvf-icon">
-            <div class="tvf-inner">
-              <a href="#">
-                <img src="https://vinyl-factory.com/t/web/uploads/img/9267b7fc40ad8a452eb99020ee866ca0-xs.png" alt="" style="">
-              </a>
-            </div>
-          </div>
-          <div class="tvf-box-small tvf-box tvf-icon">
-            <div class="tvf-inner">
-              <a href="#">
-                <img src="https://vinyl-factory.com/t/web/uploads/img/a86c0dda8b8c9e6259a1164416827215-xs.png" alt="" style="">
-              </a>
-            </div>
-          </div>
-          <div class="tvf-box-small tvf-box tvf-icon">
-            <div class="tvf-inner">
-              <a href="#">
-                <img src="https://vinyl-factory.com/t/web/uploads/img/f814316796fa4a9aaeb9880fb8ea143e-xs.png" alt="" style="">
-              </a>
-            </div>
-          </div>
-          <div class="tvf-box-small tvf-box tvf-icon">
-            <div class="tvf-inner">
-              <a href="#">
-                <img src="https://vinyl-factory.com/t/web/uploads/img/3f3ae9652f96ce3d5df13d0c19ad9bb3-xs.png" alt="" style="">
-              </a>
-            </div>
-          </div>
-          <div class="tvf-box-small tvf-box tvf-icon">
-            <div class="tvf-inner">
-              <a href="#">
-                <img src="https://vinyl-factory.com/t/web/uploads/img/f814316796fa4a9aaeb9880fb8ea143e-xs.png" alt="" style="">
-              </a>
-            </div>
-          </div>
-          <div class="tvf-box-small tvf-box tvf-icon">
-            <div class="tvf-inner">
-              <a href="#">
-                <img src="https://vinyl-factory.com/t/web/uploads/img/9267b7fc40ad8a452eb99020ee866ca0-xs.png" alt="" style="">
-              </a>
-            </div>
-          </div>
+          {% endfor %}
         </div>
       </div>
     </div>
   </div>
-  <a href="#" data-to="chat-2" class="interactive btn btn-default btn-tvf">J’ai déjà une idée bien précise</a>
+  <a href="#" data-to="chat-2" class="interactive btn btn-default btn-tvf"><i class="fa fa-search" aria-hidden="true"></i> J’ai déjà une idée bien précise</a>
 </div>
 </section>
 <section id="chat-2" class="hide">
 <hr />
 <div>
-  <div><p class="tvf-bubble">Je cherche un album, un artiste ou un morceau...</p></div>
+  <div><p class="tvf-bubble">Je cherche un album ou un artiste...</p></div>
   <div class="input-group">
-      <input type="text" class="form-control" placeholder="Johnny Halliday, etc" aria-label="Search for...">
+      <input id="chatbot_input_search" type="text" class="form-control" placeholder="Reinhardt ou Guetta, c'est toi qui vois." aria-label="Search for...">
       <span class="input-group-btn">
-        <a href="{{ path('tvf_store_explore', {'category': 'vinyle'}) }}" class="btn btn-primary"><i class="fa fa-search" aria-hidden="true"></i> Rechercher</a>
+        <a id="chatbot_launch_search" href="{{ path('tvf_store_explore') }}" class="btn btn-primary"><i class="fa fa-search" aria-hidden="true"></i> Rechercher</a>
       </span>
     </div>
 </div>

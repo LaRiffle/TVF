@@ -20,7 +20,36 @@ class HomeController extends Controller
     }
     public function homepageAction()
     {
-        return $this->render($this->entityNameSpace.':home_page.html.twig');
+        $imagehandler = $this->container->get('tvf_store.imagehandler');
+        // Load infos on recent & classic vinyls for the chatbot
+        $em = $this->getDoctrine()->getManager();
+        $repository = $em->getRepository('TVFRecordBundle:Vinyl');
+        $recent_vinyls = $repository->findBy(array(), array('id' => 'desc'), 9);
+        foreach ($recent_vinyls as $vinyl) {
+          $fileNames = $vinyl->getImages();
+          $vinyl->small_image = (count($fileNames) > 0) ? $imagehandler->get_image_in_quality($fileNames[0], 'xxs') : '';
+        }
+        $repository = $em->getRepository('TVFStoreBundle:VinylUser');
+        $sql = 'Select sum(vinyl_user.nb_views) as total_views, vinyl_id from vinyl_user group by vinyl_id order by total_views DESC LIMIT 9;';
+        $connection = $em->getConnection();
+        $statement = $connection->prepare($sql);
+        $statement->execute();
+        $classic_vinyls_id = $statement->fetchAll();
+        $classic_vinyls = [];
+        $repository = $em->getRepository('TVFRecordBundle:Vinyl');
+        foreach ($classic_vinyls_id as $vinyl_id) {
+          $vinyl = $repository->findOneBy(array('id' => $vinyl_id));
+          $fileNames = $vinyl->getImages();
+          $vinyl->small_image = (count($fileNames) > 0) ? $imagehandler->get_image_in_quality($fileNames[0], 'xxs') : '';
+          $classic_vinyls[] = $vinyl;
+        }
+        $chat_data = [
+          'recent_vinyls' => $recent_vinyls,
+          'classic_vinyls' => $classic_vinyls,
+        ];
+        return $this->render($this->entityNameSpace.':home_page.html.twig', array(
+          'chat_data' => $chat_data,
+        ));
     }
     public function homeAction()
     {
@@ -79,6 +108,8 @@ class HomeController extends Controller
           }
           $client->small_image = $path_small_image;
         }
+
+
         return $this->render($this->entityNameSpace.':home.html.twig', array(
           'data' => $text,
           'selections' => $selections,
