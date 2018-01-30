@@ -155,7 +155,7 @@
     <script>
     $('#vinyl_overview').removeClass('hide');
     var active_index = -1;
-    $('a.show-vinyl').on('click', function(e){
+    $('#my_insta').on('click', 'a.show-vinyl', function(e){
       e.preventDefault();
       if (typeof reorganize === "function") {
           reorganize();
@@ -194,15 +194,18 @@
       }
     });
 
+    var base_url_see_more = '{{ path('tvf_store_vinyl') }}';
     function update_content_overview($vinyl, index, after_index){
       $("#vinyl_overview .vinyl-name").html($vinyl.attr('data-name'));
-      var artists = $vinyl.attr('data-artists').split(',').join(', ');
+      var artists = $vinyl.attr('data-artists').split(',');
       var artists_html = '';
       for(var i=0; i<artists.length; i++){
-        artists_html += '<a href="{{ path('tvf_store_artist_search') }}/'+artists[i]+'">'+artists[i]+'</a>';
+        if(i > 0) artists_html += ', ';
+        artists_html += '<a href="{{ path('tvf_store_explore') }}?q='+artists[i]+'">'+artists[i]+'</a>';
       }
       $("#vinyl_overview .vinyl-artists").html(artists_html);
       $("#vinyl_overview .vinyl-description").html($vinyl.attr('data-description'));
+      $("#vinyl_overview .vinyl-see-more").attr('href', base_url_see_more + $vinyl.attr('data-id'));
       $("#vinyl_overview .vinyl-disquaire").html($vinyl.attr('data-disquaire'));
       // Set price
       if($vinyl.attr('data-onsold') == '1'){

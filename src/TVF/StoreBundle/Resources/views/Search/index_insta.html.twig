@@ -44,9 +44,7 @@
           <a class="show-vinyl" href="{{ path('tvf_store_vinyl_show', {'id': vinyl.id}) }}">
             <img src="{{ asset('uploads/img/' ~ vinyl.small_image) }}" alt="" style="">
             {% if not is_granted('ROLE_ADMIN') and not is_owner %}
-            <div class="caption">
-              <!--<h3>{{ vinyl.name }}</h3>
-              {% if vinyl.onsold %}<h5>{{ vinyl.price }} €</h5>{% endif %}-->
+            <div class="caption visible-from-sm">
               <h3>
                 <div class="love_icon love_icon_insta_btn">
                   {% if vinyl.loved  %}
@@ -125,6 +123,7 @@
             <h4><b><span class="vinyl-name"></span></b></h4>
             <h5>Par <span class="vinyl-artists"></span></h5>
             <p><span class="vinyl-description"></span></p>
+            <p><a href="#" class="vinyl-see-more">Voir les détails</a></p>
             <h6 class=""><a href="#" data-href="{{ path('tvf_record_client_present', {'slug':''}) }}" class="vinyl-disquaire-link"><span class="vinyl-disquaire">Noir de jais</span></a></h6>
           </div>
         </div>

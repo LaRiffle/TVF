@@ -64,23 +64,21 @@
 <section id="chat-3" class="hide">
 <hr />
 <div><p class="tvf-bubble">Ce que j'aime bien</p></div>
-<div class="horizontal-scroll">
+<div id="gender_like" class="horizontal-scroll">
   <a href="#" data-to="chat-4" class="interactive interactive-next btn btn-primary btn-tvf">Passer</a>
-  <a href="#" class="btn-select btn btn-default btn-tvf">Jazz</a>
-  <a href="#" class="btn-select btn btn-default btn-tvf">Pop</a>
-  <a href="#" class="btn-select btn btn-default btn-tvf">Electro</a>
-  <a href="#" class="btn-select btn btn-default btn-tvf">Classique</a>
+  {% for gender in genders %}
+  <a href="#" data-id="{{ gender.id }}" class="btn-select btn btn-default btn-tvf">{{ gender.name }}</a>
+  {% endfor %}
 </div>
 </section>
 <section id="chat-4" class="hide">
 <hr />
 <div><p class="tvf-bubble">Ce que je n'aime pas</p></div>
-<div class="horizontal-scroll">
+<div id="gender_dislike" class="horizontal-scroll">
   <a href="#" data-to="chat-5" class="interactive interactive-next btn btn-primary btn-tvf">Passer</a>
-  <a href="#" class="btn-select btn btn-default btn-tvf">Jazz</a>
-  <a href="#" class="btn-select btn btn-default btn-tvf">Pop</a>
-  <a href="#" class="btn-select btn btn-default btn-tvf">Electro</a>
-  <a href="#" class="btn-select btn btn-default btn-tvf">Classique</a>
+  {% for gender in genders %}
+  <a href="#" data-id="{{ gender.id }}" class="btn-select btn btn-default btn-tvf">{{ gender.name }}</a>
+  {% endfor %}
 </div>
 </section>
 <section id="chat-5" class="hide">

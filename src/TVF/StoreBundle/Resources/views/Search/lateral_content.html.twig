@@ -49,7 +49,7 @@
   {% endfor %}
   {% if is_granted('ROLE_ADMIN') %}
   <li class="list-group-item justify-content-between">
-    <a href="#" class="internal-link" data-target="#form-type{{ gender.id }}">+ Sous-genre</a>
+    <a href="#" class="internal-link" data-target="form-type{{ gender.id }}">+ Sous-genre</a>
     <div id="form-type{{ gender.id }}" style="display:none">
       {{ render(controller("TVFAdminBundle:MusicGenre:typeAdd", {'gender_id': gender.id })) }}
     </div>
@@ -60,7 +60,7 @@
 </div>
 {% if is_granted('ROLE_ADMIN') %}
 <li class="list-group-item justify-content-between vetement_filter">
-  <a href="#" class="internal-link" data-target="#form-gender">Ajouter un genre</a>
+  <a href="#" class="internal-link" data-target="form-gender">Ajouter un genre</a>
   <div id="form-gender" style="display:none">
     {{ render(controller("TVFAdminBundle:MusicGenre:genderAdd")) }}
   </div>

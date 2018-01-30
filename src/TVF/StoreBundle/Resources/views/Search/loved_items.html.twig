@@ -11,7 +11,16 @@
       <div class="row">
         {{ include(lateral_navbar) }}
         <div id="display_icons" class="col-lg-8 col-xl-9">
-          <h2 class="selection-title">Vos vinyles préférés</h2>
+          <div class="card">
+            <div class="card-block">
+              <p class="card-text" style="float: right;">
+                {% for gender in liked_genders %}
+                  <span class="btn btn-default btn-tvf" style="margin: 0">{{ gender.name }}</span>
+                {% endfor %}
+              </p>
+              <h2 class="card-title">Vos vinyles préférés</h2>
+            </div>
+          </div>
           <div class="horizontal-scroller" style="margin-bottom: 3px;">
             <a href="#" id="show_lateral" class="show-lateral visible-to-md btn btn-default" style="z-index: 200;"><i class="fa fa-filter" aria-hidden="true"></i> Filtrer les créations</a>
           </div>

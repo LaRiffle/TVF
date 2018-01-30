@@ -399,21 +399,28 @@ button.navbar-toggler:hover {
 }
 
 @media screen and (max-width: 576px) {
-  #home-page .card-deck {
+  #explore-page .card-deck, #home-page .card-deck {
     margin-top: 20px;
   }
+  #explore-page .card-text {
+    width: 100%;
+    margin-bottom: 10px !important;
+  }
+  #explore-page .card {
+    margin-bottom: 10px;
+  }
 }
-#home-page .card-deck {
+#explore-page .card-deck, #home-page .card-deck {
   margin-top: 20px;
 }
 #home-page .card-deck .card-title {
   text-align: center;
   color: #BA0020;
 }
-#home-page .card-title {
+#explore-page .card-title, #home-page .card-title {
   font-size: 1.5rem;
 }
-#home-page .card-deck .card {
+#explore-page .card-deck .card, #home-page .card-deck .card {
   margin-bottom: 20px;
 }
 #home-page .card {
@@ -428,6 +435,20 @@ button.navbar-toggler:hover {
     -webkit-transition: all 0.5s;
     -o-transition: all 0.5s;
 }
+#explore-page .card-block {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+#explore-page .card-title {
+  color: #BA0020;
+  margin-top: 5px;
+  margin-bottom: 4px;
+}
+#explore-page .card-text {
+  float: right;
+  margin: 0;
+}
+
 #home-page .tvf-box {
   visibility: visible;
 }

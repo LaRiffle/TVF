@@ -58,6 +58,10 @@ $('#vinyl-explore').on('click', function(e){
 </script>
 <script>
 /* Pour le chat 2/2 */
+var profile = {
+  liked_genders:[],
+  disliked_genders:[]
+}
 var current_section = 'chat-0';
 $('body').on('click', 'a.interactive', function(e){
   e.preventDefault();
@@ -85,19 +89,52 @@ $('body').on('click', 'a.interactive', function(e){
         }
     });
   }
+  /* remove the liked genres */
+  if(target == 'chat-4'){
+    var liked_ids = [];
+    $('#gender_like a.btn-select.selected-gender').each(function(){
+      liked_ids.push($(this).attr('data-id'));
+    });
+    profile.liked_genders = liked_ids;
+    for(var i=0; i<liked_ids.length; i++){
+      $('#gender_dislike a.btn-select[data-id="'+liked_ids[i]+'"]').remove();
+    }
+  }
   if(target == 'chat-5'){
-    /* TODO: Here save preferences */
     var modal_window = $('.modal-dialog').first();
     var btn = modal_window.find('button[data-bb-handler="main"]');
     btn.attr('disabled', false);
-    setTimeout(function(){
-       window.location = '{{ path('tvf_store_explore', {'category': 'vinyle'}) }}';
-    }, 1000);
+
+    var disliked_ids = [];
+    $('#gender_dislike a.btn-select.selected-gender').each(function(){
+      disliked_ids.push($(this).attr('data-id'));
+    });
+    profile.disliked_genders = disliked_ids;
+    console.log(profile);
+    $.ajax({
+        url:'{{ (path('tvf_store_user_set_profile')) }}',
+        type: "POST",
+        dataType: "json",
+        data: { profile : profile },
+        async: true,
+        success: function (data)
+        {
+            console.log('Done.')
+            console.log('Message of server: '+data.output);
+            window.location = '{{ path('tvf_store_explore', {'category': 'vinyle'}) }}';
+        },
+        error: function (data)
+        {
+            console.log('Error')
+            console.log('Message of server: '+data);
+            window.location = '{{ path('tvf_store_explore', {'category': 'vinyle'}) }}';
+        },
+    });
   }
 });
 $('body').on('click', 'a.btn-select', function(e){
   e.preventDefault();
-  $(this).css('border-color','rgb(2, 117, 216)');
+  $(this).css('border-color','rgb(2, 117, 216)').addClass('selected-gender');
   $(this).parent('.horizontal-scroll').find('.interactive-next').html("C'est tout !");
   console.log($(this).html());
 });

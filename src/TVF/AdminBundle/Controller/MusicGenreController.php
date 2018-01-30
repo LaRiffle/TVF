@@ -56,6 +56,12 @@ class MusicGenreController extends Controller
         foreach ($types as $type) {
             $em->remove($type);
         }
+        $gender_users = $em
+          ->getRepository('TVFStoreBundle:GenderUser')
+          ->findBy(array('gender' => $gender));
+        foreach ($gender_users as $gender_user) {
+          $em->remove($gender_user);
+        }
         $em->remove($gender);
         $em->flush();
         return $this->redirect($this->generateUrl('tvf_store_explore'));

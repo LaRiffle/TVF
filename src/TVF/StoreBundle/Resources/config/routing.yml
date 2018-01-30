@@ -9,6 +9,9 @@ tvf_store_vinyl_love:
 tvf_store_vinyl_unlove:
     path:     /vinyl/unlove/{id}
     defaults: { _controller: TVFStoreBundle:Behaviour:unlove, id:0 }
+tvf_store_user_set_profile:
+    path:     /user/profile
+    defaults: { _controller: TVFStoreBundle:Behaviour:setProfile }
 
 # Customer
 tvf_store_customer_register:
@@ -62,5 +65,5 @@ tvf_store_vinyl_show:
     requirements:
         id:   \d+
 tvf_store_artist_search:
-  path:     /about/{artist}
-  defaults: { _controller: TVFRecordBundle:Artist:Search, artist: '' }
+  path:     /about/{spotify_id}
+  defaults: { _controller: TVFRecordBundle:Artist:Search, spotify_id: '' }

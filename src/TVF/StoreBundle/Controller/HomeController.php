@@ -47,8 +47,13 @@ class HomeController extends Controller
           'recent_vinyls' => $recent_vinyls,
           'classic_vinyls' => $classic_vinyls,
         ];
+
+        $repository = $em->getRepository('TVFAdminBundle:Gender');
+        $genders = $repository->findAll();
+        
         return $this->render($this->entityNameSpace.':home_page.html.twig', array(
           'chat_data' => $chat_data,
+          'genders' => $genders,
         ));
     }
     public function homeAction()

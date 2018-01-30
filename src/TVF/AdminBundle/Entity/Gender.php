@@ -35,6 +35,11 @@ class Gender
      */
     private $slug;
 
+    /**
+     * @ORM\OneToMany(targetEntity="TVF\StoreBundle\Entity\GenderUser", mappedBy="gender")
+     */
+    private $users;
+
 
     /**
      * Get id
@@ -92,5 +97,41 @@ class Gender
     public function getSlug()
     {
         return $this->slug;
+    }
+
+    /**
+     * Add user
+     *
+     * @param \TVF\StoreBundle\Entity\GenderUser $user
+     *
+     * @return Gender
+     */
+    public function addUser(\TVF\StoreBundle\Entity\GenderUser $user)
+    {
+        $this->users[] = $user;
+
+        $user->setGender($this);
+
+        return $this;
+    }
+
+    /**
+     * Remove user
+     *
+     * @param \TVF\StoreBundle\Entity\GenderUser $user
+     */
+    public function removeUser(\TVF\StoreBundle\Entity\GenderUser $user)
+    {
+        $this->users->removeElement($user);
+    }
+
+    /**
+     * Get users
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getUsers()
+    {
+        return $this->users;
     }
 }

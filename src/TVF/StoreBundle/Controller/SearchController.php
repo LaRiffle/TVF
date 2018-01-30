@@ -203,13 +203,17 @@ class SearchController extends Controller
         $selections = $repository->findAll();
         $repository = $em->getRepository('TVFAdminBundle:Category');
         $categories = $repository->findAll();
+
+        $repository = $em->getRepository('TVFStoreBundle:GenderUser');
+        $liked_genders = $repository->getLikedGenders($user);
         return $this->render($this->entityNameSpace.':loved_items.html.twig', array(
             'vinyls' => $loved_vinyls,
             'genders' => $genders,
             'selections' => $selections,
             'selection_id' => '_',
             'categories' => $categories,
-            'category_id' => '_'
+            'category_id' => '_',
+            'liked_genders' => $liked_genders,
         ));
     }
     public function showAction()
