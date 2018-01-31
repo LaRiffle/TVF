@@ -1100,6 +1100,15 @@ footer .row > div {
 #box-page .price {
   font-size: 1.4rem;
 }
-#box-page a:hover li {
+#box-page a:hover li, .abo-list-mean a:hover li {
   background-color: rgba(2,117,216,.125);
+}
+.abo-list-mean {
+  border: 1px solid rgba(0,0,0,.125);
+  border-radius: 5px;
+  border-top: none;
+  margin-top: 20px;
+}
+.modal-footer button:hover {
+  cursor: pointer;
 }

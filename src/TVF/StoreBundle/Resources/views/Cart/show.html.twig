@@ -1,0 +1,36 @@
+{% extends "TVFStoreBundle::layout.html.twig" %}
+{% block title %}
+  | Les abonnements
+{% endblock %}
+{% block body %}
+<div id="box-page">
+  {% set navbar = "TVFStoreBundle:Utils:nav.html.twig" %}
+  {% set text = "TVFStoreBundle:Utils:text.html.twig" %}
+  {% set image = "TVFStoreBundle:Utils:image.html.twig" %}
+  {{ include(navbar, {'active': 'contact'}) }}
+  <div class="container">
+    <div class="row" style="margin-top: 25px; margin-bottom: 25px;">
+      <div class="offset-sm-0 col-sm-12 offset-md-1 col-md-10 offset-lg-2 col-lg-8">
+        <div class="card">
+          <div class="card-block">
+            <h2 class="card-title badge-title">
+              <span class="badge badge-light badge-pill">
+                Votre panier
+              </span>
+            </h2>
+            <h2 class="card-title">&nbsp;</h2>
+            <p class="card-text">N'est pas encore disponible :/</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block script %}
+{% if is_granted('ROLE_ADMIN') %}
+  {% set edit_script = "TVFAdminBundle:Utils:edit-handler.html.twig" %}
+  {{ include(edit_script) }}
+{% endif %}
+
+{% endblock %}

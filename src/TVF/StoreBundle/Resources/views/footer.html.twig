@@ -11,6 +11,9 @@
                   <li><a href="/disquaire/{{ client.slug }}">{{ client.name }}</a></li>
               {% endfor %}
               <li><a  href="{{ path('tvf_store_join') }}"><i class="fa fa-plus" aria-hidden="true"></i> Nous rejoindre</a></li>
+              <li><a href="{{ path('logout') }}">
+                <i class="fa fa-lock" aria-hidden="true"></i> Se connecter
+              </a></li>
             </ul>
           <li>
         </ul>
@@ -32,9 +35,9 @@
           <li class="widget-container">
             <h5 class="title-widget">Mentions</h5>
             <ul class="list-unstyled clear-margins">
-      			  <li><a  href="#">CGV</a></li>
-              <li><a  href="#">Mentions légales</a></li>
-              <li><a  href="#">Mention spéciale</a></li>
+      			  <li><a href="#">CGV</a></li>
+              <li><a href="#">Mentions légales</a></li>
+              <li><a href="#">Mention spéciale</a></li>
             </ul>
           <li>
         </ul>

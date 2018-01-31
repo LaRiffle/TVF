@@ -23,11 +23,18 @@
                 </span>
               </h2>
               <h2 class="card-title">{{ include(text, {'element': data.amateur.price }) }} <span class="price">/ mois</span></h2>
+              <!--<p class="card-text" style="margin-bottom: 8px; margin-top: -12px;">
+                <a href="#">Découvrez notre offre étudiant !</a>
+              </p>-->
               <p class="card-text">{{ include(text, {'element': data.amateur.content }) }}</p>
+              <ul style="margin:0">
+                <li>2 vinyles choisis par nos disquaires</li>
+                <li>1 fiche à propos de ce choix</li>
+              </ul>
             </div>
             <ul class="list-group list-group-flush">
-              <a href="#"><li class="list-group-item"><i class="fa fa-circle-thin" aria-hidden="true"></i> &nbsp; 6 mois</li></a>
-              <a href="#"><li class="list-group-item"><i class="fa fa-circle-thin" aria-hidden="true"></i> &nbsp; 12 mois</li></a>
+              <a href="#" class="select-abo"><li class="list-group-item"><i class="fa fa-circle-thin" aria-hidden="true"></i> &nbsp; 6 mois</li></a>
+              <a href="#" class="select-abo"><li class="list-group-item"><i class="fa fa-circle-thin" aria-hidden="true"></i> &nbsp; 12 mois</li></a>
             </ul>
           </div>
           <div class="card">
@@ -41,11 +48,18 @@
                 </span>
               </h2>
               <h2 class="card-title">{{ include(text, {'element': data.connaisseur.price }) }} <span class="price">/ mois</span></h2>
+              <!--<p class="card-text" style="margin-bottom: 8px; margin-top: -12px;">
+                <a href="#">Découvrez notre offre étudiant !</a>
+              </p>-->
               <p class="card-text">{{ include(text, {'element': data.connaisseur.content }) }}</p>
+              <ul style="margin:0">
+                <li>2 vinyles choisis par nos disquaires</li>
+                <li>1 fiche à propos de ce choix</li>
+              </ul>
             </div>
             <ul class="list-group list-group-flush">
-              <a href="#"><li class="list-group-item"><i class="fa fa-circle-thin" aria-hidden="true"></i> &nbsp; 6 mois</li></a>
-              <a href="#"><li class="list-group-item"><i class="fa fa-circle-thin" aria-hidden="true"></i> &nbsp; 12 mois</li></a>
+              <a href="#" class="select-abo"><li class="list-group-item"><i class="fa fa-circle-thin" aria-hidden="true"></i> &nbsp; 6 mois</li></a>
+              <a href="#" class="select-abo"><li class="list-group-item"><i class="fa fa-circle-thin" aria-hidden="true"></i> &nbsp; 12 mois</li></a>
             </ul>
           </div>
         </div>
@@ -59,4 +73,42 @@
   {% set edit_script = "TVFAdminBundle:Utils:edit-handler.html.twig" %}
   {{ include(edit_script) }}
 {% endif %}
+<script>
+var mean_selected = 0;
+$('.select-abo').on('click', function(e){
+  mean_selected = 0;
+  e.preventDefault();
+  $('.select-abo i').removeClass('fa-circle').addClass('fa-circle-thin');
+  $(this).find('.fa-circle-thin').removeClass('fa-circle-thin').addClass('fa-circle');
+  bootbox.alert({
+    title: "Finalisez votre abonnement",
+    message: `
+    <h4 style="color: #BA0020;">Sélectionnez votre mode de livraison</h4>
+    <ul class="list-group list-group-flush abo-list-mean">
+      <a href="#" data-mean="0"><li class="list-group-item"><i class="fa fa-circle" aria-hidden="true"></i> &nbsp; Livraison à domicile</li></a>
+      <a href="#" data-mean="1"><li class="list-group-item"><i class="fa fa-circle-thin" aria-hidden="true"></i> &nbsp; Retrait chez nos disquaires partenaires - Paris Ve</li></a>
+    </ul>
+    `,
+    callback: function () {
+      console.log('Mean chosed is '+ mean_selected);
+    },
+    buttons: {
+      ok: {
+          label: '<i class="fa fa-shopping-basket" aria-hidden="true"></i> &nbsp; Ajouter au panier'
+      }
+    }
+  });
+});
+$('body').on('click', '.abo-list-mean a', function(e){
+  e.preventDefault();
+  var icon = $(this).find('i').first();
+  if(icon.hasClass('fa-circle-thin')){
+    $('.abo-list-mean a i').removeClass('fa-circle').addClass('fa-circle-thin');
+    icon.removeClass('fa-circle-thin').addClass('fa-circle');
+    mean_selected = $(this).attr('data-mean');
+  } else {
+    icon.removeClass('fa-circle').addClass('fa-circle-thin');
+  }
+});
+</script>
 {% endblock %}

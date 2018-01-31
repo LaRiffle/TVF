@@ -20,7 +20,9 @@ tvf_store_customer_register:
 tvf_store_customer_register_or_login:
     path:     /register_or_login
     defaults: { _controller: TVFStoreBundle:Customer:register_or_login }
-
+tvf_store_cart:
+    path:     /mon-panier
+    defaults: { _controller: TVFStoreBundle:Customer:cart }
 # Home
 tvf_store_homepage:
     path:     /accueil

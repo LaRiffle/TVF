@@ -16,6 +16,17 @@ use TVF\StoreBundle\Entity\Vinyl;
 class CustomerController extends Controller
 {
     /*
+      All actions linked to customer:
+      - Manage Registration
+      - Manage cart
+    */
+
+    public function cartAction(){
+      return $this->render('TVFStoreBundle:Cart:show.html.twig', array(
+
+      ));
+    }
+    /*
       Register or automatically retrieve a customer based on his fingerprint
     */
     public function register_or_loginAction(Request $request){
