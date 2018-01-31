@@ -406,9 +406,6 @@ button.navbar-toggler:hover {
     width: 100%;
     margin-bottom: 10px !important;
   }
-  #explore-page .card {
-    margin-bottom: 10px;
-  }
 }
 #explore-page .card-deck, #home-page .card-deck {
   margin-top: 20px;
@@ -420,11 +417,14 @@ button.navbar-toggler:hover {
 #explore-page .card-title, #home-page .card-title {
   font-size: 1.5rem;
 }
-#explore-page .card-deck .card, #home-page .card-deck .card {
+#home-page .card-deck .card {
   margin-bottom: 20px;
 }
 #home-page .card {
   overflow: hidden;
+}
+#explore-page .card {
+  margin-bottom: 10px;
 }
 #home-page .card-deck img:hover {
   transform: scale(1.05); -webkit-transform: scale(1.05); -o-transform: scale(1.05); -moz-transform: scale(1.05);

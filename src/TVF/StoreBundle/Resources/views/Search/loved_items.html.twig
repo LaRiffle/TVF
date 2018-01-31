@@ -13,7 +13,7 @@
         <div id="display_icons" class="col-lg-8 col-xl-9">
           <div class="card">
             <div class="card-block">
-              <p class="card-text" style="float: right;">
+              <p class="card-text visible-from-sm" style="float: right;">
                 {% for gender in liked_genders %}
                   <span class="btn btn-default btn-tvf" style="margin: 0">{{ gender.name }}</span>
                 {% endfor %}
@@ -22,7 +22,13 @@
             </div>
           </div>
           <div class="horizontal-scroller" style="margin-bottom: 3px;">
-            <a href="#" id="show_lateral" class="show-lateral visible-to-md btn btn-default" style="z-index: 200;"><i class="fa fa-filter" aria-hidden="true"></i> Filtrer les créations</a>
+            <div class="input-group visible-to-md" style="margin-right: 10px;">
+              <input id="search_input_mobile" value="{% if app.request.get('q') is defined %}{{ app.request.get('q') }}{% endif %}" class="form-control" placeholder="Album, artiste..."/>
+              <span class="input-group-btn">
+                <a id="search_launch_mobile" class="btn btn-primary" type="button" href="#"><i class="fa fa-search" aria-hidden="true"></i></a>
+              </span>
+            </div>
+            <a href="#" id="show_lateral" class="show-lateral visible-to-md btn btn-default" style="z-index: 200; margin: 0;"><i class="fa fa-filter" aria-hidden="true"></i> Filtrer</a>
           </div>
           <div style="padding-left: 1rem; padding-right: 1rem;">
             {% set icons = "TVFStoreBundle:Search:index_insta.html.twig" %}

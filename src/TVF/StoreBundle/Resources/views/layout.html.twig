@@ -3,7 +3,7 @@
 <html>
   <head>
     <title>Le Bon Sillon {% block title %}{% endblock %}</title>
-    <meta name="description" content="Le fil rouge est une maison de création textile qui propose des vêtements et accessoires uniques et originaux made in France." />
+    <meta name="description" content="Le Bon Sillon est une plateforme de vente de vinyles pour les disquaires indépendants." />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" type="image/x-icon" href="">
@@ -156,6 +156,7 @@
     $('#vinyl_overview').removeClass('hide');
     var active_index = -1;
     $('#my_insta').on('click', 'a.show-vinyl', function(e){
+      console.log('Click seen')
       e.preventDefault();
       if (typeof reorganize === "function") {
           reorganize();
@@ -176,7 +177,9 @@
       }
       {% endif %}
       if(index == active_index){
-        $('#vinyl_slider').slideUp();
+        $('#vinyl_slider').slideUp(400, function(){
+            $('#vinyl_overview').hide();
+        });
         active_index = -1;
       } else {
         var after_index = index - index%3 + 2;
@@ -186,6 +189,7 @@
             $('#vinyl_slider').slideUp('fast', function() {
               $('#vinyl_overview').insertAfter($after_box);
               update_content_overview($vinyl, index, after_index);
+              $('#vinyl_overview').hide();
             });
         } else {
           update_content_overview($vinyl, index, after_index);
@@ -233,7 +237,11 @@
       color_overview_from_img(src);
       // adapt caret
       $("#vinyl_overview .caret").css('right', 'calc('+(16.67+(after_index - index)*33.33)+'% - 10px)');
-      $('#vinyl_slider').slideDown();
+
+      setTimeout(function(){
+        $('#vinyl_overview').show();
+        $('#vinyl_slider').slideDown();
+      }, 10);
     }
 
     function color_overview_from_img(sourceImage){

@@ -1,6 +1,6 @@
 {% extends "TVFStoreBundle::layout.html.twig" %}
 {% block title %}
-  | Créations
+  | Les vinyles
 {% endblock %}
 {% block body %}
 {% endblock %}
@@ -120,7 +120,7 @@
       box = $('#my_insta .tvf-box:not(.tvf-icon)').first();
     }
     for(var i = 0, l = toSort.length; i < l; i++) {
-        $(toSort[i]).insertBefore(box);
+        $(toSort[i]).attr('data-index', i).insertBefore(box);
     }
   }
 
@@ -143,6 +143,7 @@
       visible = visible && (filter.search.includes(id)|| filter.search.length == 0);
       if(visible){
         $(this).removeClass('hide').show();
+        $(this).attr('data-index', visible_items);
         reshape_image(this);
         visible_items++;
       } else {
@@ -277,6 +278,15 @@ String.prototype.levenstein = function(string) {
     return m[b.length][a.length];
 }
 /* Search artists or albums */
+$('#search_input_mobile').keyup(function(e){
+    $('#search_input').val($(this).val());
+    if(e.keyCode == 13){
+        $('#search_launch').click();
+    }
+    if($(this).val() == ''){
+        $('#search_launch').click();
+    }
+});
 $('#search_input').keyup(function(e){
     if(e.keyCode == 13){
         $('#search_launch').click();
@@ -285,8 +295,19 @@ $('#search_input').keyup(function(e){
         $('#search_launch').click();
     }
 });
+$('#search_launch_mobile').on('click', function(e){
+  e.preventDefault();
+  $('#search_launch').click();
+});
 $('#search_launch').on('click', function(e){
   reorganize();
+  // close the overview
+  $('#vinyl_slider').hide();
+  $('#vinyl_overview').hide();
+  if(active_index !== null){
+    active_index = -1
+  }
+
   e.preventDefault();
   var query = $('#search_input').val().toLowerCase();
   var scores = [];
