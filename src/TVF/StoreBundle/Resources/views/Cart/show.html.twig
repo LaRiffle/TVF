@@ -19,7 +19,17 @@
               </span>
             </h2>
             <h2 class="card-title">&nbsp;</h2>
-            <p class="card-text">N'est pas encore disponible :/</p>
+            <ul class="list-group">
+              {% for product in cart.products %}
+                <li class="list-group-item">
+                  <img src="{{ asset('uploads/img/' ~ product.small_image) }}" alt="" style="width: 40px; margin-right: 20px;">
+                   {{ product.name }} ·
+                   {% for artist in product.artists %}{{artist.name}}{% if not loop.last %},{% endif %}{% endfor %} ·
+                   &nbsp;<a href="{{ path('tvf_store_remove_from_cart', {'id': product.id}) }}">Retirer</a>
+                </li>
+              {% endfor %}
+              <li class="list-group-item"><b>Total : {{ cart.total }} €</b></li>
+            </ul>
           </div>
         </div>
       </div>

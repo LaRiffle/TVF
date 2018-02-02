@@ -11,7 +11,8 @@ use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\HttpFoundation\Cookie;
 
 use TVF\UserBundle\Entity\User;
-use TVF\StoreBundle\Entity\Vinyl;
+use TVF\RecordBundle\Entity\Vinyl;
+use TVF\StoreBundle\Entity\Cart;
 
 class CustomerController extends Controller
 {
@@ -22,10 +23,86 @@ class CustomerController extends Controller
     */
 
     public function cartAction(){
+      $user = $this->getUser();
+      $em = $this->getDoctrine()->getManager();
+      $repository = $em->getRepository('TVFStoreBundle:Cart');
+      $cart = $repository->findOneBy(array('customer' => $user));
+      if(!$cart){
+        $cart = new Cart();
+        $cart->setCustomer($user);
+        $em->persist($cart);
+        $em->flush();
+      }
+      $imagehandler = $this->container->get('tvf_store.imagehandler');
+      foreach ($cart->getProducts() as $product) {
+        $fileNames = $product->getImages();
+        $product->small_image = (count($fileNames) > 0) ? $imagehandler->get_image_in_quality($fileNames[0], 'xxs') : '';
+      }
       return $this->render('TVFStoreBundle:Cart:show.html.twig', array(
-
+        'cart' => $cart,
       ));
     }
+
+    /*
+     Adds a product to the shopping cart
+    */
+    public function addToCartAction($id){
+        $em = $this->getDoctrine()->getManager();
+        $repository = $em->getRepository('TVFRecordBundle:Vinyl');
+        if (!$product = $repository->find($id) or $product->getPrice() == null) {
+            throw $this->createNotFoundException();
+        }
+        $user = $this->getUser();
+        $repository = $em->getRepository('TVFStoreBundle:Cart');
+        $cart = $repository->findOneBy(array('customer' =>$user));
+        if(!$cart){
+          $cart = new Cart();
+          $cart->setCustomer($user);
+        }
+        $cart->addProduct($product);
+        $em->persist($cart);
+        $em->flush();
+        return $this->redirect($this->generateUrl('tvf_store_homepage'));
+    }
+
+    /*
+       Removes a product from the shopping cart
+    */
+    public function removeFromCartAction($id){
+        $em = $this->getDoctrine()->getManager();
+        $repository = $em->getRepository('TVFRecordBundle:Vinyl');
+        if (!$product = $repository->find($id)) {
+            throw $this->createNotFoundException();
+        }
+        $user = $this->getUser();
+        $repository = $em->getRepository('TVFStoreBundle:Cart');
+        $cart = $repository->findOneBy(array('customer' =>$user));
+        if(!$cart){
+          throw $this->createNotFoundException();
+        }
+        $cart->removeProduct($product);
+        $em->persist($cart);
+        $em->flush();
+        return $this->redirect($this->generateUrl('tvf_store_cart'));
+    }
+
+    public function nbProductsAction(){
+      $em = $this->getDoctrine()->getManager();
+      $user = $this->getUser();
+      $repository = $em->getRepository('TVFStoreBundle:Cart');
+      $cart = $repository->findOneBy(array('customer' =>$user));
+      $nbProducts = 0;
+      if($cart){
+        $nbProducts = count($cart->getProducts());
+      }
+      $response = new Response(
+          $nbProducts,
+          Response::HTTP_OK,
+          array('Content-type' => 'text/html')
+      );
+      return $response;
+    }
+
     /*
       Register or automatically retrieve a customer based on his fingerprint
     */

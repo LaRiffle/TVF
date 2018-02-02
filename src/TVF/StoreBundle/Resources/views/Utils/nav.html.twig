@@ -22,7 +22,10 @@
         {% else %}
         <a href="{{ path('tvf_store_cart') }}" style="color: #BA0020;">
           <i class="fa fa-shopping-basket fa-2x" aria-hidden="true"></i>
-        </a>
+        </a><br />
+        <span id="nb_products" class="badge badge-danger">
+          {{ render(controller('TVFStoreBundle:Customer:nbProducts')) }}
+        </span>
         {% endif %}
       </div>
       <div id="nav_toggle_btn">

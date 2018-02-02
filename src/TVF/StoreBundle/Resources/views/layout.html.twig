@@ -153,10 +153,20 @@
     });
     </script>
     <script>
+    var overview_id = -1;
     $('#vinyl_overview').removeClass('hide');
     var active_index = -1;
+    $('#vinyl_overview').on('click', '.price_btn', function(e){
+      e.preventDefault();
+      var url = $(this).find('.to-cart a').attr('href');
+      window.location = url.replace('undefined', overview_id);
+    });
     $('#my_insta').on('click', 'a.show-vinyl', function(e){
-      console.log('Click seen')
+      // if clicked on buy
+      if($.contains($(this).find('.icon_insta_price').get(0), e.target)){
+        var url = $(this).find('.to-cart a').attr('href');
+        window.location = url
+      }
       e.preventDefault();
       if (typeof reorganize === "function") {
           reorganize();
@@ -200,6 +210,7 @@
 
     var base_url_see_more = '{{ path('tvf_store_vinyl') }}';
     function update_content_overview($vinyl, index, after_index){
+      overview_id = $vinyl.attr('data-id');
       $("#vinyl_overview .vinyl-name").html($vinyl.attr('data-name'));
       var artists = $vinyl.attr('data-artists').split(',');
       var artists_html = '';
@@ -269,6 +280,19 @@
       var rgb_2 = 'rgb('+c[0]+','+c[1]+', '+c[2]+')';
       $('.vinyl-overview h5, .vinyl-overview h6').css('color', rgb_2);
     }
+    </script>
+    <script>
+    $('.price-cart').hover(function(){
+      var id = $(this).parents('.tvf-box').attr('data-id');
+      var cart_icon = $('<span class="to-cart"><a href="{{ path('tvf_store_add_to_cart') }}/'+id+'"><i class="fa fa-plus-circle"></i>&nbsp;<i class="fa fa-shopping-basket"></i></a></span>');
+      $(this).html('<span>'+ $(this).html() +'</span>');
+      $(this).find('span').css('opacity', 0);
+      $(this).prepend(cart_icon);
+    },function(){
+      $(this).find('.to-cart').remove();
+      $(this).find('span').css('opacity', 1);
+      $(this).html($(this).find('span').html());
+    });
     </script>
   </body>
 </html>

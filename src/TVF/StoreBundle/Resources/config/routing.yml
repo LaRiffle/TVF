@@ -23,6 +23,13 @@ tvf_store_customer_register_or_login:
 tvf_store_cart:
     path:     /mon-panier
     defaults: { _controller: TVFStoreBundle:Customer:cart }
+tvf_store_add_to_cart:
+    path:     /selectionner/{id}
+    defaults: { _controller: TVFStoreBundle:Customer:addToCart, id:0 }
+tvf_store_remove_from_cart:
+    path:     /retirer/{id}
+    defaults: { _controller: TVFStoreBundle:Customer:removeFromCart }
+
 # Home
 tvf_store_homepage:
     path:     /accueil

@@ -341,6 +341,12 @@ button.navbar-toggler:hover {
   left: 15px;
   background-color: #BA0020;
 }
+#nb_products {
+  position: relative;
+  bottom: 7px;
+  left: 17px;
+  background-color: #BA0020;
+}
 /* Correctif pour record-nav */
 #record-page .title.special-font {
   margin-top: 0.8rem;
@@ -910,6 +916,15 @@ ul.edition-btn li:after {
 #search_results .tvf-inner {
   background-color: #AAAAAA;
 }
+.to-cart {
+  display: block;
+  position: absolute;
+  float: right;
+  left: 11px;
+}
+.to-cart a {
+  color: inherit;
+}
 .horizontal-scroller {
   display: flex;
   justify-content: center;
@@ -1057,6 +1072,7 @@ footer .row > div {
 .vinyl-overview .love_price {
   float: right;
   margin-right: 20px;
+  position: relative;
 }
 .vinyl-overview .love_btn {
   background-color: transparent;
@@ -1070,6 +1086,9 @@ footer .row > div {
 }
 .vinyl-overview a {
   color: inherit !important;
+}
+#vinyl_overview .price_btn:hover {
+  cursor: pointer;
 }
 
 /* About box */
