@@ -156,16 +156,31 @@
     var overview_id = -1;
     $('#vinyl_overview').removeClass('hide');
     var active_index = -1;
+    function fire_action_cart_for_product(id){
+      id = Number(id);
+      var url;
+      console.log(products_id_in_cart);
+      console.log(id);
+      if(products_id_in_cart.includes(id)){
+        console.log('remove');
+        url = '{{ path('tvf_store_remove_from_cart') }}';
+      } else {
+        console.log('add');
+        url = '{{ path('tvf_store_add_to_cart') }}';
+      }
+      url += '/'+id;
+      window.location = url;
+    }
     $('#vinyl_overview').on('click', '.price_btn', function(e){
       e.preventDefault();
-      var url = $(this).find('.to-cart a').attr('href');
-      window.location = url.replace('undefined', overview_id);
+      fire_action_cart_for_product(overview_id);
     });
     $('#my_insta').on('click', 'a.show-vinyl', function(e){
       // if clicked on buy
-      if($.contains($(this).find('.icon_insta_price').get(0), e.target)){
-        var url = $(this).find('.to-cart a').attr('href');
-        window.location = url
+      if($(this).find('.icon_insta_price').length > 0 &&
+         $.contains($(this).find('.icon_insta_price').get(0), e.target)){
+        var id = $(this).parents('.tvf-box').attr('data-id');
+        fire_action_cart_for_product(id);
       }
       e.preventDefault();
       if (typeof reorganize === "function") {
@@ -283,8 +298,14 @@
     </script>
     <script>
     $('.price-cart').hover(function(){
-      var id = $(this).parents('.tvf-box').attr('data-id');
-      var cart_icon = $('<span class="to-cart"><a href="{{ path('tvf_store_add_to_cart') }}/'+id+'"><i class="fa fa-plus-circle"></i>&nbsp;<i class="fa fa-shopping-basket"></i></a></span>');
+      var id = Number($(this).parents('.tvf-box').attr('data-id'));
+      id = isNaN(id) ? Number(overview_id) : id;
+      var cart_icon;
+      if(products_id_in_cart.includes(id)){
+        cart_icon = $('<span class="to-cart"><a href="{{ path('tvf_store_remove_from_cart') }}/'+id+'"><i class="fa fa-trash-o"></i>&nbsp;<i class="fa fa-shopping-basket"></i></a></span>');
+      } else {
+        cart_icon = $('<span class="to-cart"><a href="{{ path('tvf_store_add_to_cart') }}/'+id+'"><i class="fa fa-plus-circle"></i>&nbsp;<i class="fa fa-shopping-basket"></i></a></span>');
+      }
       $(this).html('<span>'+ $(this).html() +'</span>');
       $(this).find('span').css('opacity', 0);
       $(this).prepend(cart_icon);

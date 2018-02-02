@@ -28,7 +28,7 @@ tvf_store_add_to_cart:
     defaults: { _controller: TVFStoreBundle:Customer:addToCart, id:0 }
 tvf_store_remove_from_cart:
     path:     /retirer/{id}
-    defaults: { _controller: TVFStoreBundle:Customer:removeFromCart }
+    defaults: { _controller: TVFStoreBundle:Customer:removeFromCart, id:0 }
 
 # Home
 tvf_store_homepage:

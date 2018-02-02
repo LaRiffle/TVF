@@ -92,11 +92,22 @@ class CustomerController extends Controller
       $repository = $em->getRepository('TVFStoreBundle:Cart');
       $cart = $repository->findOneBy(array('customer' =>$user));
       $nbProducts = 0;
+      $script = '';
       if($cart){
         $nbProducts = count($cart->getProducts());
+        $script = '<script>var products_id_in_cart= [';
+        $first = true;
+        foreach ($cart->getProducts() as $product) {
+          $id = $product->getId();
+          if(!$first) {
+            $script .= ',';
+          } else { $first = false; }
+          $script .= $id;
+        }
+        $script .= '];</script>';
       }
       $response = new Response(
-          $nbProducts,
+          $nbProducts . $script,
           Response::HTTP_OK,
           array('Content-type' => 'text/html')
       );

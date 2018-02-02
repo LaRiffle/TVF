@@ -25,6 +25,7 @@
                   <img src="{{ asset('uploads/img/' ~ product.small_image) }}" alt="" style="width: 40px; margin-right: 20px;">
                    {{ product.name }} ·
                    {% for artist in product.artists %}{{artist.name}}{% if not loop.last %},{% endif %}{% endfor %} ·
+                   {{ product.price }} € ·
                    &nbsp;<a href="{{ path('tvf_store_remove_from_cart', {'id': product.id}) }}">Retirer</a>
                 </li>
               {% endfor %}

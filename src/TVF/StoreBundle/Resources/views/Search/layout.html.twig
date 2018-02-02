@@ -278,6 +278,7 @@ String.prototype.levenstein = function(string) {
     return m[b.length][a.length];
 }
 /* Search artists or albums */
+var active_index = -1; // reminder: in case not defined
 $('#search_input_mobile').keyup(function(e){
     $('#search_input').val($(this).val());
     if(e.keyCode == 13){
