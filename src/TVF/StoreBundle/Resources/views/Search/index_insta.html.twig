@@ -19,7 +19,7 @@
       {% if is_owner is not defined %}
         {% set is_owner = false %}
       {% endif %}
-      {% for vinyl in vinyls %}
+      {% for vinyl in vinyls %}{% if vinyl.category.slug == 'vinyle' %}
       <div class="tvf-box tvf-icon"
           data-index="{{ loop.index0 }}"
           data-id="{{ vinyl.id }}"
@@ -88,7 +88,7 @@
           <div class="tvf-box"><div class="tvf-inner"></div></div>
         {% endif %}
       {% endif %}
-      {% endfor %}
+      {% endif %}{% endfor %}
     </div>
   </div>
 </div>

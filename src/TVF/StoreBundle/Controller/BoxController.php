@@ -25,8 +25,15 @@ class BoxController extends Controller
         $text['connaisseur']['price'] = $this->handler->fetchText('connaisseur:price');
         $text['connaisseur']['content'] = $this->handler->fetchText('connaisseur:content');
         $text['connaisseur']['image'] = $this->handler->fetchImage('connaisseur:image');
+
+        $em = $this->getDoctrine()->getManager();
+        $repository = $em->getRepository('TVFAdminBundle:Category');
+        $subscription = $repository->findOneBy(array('slug'=>'abonnement'));
+        $repository = $em->getRepository('TVFRecordBundle:Vinyl');
+        $subscriptions = $repository->findBy(array('category' => $subscription));
         return $this->render($this->entityNameSpace.':discover.html.twig', array(
-          'data' => $text
+          'data' => $text,
+          'subscriptions' => $subscriptions
         ));
     }
 }

@@ -17,6 +17,13 @@ tvf_admin_category_remove:
     path:     /admin/category/remove/{id}
     defaults: { _controller: TVFAdminBundle:Category:remove}
 
+# abonnements
+tvf_admin_abo_add:
+  path:     /admin/subscription/add/{id}
+  defaults: { _controller: TVFAdminBundle:Subscription:add, id:0 }
+tvf_admin_abo_remove:
+  path:     /admin/subscription/remove/{id}
+  defaults: { _controller: TVFAdminBundle:Subscription:remove, id:0 }
 
 tvf_admin_text_add:
     path:     /admin/text/add/{id}

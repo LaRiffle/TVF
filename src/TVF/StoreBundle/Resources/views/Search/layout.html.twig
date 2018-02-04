@@ -246,6 +246,12 @@
   });
 
   $("#select_selection").change(function() {
+    // close the overview
+    $('#vinyl_slider').hide();
+    $('#vinyl_overview').hide();
+    if(active_index !== null){
+      active_index = -1
+    }
     reorganize();
     filter.selection = $(this).val();
     icon_filter();

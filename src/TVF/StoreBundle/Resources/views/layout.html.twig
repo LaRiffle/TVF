@@ -191,11 +191,11 @@
       var row_index = Number($vinyl.attr('data-index'));
       /* Remove the icons hidden that dont count for the index */
       var index = row_index;
-      $('#my_insta .tvf-box.hide').each(function(){
-        if(Number($(this).attr('data-index')) < row_index){
-          index--;
-        }
-      });
+      //$('#my_insta .tvf-box.hide').each(function(){
+      //  if(Number($(this).attr('data-index')) < row_index){
+      //    index--;
+      //  }
+      //});
       {% if is_granted('ROLE_RECORD') or is_granted('ROLE_ADMIN') %}
       if($('.add-vinyl-btn').length > 0){
           index += 1;

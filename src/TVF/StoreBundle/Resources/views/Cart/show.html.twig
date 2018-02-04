@@ -22,9 +22,13 @@
             <ul class="list-group">
               {% for product in cart.products %}
                 <li class="list-group-item">
+                  {% if product.category.slug == 'abonnement' %}
+                    <b>Abonnement <em>{{ product.description }}</em></b>&nbsp; · {{ product.name }} ·
+                  {% else %}
                   <img src="{{ asset('uploads/img/' ~ product.small_image) }}" alt="" style="width: 40px; margin-right: 20px;">
                    {{ product.name }} ·
                    {% for artist in product.artists %}{{artist.name}}{% if not loop.last %},{% endif %}{% endfor %} ·
+                   {% endif %}
                    {{ product.price }} € ·
                    &nbsp;<a href="{{ path('tvf_store_remove_from_cart', {'id': product.id}) }}">Retirer</a>
                 </li>

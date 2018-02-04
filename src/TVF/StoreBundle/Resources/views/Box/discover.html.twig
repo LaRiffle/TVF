@@ -33,8 +33,36 @@
               </ul>
             </div>
             <ul class="list-group list-group-flush">
-              <a href="#" class="select-abo"><li class="list-group-item"><i class="fa fa-circle-thin" aria-hidden="true"></i> &nbsp; 6 mois</li></a>
-              <a href="#" class="select-abo"><li class="list-group-item"><i class="fa fa-circle-thin" aria-hidden="true"></i> &nbsp; 12 mois</li></a>
+              {% for subscription in subscriptions %}
+              {% if subscription.description == 'amateur' %}
+              <a href="#" class="select-abo" data-id="{{ subscription.id }}">
+                <li class="list-group-item">
+                  <i class="fa fa-circle-thin" aria-hidden="true"></i> &nbsp;
+                  {{ subscription.name }}
+                  {% if is_granted('ROLE_ADMIN') %}
+                  &nbsp;  <a class="remove" href="{{ path('tvf_admin_abo_remove', {'id': subscription.id }) }}"><i class="fa fa-trash-o"></i></a>
+                  {% endif %}
+                </li>
+              </a>
+              {% endif %}
+              {% endfor %}
+              {% if is_granted('ROLE_ADMIN') %}
+              <li class="list-group-item">
+                <a href="#" class="internal-link" data-target="form1">Ajouter un abonnement</a>
+                <form id="form1" name="form" class="form-signin hide" method="post" action="{{ path('tvf_admin_abo_add') }}?type=amateur">
+                  <div style="margin-top: 10px;">
+                    <label class="required" for="form_name">Nouvel abonnement</label>
+                    <input id="form_name" name="form_name" required="required" class="form-control" placeholder="Nom de l'abonnement" type="text">
+                  </div>
+                  <div style="margin-top: 10px;">
+                    <input id="form_price" name="form_price" required="required" class="form-control" placeholder="Prix en euros (sans unités)" type="text">
+                  </div>
+                  <div style="margin-top: 10px;">
+                    <button type="submit" id="form_save" name="form[save]" class="btn btn-primary ">Ajouter</button>
+                  </div>
+                </form>
+              </li>
+              {% endif %}
             </ul>
           </div>
           <div class="card">
@@ -58,8 +86,36 @@
               </ul>
             </div>
             <ul class="list-group list-group-flush">
-              <a href="#" class="select-abo"><li class="list-group-item"><i class="fa fa-circle-thin" aria-hidden="true"></i> &nbsp; 6 mois</li></a>
-              <a href="#" class="select-abo"><li class="list-group-item"><i class="fa fa-circle-thin" aria-hidden="true"></i> &nbsp; 12 mois</li></a>
+              {% for subscription in subscriptions %}
+              {% if subscription.description == 'connaisseur' %}
+              <a href="#" class="select-abo" data-id="{{ subscription.id }}">
+                <li class="list-group-item">
+                  <i class="fa fa-circle-thin" aria-hidden="true"></i> &nbsp;
+                  {{ subscription.name }}
+                  {% if is_granted('ROLE_ADMIN') %}
+                  &nbsp;  <a class="remove" href="{{ path('tvf_admin_abo_remove', {'id': subscription.id }) }}"><i class="fa fa-trash-o"></i></a>
+                  {% endif %}
+                </li>
+              </a>
+              {% endif %}
+              {% endfor %}
+              {% if is_granted('ROLE_ADMIN') %}
+              <li class="list-group-item">
+                <a href="#" class="internal-link" data-target="form2">Ajouter un abonnement</a>
+                <form id="form2" name="form" class="form-signin hide" method="post" action="{{ path('tvf_admin_abo_add') }}?type=connaisseur">
+                  <div style="margin-top: 10px;">
+                    <label class="required" for="form_name">Nouvel abonnement</label>
+                    <input id="form_name" name="form_name" required="required" class="form-control" placeholder="Nom de l'abonnement" type="text">
+                  </div>
+                  <div style="margin-top: 10px;">
+                    <input id="form_price" name="form_price" required="required" class="form-control" placeholder="Prix en euros (sans unités)" type="text">
+                  </div>
+                  <div style="margin-top: 10px;">
+                    <button type="submit" id="form_save" name="form[save]" class="btn btn-primary ">Ajouter</button>
+                  </div>
+                </form>
+              </li>
+              {% endif %}
             </ul>
           </div>
         </div>
@@ -76,6 +132,7 @@
 <script>
 var mean_selected = 0;
 $('.select-abo').on('click', function(e){
+  var abo_id = $(this).attr('data-id');
   mean_selected = 0;
   e.preventDefault();
   $('.select-abo i').removeClass('fa-circle').addClass('fa-circle-thin');
@@ -91,6 +148,8 @@ $('.select-abo').on('click', function(e){
     `,
     callback: function () {
       console.log('Mean chosed is '+ mean_selected);
+      // TODO register delivery preferences
+      window.location = '{{ path('tvf_store_add_to_cart') }}/'+abo_id;
     },
     buttons: {
       ok: {
