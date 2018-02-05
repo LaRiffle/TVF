@@ -194,13 +194,22 @@ class ClientController extends Controller
         ->add('email', EmailType::class)
         ->add('password', PasswordType::class, array(
             'mapped' => false,
-            'required' => False
+            'required' => ($id == 0) ? true : false
         ))
         ->add('save',	SubmitType::class)
         ->getForm();
 
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()) {
+
+            $repository = $em->getRepository($this->entityNameSpace);
+            $existing_client = $repository->findOneBy(array('email' => $client->getEmail()));
+            if($existing_client != null){
+              $this->addFlash("warning", "Cette adresse mail est déjà utilisée. Si vous avez perdu votre mot de passe, contactez-nous.");
+              return $this->redirect($this->generateUrl('logout'));
+            }
+
+            // return redirect()
             $file = $client->getImage();
             if($file != null) {
               // Generate a unique name for the file before saving it

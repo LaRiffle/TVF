@@ -13,20 +13,21 @@
           {{ render(controller('TVFStoreBundle:Customer:register_or_login')) }}
         </span>
       </div>
-      <div id="nav_right_icon" class="top_circle_icon visible-from-sm">
-        {% if is_granted('ROLE_RECORD') %}
+      {% if is_granted('ROLE_RECORD') %}
+      <div id="nav_right_icon2" class="top_circle_icon visible-from-sm">
         <a href="{{ path('tvf_record_my_account') }}" title="Accéder à votre compte" style="color:#BA0020;">
           <i class="fa fa-user-o fa-2x" aria-hidden="true"></i>
           <i class="fa fa-user fa-2x full-user" aria-hidden="true"></i>
         </a>
-        {% else %}
+      </div>
+      {% endif %}
+      <div id="nav_right_icon" class="top_circle_icon visible-from-sm">
         <a href="{{ path('tvf_store_cart') }}" style="color: #BA0020;">
           <i class="fa fa-shopping-basket fa-2x" aria-hidden="true"></i>
         </a><br />
         <span id="nb_products" class="badge badge-danger">
           {{ render(controller('TVFStoreBundle:Customer:nbProducts')) }}
         </span>
-        {% endif %}
       </div>
       <div id="nav_toggle_btn">
         <button class="navbar-toggler navbar-toggler-right" style="z-index: 1;" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">

@@ -24,25 +24,22 @@ class HomeController extends Controller
         // Load infos on recent & classic vinyls for the chatbot
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository('TVFRecordBundle:Vinyl');
-        $recent_vinyls = $repository->findBy(array(), array('id' => 'desc'), 9);
-        foreach ($recent_vinyls as $vinyl) {
-          $fileNames = $vinyl->getImages();
-          $vinyl->small_image = (count($fileNames) > 0) ? $imagehandler->get_image_in_quality($fileNames[0], 'xxs') : '';
-        }
+        $recent_vinyls = $repository->getVinyls(array(), array('id' => 'desc'), 9);
+        $recent_vinyls = $imagehandler->convert_vinyl_images($recent_vinyls, 'xss');
+
         $repository = $em->getRepository('TVFStoreBundle:VinylUser');
         $sql = 'Select sum(vinyl_user.nb_views) as total_views, vinyl_id from vinyl_user group by vinyl_id order by total_views DESC LIMIT 9;';
         $connection = $em->getConnection();
         $statement = $connection->prepare($sql);
         $statement->execute();
         $classic_vinyls_id = $statement->fetchAll();
-        $classic_vinyls = [];
         $repository = $em->getRepository('TVFRecordBundle:Vinyl');
+        $classic_vinyls = [];
         foreach ($classic_vinyls_id as $vinyl_id) {
           $vinyl = $repository->findOneBy(array('id' => $vinyl_id));
-          $fileNames = $vinyl->getImages();
-          $vinyl->small_image = (count($fileNames) > 0) ? $imagehandler->get_image_in_quality($fileNames[0], 'xxs') : '';
           $classic_vinyls[] = $vinyl;
         }
+        $classic_vinyls = $imagehandler->convert_vinyl_images($classic_vinyls, 'xss');
         $chat_data = [
           'recent_vinyls' => $recent_vinyls,
           'classic_vinyls' => $classic_vinyls,
@@ -50,7 +47,7 @@ class HomeController extends Controller
 
         $repository = $em->getRepository('TVFAdminBundle:Gender');
         $genders = $repository->findAll();
-        
+
         return $this->render($this->entityNameSpace.':home_page.html.twig', array(
           'chat_data' => $chat_data,
           'genders' => $genders,
@@ -76,24 +73,14 @@ class HomeController extends Controller
         $repository = $em->getRepository('TVFRecordBundle:Selection');
         $selections = $repository->findBy(array(), array('id' => 'desc'));
         $imagehandler = $this->container->get('tvf_store.imagehandler');
-        foreach ($selections as $selection) {
-          $filename = $selection->getImage();
-          $path_small_image = $imagehandler->get_image_in_quality($filename, 'sm');
-          $selection->small_image = $path_small_image;
-        }
+        $selections = $imagehandler->convert_entity_image($selections, 'sm');
 
         $repository = $em->getRepository('TVFRecordBundle:Vinyl');
-        $vinyls = $repository->findBy(array(), array('id' => 'desc'), 12);
+        $vinyls = $repository->getVinyls(array(), array('id' => 'desc'), 12);
+        $vinyls = $imagehandler->convert_vinyl_images($vinyls, 'xss');
         $love_repository = $em->getRepository('TVFStoreBundle:VinylUser');
         $user = $this->getUser();
         foreach ($vinyls as $vinyl) {
-          $fileNames = $vinyl->getImages();
-          if(count($fileNames) > 0){
-            $path_small_image = $imagehandler->get_image_in_quality($fileNames[0], 'xs');
-          } else {
-            $path_small_image = '';
-          }
-          $vinyl->small_image = $path_small_image;
           $vinyluser = $love_repository->findOneBy(array('vinyl' => $vinyl, 'user' => $user));
           if($vinyluser === null) {
             $vinyl->loved = '0';
@@ -104,16 +91,7 @@ class HomeController extends Controller
 
         $repository = $em->getRepository('TVFRecordBundle:Client');
         $clients = $repository->findBy(array(), array('joindate' => 'asc'));
-        foreach ($clients as $client) {
-          $fileName = $client->getImage();
-          if($fileName !== ''){
-            $path_small_image = $imagehandler->get_image_in_quality($fileName, 'xs');
-          } else {
-            $path_small_image = '';
-          }
-          $client->small_image = $path_small_image;
-        }
-
+        $clients = $imagehandler->convert_entity_image($clients, 'xs');
 
         return $this->render($this->entityNameSpace.':home.html.twig', array(
           'data' => $text,
@@ -145,12 +123,7 @@ class HomeController extends Controller
         $repository = $em->getRepository('TVFRecordBundle:Selection');
         $selections = $repository->findBy(array(), array('id' => 'desc'));
         $imagehandler = $this->container->get('tvf_store.imagehandler');
-        foreach ($selections as $selection) {
-          $em->persist($selection);
-          $filename = $selection->getImage();
-          $path_small_image = $imagehandler->get_image_in_quality($filename, 'sm');
-          $selection->small_image = $path_small_image;
-        }
+        $selections = $imagehandler->convert_entity_image($selections, 'sm');
         $em->flush();
         return $this->render($this->entityNameSpace.':selection.html.twig', array(
           'selections' => $selections,

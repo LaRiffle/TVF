@@ -24,6 +24,11 @@
             </span>
             {% if vinyl.onsold %}
               <span class="badge badge-primary badge-pill" style="padding: 16px;padding-top: 11px;padding-bottom: 9px;">{{ vinyl.price }} €</span>
+              <a href="{{ path('tvf_store_add_to_cart', {id: vinyl.id}) }}">
+                <span class="badge badge-primary badge-pill" style="padding: 16px;padding-top: 11px;padding-bottom: 9px;">
+                  <i class="fa fa-plus-circle"></i>&nbsp;<i class="fa fa-shopping-basket"></i>
+                </span>
+              </a>
             {% endif %}
           </h4>
         </div>
@@ -49,6 +54,11 @@
             </span>
             {% if vinyl.onsold %}
               <span class="badge badge-primary badge-pill" style="padding: 16px;padding-top: 11px;padding-bottom: 9px;">{{ vinyl.price }} €</span>
+              <a href="{{ path('tvf_store_add_to_cart', {id: vinyl.id}) }}">
+                <span class="badge badge-primary badge-pill" style="padding: 16px;padding-top: 11px;padding-bottom: 9px;">
+                  <i class="fa fa-plus-circle"></i>&nbsp;<i class="fa fa-shopping-basket"></i>
+                </span>
+              </a>
             {% endif %}
           </h4>
         </div>

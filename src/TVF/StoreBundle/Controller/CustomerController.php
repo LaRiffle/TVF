@@ -105,6 +105,8 @@ class CustomerController extends Controller
           $script .= $id;
         }
         $script .= '];</script>';
+      } else {
+        $script = '<script>var products_id_in_cart= [];</script>';
       }
       $response = new Response(
           $nbProducts . $script,

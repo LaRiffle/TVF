@@ -61,17 +61,9 @@ class SearchController extends Controller
       */
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository('TVFRecordBundle:Vinyl');
-        $vinyls = $repository->findBy(array(), array('id' => 'desc'));
+        $vinyls = $repository->getVinyls(array(), array('id' => 'desc'));
         $imagehandler = $this->container->get('tvf_store.imagehandler');
-        foreach ($vinyls as $vinyl) {
-          $fileNames = $vinyl->getImages();
-          if(count($fileNames) > 0){
-            $path_small_image = $imagehandler->get_image_in_quality($fileNames[0], 'xs');
-          } else {
-            $path_small_image = '';
-          }
-          $vinyl->small_image = $path_small_image;
-        }
+        $vinyls = $imagehandler->convert_vinyl_images($vinyls, 'sm');
         return $this->render($this->entityNameSpace.':index_insta.html.twig', array(
           'vinyls' => $vinyls,
         ));
@@ -125,18 +117,13 @@ class SearchController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository('TVFRecordBundle:Vinyl');
-        $vinyls = $repository->findBy(array(), array('id' => 'desc'));
+        $vinyls = $repository->getVinyls(array(), array('id' => 'desc'));
         $imagehandler = $this->container->get('tvf_store.imagehandler');
+        $vinyls = $imagehandler->convert_vinyl_images($vinyls, 'xs');
+
         $love_repository = $em->getRepository('TVFStoreBundle:VinylUser');
         $user = $this->getUser();
         foreach ($vinyls as $vinyl) {
-          $fileNames = $vinyl->getImages();
-          if(count($fileNames) > 0){
-            $path_small_image = $imagehandler->get_image_in_quality($fileNames[0], 'xs');
-          } else {
-            $path_small_image = '';
-          }
-          $vinyl->small_image = $path_small_image;
           $vinyluser = $love_repository->findOneBy(array('vinyl' => $vinyl, 'user' => $user));
           if($vinyluser === null) {
             $vinyl->loved = '0';
@@ -181,16 +168,10 @@ class SearchController extends Controller
         foreach ($user_vinyl_loved as $user_vinyl) {
           $loved_vinyls[] = $user_vinyl->getVinyl();
         }
+        $loved_vinyls = $imagehandler->convert_vinyl_images($loved_vinyls, 'xs');
 
         $imagehandler = $this->container->get('tvf_store.imagehandler');
         foreach ($loved_vinyls as $vinyl) {
-          $fileNames = $vinyl->getImages();
-          if(count($fileNames) > 0){
-            $path_small_image = $imagehandler->get_image_in_quality($fileNames[0], 'xs');
-          } else {
-            $path_small_image = '';
-          }
-          $vinyl->small_image = $path_small_image;
           $vinyl->loved = '1';
         }
         $repository = $em->getRepository('TVFAdminBundle:Gender');

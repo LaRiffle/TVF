@@ -14,13 +14,28 @@ class VinylRepository extends \Doctrine\ORM\EntityRepository
   {
     return $this->createQueryBuilder('e')
           ->innerJoin('e.artists', 'a')
-          ->where('a.name LIKE :query_artist')
+          ->innerJoin('e.category', 'c')
+          ->where("c.slug = 'vinyle'")
+          ->andWhere('a.name LIKE :query_artist OR e.name LIKE :query')
           ->setParameter('query_artist', '%'.$query.'%')
-          ->orWhere('e.name LIKE :query')
           ->setParameter('query', '%'.$query.'%')
           ->orderBy('e.id', 'DESC')
           ->getQuery()
           ->getResult()
     ;
+  }
+  public function getVinyls($filters, $order, $limit=-1){
+    if($limit > 0){
+      $products = $this->findBy($filters, $order, $limit);
+    } else {
+      $products = $this->findBy($filters, $order);
+    }
+    $vinyls = [];
+    foreach ($products as $product) {
+      if($product->getCategory()->getSlug() == 'vinyle'){
+        $vinyls[] = $product;
+      }
+    }
+    return $vinyls;
   }
 }

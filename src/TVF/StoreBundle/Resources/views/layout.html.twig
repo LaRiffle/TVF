@@ -18,6 +18,7 @@
 
     {% endblock %}
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    
     <script src="{{ asset('bundles/TVF/js/jquery.zoom.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
     <script src="{{ asset('bundles/TVF/js/color-thief.min.js') }}"></script>
@@ -297,8 +298,8 @@
     }
     </script>
     <script>
-    $('.price-cart').hover(function(){
-      var id = Number($(this).parents('.tvf-box').attr('data-id'));
+    function show_icon_to_cart($this){
+      var id = Number($this.parents('.tvf-box').attr('data-id'));
       id = isNaN(id) ? Number(overview_id) : id;
       var cart_icon;
       if(products_id_in_cart.includes(id)){
@@ -306,14 +307,27 @@
       } else {
         cart_icon = $('<span class="to-cart"><a href="{{ path('tvf_store_add_to_cart') }}/'+id+'"><i class="fa fa-plus-circle"></i>&nbsp;<i class="fa fa-shopping-basket"></i></a></span>');
       }
-      $(this).html('<span>'+ $(this).html() +'</span>');
-      $(this).find('span').css('opacity', 0);
-      $(this).prepend(cart_icon);
+      $this.html('<span>'+ $this.html() +'</span>');
+      $this.find('span').css('opacity', 0);
+      $this.prepend(cart_icon);
+    }
+    function remove_icon_from_cart($this){
+      $this.find('.to-cart').remove();
+      $this.find('span').css('opacity', 1);
+      $this.html($(this).find('span').html());
+    }
+    $('.price-cart').hover(function(){
+      show_icon_to_cart($(this));
     },function(){
-      $(this).find('.to-cart').remove();
-      $(this).find('span').css('opacity', 1);
-      $(this).html($(this).find('span').html());
+      remove_icon_from_cart($(this));
     });
+    /*$('.price-cart').on('tap', function(){
+      var $this = $(this);
+      show_icon_to_cart($this);
+      setTimeout(function(){
+        remove_icon_from_cart($this);
+      }, 2000);
+    })*/
     </script>
   </body>
 </html>

@@ -240,14 +240,17 @@ button.navbar-toggler:hover {
   background-color: rgba(255, 255, 255, 0.5);
   z-index: 10;
 }
-#nav_left_icon, #nav_right_icon {
+#nav_left_icon, #nav_right_icon, #nav_right_icon2 {
   position: absolute;
   top: 0px;
 }
 #nav_right_icon {
   right: 15px;
 }
-#nav_left_icon, #nav_right_icon, .love_icon {
+#nav_right_icon2 {
+  right: 65px;
+}
+#nav_left_icon, #nav_right_icon, #nav_right_icon2, .love_icon {
   width: 40px;
   height: 40px;
   border: 1px rgba(0,0,0,.125) solid;
@@ -257,17 +260,17 @@ button.navbar-toggler:hover {
   transition: border 0.5s;
 }
 @media screen and (max-width: 576px) {
-  #nav_left_icon, #nav_right_icon {
+  #nav_left_icon, #nav_right_icon, #nav_right_icon2 {
     margin-top: 13px;
   }
 }
-#nav_right_icon:hover, #nav_left_icon:hover, .love_icon:hover{
+#nav_right_icon:hover, #nav_right_icon2:hover, #nav_left_icon:hover, .love_icon:hover{
   border-color: #BA0020;
 }
-#nav_right_icon:hover i.full-user, #nav_left_icon:hover i.full-heart, .love_icon:hover i.full-heart {
+#nav_right_icon:hover i.full-user, #nav_right_icon2:hover i.full-user, #nav_left_icon:hover i.full-heart, .love_icon:hover i.full-heart {
   opacity: 1;
 }
-#nav_right_icon:hover i.fa-user-o {
+#nav_right_icon:hover i.fa-user-o, #nav_right_icon2:hover i.fa-user-o {
   opacity: 0;
 }
 #nav_toggle_btn button {
@@ -307,6 +310,10 @@ button.navbar-toggler:hover {
   padding-top: 9px;
 }
 #nav_right_icon{
+  float: right;
+  padding-top: 7px;
+}
+#nav_right_icon2{
   float: right;
   padding-top: 7px;
 }

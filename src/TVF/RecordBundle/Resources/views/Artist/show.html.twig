@@ -1,11 +1,44 @@
 {% extends "TVFStoreBundle::layout.html.twig" %}
+{% block title %}
+  | À propos de {{ artist.name }}
+{% endblock %}
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{ asset('bundles/TVF/slick/slick.css') }}"/>
+<link rel="stylesheet" type="text/css" href="{{ asset('bundles/TVF/slick/slick-theme.css') }}"/>
+{% endblock %}
 {% block body %}
-  <h2>{{ artist.name }}</h2>
-  <p>{{ artist.bio }}</p>
-  <img src="{{ asset('uploads/img/' ~ artist.image) }}" class="img-thumbnail" width="300">
-  {% for type in artist.types %}
-    {{ type.name }} ;
-  {% endfor %}
+<div id="record-page">
+  {% set navbar = "TVFRecordBundle:Utils:nav.html.twig" %}
+  {% set text = "TVFStoreBundle:Utils:text.html.twig" %}
+  {% set image = "TVFStoreBundle:Utils:image.html.twig" %}
+  {{ include(navbar, {'active': 'selection'}) }}
+  <div class="container container-body">
+    <div class="row" style="margin-top: 25px;">
+      <div class="col-sm-3">
+      </div>
+      <div class="col-sm-6">
+        <h2>{{ artist.name }}</h2>
+        <p><a href="{{ path('tvf_store_explore') }}?q={{ artist.name }}">Voir les vinyles de cet artiste</a></p>
+        <p>{{ artist.bio }}</p>
+        <img id="img" src="{{ asset('uploads/img/' ~ artist.image) }}" class="img-thumbnail" width="300">
+        <p>
+        {% for type in artist.types %}
+          {{ type.name }} ;
+        {% endfor %}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
 {% block script %}
+<script>
+var src = $('#img').attr('src');
+var base = 'https://i.scdn.co';
+if(src.indexOf(base) > 0){
+  console.log('Fix src');
+  var new_src = base + src.split(base)[1];
+  $('#img').attr('src', new_src);
+}
+</script>
 {% endblock %}

@@ -141,4 +141,18 @@ class TVFImagehandler {
     $this->check_image($filename, $filename_image_small, $size);
     return $filename_image_small;
   }
+  public function convert_vinyl_images($vinyls, $quality){
+    foreach ($vinyls as $vinyl) {
+      $fileNames = $vinyl->getImages();
+      $vinyl->small_image = (count($fileNames) > 0) ? $this->get_image_in_quality($fileNames[0], $quality) : '';
+    }
+    return $vinyls;
+  }
+  public function convert_entity_image($entities, $quality){
+    foreach ($entities as $entity) {
+      $fileName = $entity->getImage();
+      $entity->small_image = ($fileName !== '') ? $this->get_image_in_quality($fileName, $quality) : '';
+    }
+    return $entities;
+  }
 }
