@@ -41,26 +41,29 @@
               {{ include(edition_buttons, {'edit': path('tvf_record_vinyl_add', {'id': vinyl.id}), 'remove': path('tvf_record_vinyl_remove', {'id': vinyl.id}) }) }}
             {% endif %}
           </div>
+          <h3 class="tvf-button">
+            <div class="love_icon love_icon_insta_btn">
+              {% if vinyl.loved  %}
+                <i class="fa fa-heart fa-2x" aria-hidden="true"></i>
+                <i class="fa fa-heart fa-2x full-heart" aria-hidden="true"></i>
+              {% else %}
+                <i class="fa fa-heart-o fa-2x" aria-hidden="true"></i>
+                <i class="fa fa-heart fa-2x full-heart" aria-hidden="true"></i>
+              {% endif %}
+            </div>
+            {% if vinyl.onsold %}
+              <a href="#">
+                <span class="icon_insta_price price-cart badge badge-primary badge-pill">
+                    {{ vinyl.price }} €
+                </span>
+              </a>
+            {% endif %}
+          </h3>
           <a class="show-vinyl" href="{{ path('tvf_store_vinyl_show', {'id': vinyl.id}) }}">
             <img src="{{ asset('uploads/img/' ~ vinyl.small_image) }}" alt="" style="">
             {% if not is_granted('ROLE_ADMIN') and not is_owner %}
             <div class="caption visible-from-sm">
-              <h3>
-                <div class="love_icon love_icon_insta_btn">
-                  {% if vinyl.loved  %}
-                    <i class="fa fa-heart fa-2x" aria-hidden="true"></i>
-                    <i class="fa fa-heart fa-2x full-heart" aria-hidden="true"></i>
-                  {% else %}
-                    <i class="fa fa-heart-o fa-2x" aria-hidden="true"></i>
-                    <i class="fa fa-heart fa-2x full-heart" aria-hidden="true"></i>
-                  {% endif %}
-                </div>
-                {% if vinyl.onsold %}
-                  <span class="icon_insta_price price-cart badge badge-primary badge-pill">
-                      {{ vinyl.price }} €
-                  </span>
-                {% endif %}
-              </h3>
+
             </div>
             {% else %}
             <div class="caption" style="opacity: 1">
@@ -112,7 +115,11 @@
           <div class="col-sm-8 content">
             <div class="love_price">
               <h4>
-                <span class="price_btn price-cart badge badge-pill" style="padding: 16px;padding-top: 11px;padding-bottom: 9px;"><span class="vinyl-price"></span> €</span>
+                <a href="#">
+                  <span class="price_btn price-cart badge badge-pill" style="padding: 16px;padding-top: 11px;padding-bottom: 9px;">
+                    <span class="vinyl-price"></span> €
+                  </span>
+                </a>
                 <span class="love_btn love_icon top_circle_icon">
                   <a href="#" style="color:#BA0020;">
                       <i class="fa fa-heart fa-2x" aria-hidden="true"></i>

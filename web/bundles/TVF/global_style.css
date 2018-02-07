@@ -604,6 +604,10 @@ a.filter:hover, a.filter:focus  {
 .creation-icon a {
   color: black;
 }
+.tvf-button {
+  position: absolute;
+  z-index:1;
+}
 .caption h3 {
   margin: auto;
   margin-top: calc(50% - 32px);
@@ -618,14 +622,14 @@ a.filter:hover, a.filter:focus  {
   background-image: -o-linear-gradient(top,rgba(0,0,0,.0001) 0,rgba(0,0,0,.5) 100%);
   background-image: -webkit-gradient(linear,left top,left bottom,from(rgba(0,0,0,.0001)),to(rgba(0,0,0,.5)));
   background-image: linear-gradient(to bottom,rgba(0,0,0,.0001) 0,rgba(0,0,0,.5) 100%);
-  transition:opacity 0.3s linear;
   padding-left: 5px;
   padding-right: 5px;
 }
-.tvf-inner .caption {
+.tvf-inner .caption, .tvf-inner .tvf-button {
   opacity: 0;
+  transition:opacity 0.3s linear;
 }
-.tvf-inner:hover .caption {
+.tvf-inner:hover .caption, .tvf-inner:hover .tvf-button {
   opacity: 1;
 }
 .creation-icon .caption h3, .creation-icon .caption h4, .creation-icon .caption h5,
