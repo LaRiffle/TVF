@@ -168,6 +168,7 @@ class SearchController extends Controller
         foreach ($user_vinyl_loved as $user_vinyl) {
           $loved_vinyls[] = $user_vinyl->getVinyl();
         }
+        $imagehandler = $this->container->get('tvf_store.imagehandler');
         $loved_vinyls = $imagehandler->convert_vinyl_images($loved_vinyls, 'xs');
 
         $imagehandler = $this->container->get('tvf_store.imagehandler');

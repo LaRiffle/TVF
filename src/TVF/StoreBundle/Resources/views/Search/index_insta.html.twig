@@ -41,7 +41,7 @@
               {{ include(edition_buttons, {'edit': path('tvf_record_vinyl_add', {'id': vinyl.id}), 'remove': path('tvf_record_vinyl_remove', {'id': vinyl.id}) }) }}
             {% endif %}
           </div>
-          <h3 class="tvf-button">
+          <h3 class="tvf-button visible-from-sm">
             <div class="love_icon love_icon_insta_btn">
               {% if vinyl.loved  %}
                 <i class="fa fa-heart fa-2x" aria-hidden="true"></i>
