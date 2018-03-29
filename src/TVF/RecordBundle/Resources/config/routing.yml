@@ -4,6 +4,10 @@ tvf_record_client_add:
 tvf_record_client_show:
   path:     /record/client/show/{id}
   defaults: { _controller: TVFRecordBundle:Client:show, id:0 }
+tvf_record_client_remove:
+  path:     /record/client/remove/{id}
+  defaults: { _controller: TVFRecordBundle:Client:remove}
+
 tvf_record_client_token:
   path:     /record/client/get/token
   defaults: { _controller: TVFRecordBundle:Client:token }

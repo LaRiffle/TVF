@@ -24,6 +24,26 @@ class ClientController extends Controller
 {
     public $entityNameSpace = 'TVFRecordBundle:Client';
 
+    public function certify_authorship($client_id) {
+      if (!$this->get('security.authorization_checker')->isGranted('ROLE_RECORD')
+       && !$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+        return false;
+      }
+
+      if($this->get('security.authorization_checker')->isGranted('ROLE_RECORD')){
+        $user = $this->getUser();
+        $em = $this->getDoctrine()->getManager();
+
+        $repository = $em->getRepository('TVFRecordBundle:Client');
+        $client = $repository->findOneBy(array('user' => $user));
+
+        if($client->getId() != $client_id) {
+          return false;
+        }
+      }
+      return true;
+    }
+
     public function indexAction()
     {
         $em = $this->getDoctrine()->getManager();
@@ -88,6 +108,9 @@ class ClientController extends Controller
 
     public function collectionAction()
     {
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+          return $this->redirect($this->generateUrl('tvf_store_homepage'));
+        }
         if (!$this->get('security.authorization_checker')->isGranted('ROLE_RECORD')) {
           throw new AccessDeniedException('Accès limité.');
         }
@@ -157,14 +180,16 @@ class ClientController extends Controller
     }
 
     public function addAction(Request $request, $id = 0) {
-        if (!$this->get('security.authorization_checker')->isGranted('ROLE_RECORD')) {
-          throw new AccessDeniedException('Accès limité.');
-        }
+        $this->denyAccessUnlessGranted(['ROLE_RECORD','ROLE_ADMIN'], null, 'Accès limité.');
+
         $em = $this->getDoctrine()->getManager();
         $oldFileName = null;
         if($id == 0) {
             $client = new Client();
         } else {
+            if(!$this->certify_authorship($id)){
+              throw new AccessDeniedException('Ce compte est-il le vôtre ?');
+            }
             $repository = $em->getRepository($this->entityNameSpace);
             $client = $repository->find($id);
             if($client->getImage() != ''){
@@ -204,8 +229,8 @@ class ClientController extends Controller
 
             $repository = $em->getRepository($this->entityNameSpace);
             $existing_client = $repository->findOneBy(array('email' => $client->getEmail()));
-            if($existing_client != null){
-              $this->addFlash("warning", "Cette adresse mail est déjà utilisée. Si vous avez perdu votre mot de passe, contactez-nous.");
+            if($existing_client != null && $id == 0){
+              $request->getSession()->getFlashBag()->add('warning', "Cette adresse mail est déjà utilisée. Si vous avez perdu votre mot de passe, contactez-nous.");
               return $this->redirect($this->generateUrl('logout'));
             }
 
@@ -236,19 +261,24 @@ class ClientController extends Controller
             $slughandler = $this->container->get('tvf_record.slugifyhandler');
             $slug = $slughandler->slugify($client->getName());
             $client->setSlug($slug);
-
-            $user = $this->getUser();
-            // On creation only, set the username
-            if($id == 0){
-              $user->setUsername($client->getEmail());
+            if ($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+              $em->persist($client);
+              $em->flush();
+              return $this->redirect($this->generateUrl('tvf_store_homepage'));
+            } else {
+              $user = $this->getUser();
+              // On creation only, set the username
+              if($id == 0){
+                $user->setUsername($client->getEmail());
+              }
+              $data = $request->get('form');
+              if($data['password'] != ''){
+                  $user->setPassword($data['password']);
+              }
+              $client->setUser($user);
+              $em->persist($client);
+              $em->flush();
             }
-            $data = $request->get('form');
-            if($data['password'] != ''){
-                $user->setPassword($data['password']);
-            }
-            $client->setUser($user);
-            $em->persist($client);
-            $em->flush();
             return $this->redirect($this->generateUrl('tvf_record_my_account').(($id == 0) ? '?premiere_connexion=1':''));
         }
         return $this->render($this->entityNameSpace.':add.html.twig', array(

@@ -23,6 +23,28 @@ class  SelectionController extends Controller
     public $entityNameSpace = 'TVFRecordBundle:Selection';
     /* Index is in Information Controller */
 
+    public function certify_authorship($selection_id) {
+      if (!$this->get('security.authorization_checker')->isGranted('ROLE_RECORD')
+       && !$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+        return false;
+      }
+
+      if($this->get('security.authorization_checker')->isGranted('ROLE_RECORD')){
+        $user = $this->getUser();
+        $em = $this->getDoctrine()->getManager();
+
+        $repository = $em->getRepository('TVFRecordBundle:Client');
+        $client = $repository->findOneBy(array('user' => $user));
+
+        $repository = $em->getRepository('TVFRecordBundle:Selection');
+        $vinyl = $repository->findOneBy(array('id'=>$selection_id, 'client' => $client));
+        if($vinyl == null) {
+          return false;
+        }
+      }
+      return true;
+    }
+
     public function showAction($id)
     {
         $em = $this->getDoctrine()->getManager();
@@ -34,9 +56,8 @@ class  SelectionController extends Controller
     }
 
     public function addAction(Request $request, $id = 0) {
-        if (!$this->get('security.authorization_checker')->isGranted('ROLE_RECORD')) {
-          throw new AccessDeniedException('Accès limité.');
-        }
+        $this->denyAccessUnlessGranted(['ROLE_RECORD','ROLE_ADMIN'], null, 'Accès limité.');
+
         $em = $this->getDoctrine()->getManager();
         $user = $this->getUser();
         $repository = $em->getRepository('TVFRecordBundle:Client');
@@ -45,9 +66,13 @@ class  SelectionController extends Controller
         if($id == 0) {
             $selection = new Selection();
         } else {
-            $selection = $em->getRepository($this->entityNameSpace)->find($id);
-            if($client->getId() != $selection->getClient()->getId()){
+            if(!$this->certify_authorship($id)){
               throw new AccessDeniedException('Accès limité.');
+            }
+            $selection = $em->getRepository($this->entityNameSpace)->find($id);
+            // Overwrite client if admin
+            if($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')){
+              $client = $selection->getClient();
             }
             if($selection->getImage() != ''){
               $oldFileName = $selection->getImage();
@@ -121,6 +146,9 @@ class  SelectionController extends Controller
             }
             $em->persist($selection);
             $em->flush();
+            if($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')){
+              return $this->redirect($this->generateUrl('tvf_store_selection'));
+            }
             return $this->redirect($this->generateUrl('tvf_record_selection'));
         }
         return $this->render($this->entityNameSpace.':add.html.twig', array(

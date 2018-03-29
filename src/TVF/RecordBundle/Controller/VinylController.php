@@ -27,10 +27,31 @@ class  VinylController extends Controller
 {
     public $entityNameSpace = 'TVFRecordBundle:Vinyl';
 
-    public function addAction(Request $request, $id = 0) {
-        if (!$this->get('security.authorization_checker')->isGranted('ROLE_RECORD')) {
-          throw new AccessDeniedException('Accès limité.');
+    public function certify_authorship($vinyl_id) {
+      if (!$this->get('security.authorization_checker')->isGranted('ROLE_RECORD')
+       && !$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+        return false;
+      }
+
+      if($this->get('security.authorization_checker')->isGranted('ROLE_RECORD')){
+        $user = $this->getUser();
+        $em = $this->getDoctrine()->getManager();
+
+        $repository = $em->getRepository('TVFRecordBundle:Client');
+        $client = $repository->findOneBy(array('user' => $user));
+
+        $repository = $em->getRepository('TVFRecordBundle:Vinyl');
+        $vinyl = $repository->findOneBy(array('id'=>$vinyl_id, 'client' => $client));
+        if($vinyl == null) {
+          return false;
         }
+      }
+      return true;
+    }
+
+    public function addAction(Request $request, $id = 0) {
+        $this->denyAccessUnlessGranted(['ROLE_RECORD','ROLE_ADMIN'], null, 'Accès limité.');
+
         $em = $this->getDoctrine()->getManager();
         if($id == 0) {
             $vinyl = new Vinyl();
@@ -38,6 +59,9 @@ class  VinylController extends Controller
             $category = $category_repository->findOneBy(array('slug' => 'vinyle'));
             $vinyl->setCategory($category);
         } else {
+            if(!$this->certify_authorship($id)){
+              throw new AccessDeniedException('Accès limité.');
+            }
             $repository = $em->getRepository($this->entityNameSpace);
             $vinyl = $repository->find($id);
             $images = $vinyl->getImages();
@@ -236,6 +260,10 @@ class  VinylController extends Controller
         ));
     }
     public function removeAction(Request $request, $id){
+        if(!$this->certify_authorship($id)){
+          throw new AccessDeniedException('Accès limité.');
+        }
+
         $em = $this->getDoctrine()->getManager();
         $vinyl = $em->getRepository($this->entityNameSpace)->find($id);
         $vinyl_users = $em->getRepository('TVFStoreBundle:VinylUser')->findBy(array('vinyl' => $vinyl));

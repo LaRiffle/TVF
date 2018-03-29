@@ -1,4 +1,5 @@
 {% extends "TVFStoreBundle::layout.html.twig" %}
+{% set edition_buttons="TVFAdminBundle:Utils:edition.html.twig" %}
 {% block body %}
 
 <div id="">
@@ -12,6 +13,10 @@
             <img class="card-img-top" src="{{ asset('uploads/img/' ~ client.image) }}" alt="Image indisponible" style="width: 100%;">
           {% endif %}
           <div class="card-block">
+            {% if is_granted('ROLE_ADMIN') %}
+              {{ include(edition_buttons, {'edit': path('tvf_record_client_add', {'id': client.id}), 'remove': path('tvf_record_client_remove', {'id': client.id}) }) }}
+              <em>Supprimer les vinyles etc avant de supprimer le compte</em>
+            {% endif %}
             <h4 class="card-title center" style="font-weight: bold;">{{ client.name }}</h4>
             <h6 class="card-subtitle mb-2 text-muted">Depuis le {{ client.joindate|date("d/m/Y") }}</h6>
             <p class="card-text">{{ client.description }}</p>
