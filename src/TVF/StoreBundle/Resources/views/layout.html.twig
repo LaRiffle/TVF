@@ -241,7 +241,7 @@
       // Set price
       if($vinyl.attr('data-onsold') == '1'){
         $("#vinyl_overview .price_btn").show();
-        $("#vinyl_overview .vinyl-price").html($vinyl.attr('data-price'));
+        $("#vinyl_overview .vinyl-price").html($vinyl.attr('data-price') + ' €');
       } else {
         $("#vinyl_overview .price_btn").hide();
       }
@@ -260,6 +260,9 @@
       } else {
         $icon.removeClass('fa-heart').addClass('fa-heart-o');
       }
+      // Set add to cart btn
+      var url = '{{ path('tvf_store_add_to_cart') }}/'+overview_id;
+      $("#vinyl_overview .vinyl-btn-add-cart").attr('href', url);
 
       color_overview_from_img(src);
       // adapt caret
@@ -282,10 +285,10 @@
       $('.vinyl-overview').css('color', rgb);
       $('.vinyl-overview .love_btn a').css('color', rgb);
       $('.love_price .badge').css('color', rgb);
-      $('.vinyl-overview .love_btn').hover(function(){
+      $('.vinyl-overview .love_btn, .vinyl-overview .cart_icon').hover(function(){
         $(this).css('border-color', rgb);
       });
-      $('.vinyl-overview .love_btn').mouseleave(function(){
+      $('.vinyl-overview .love_btn, .vinyl-overview .cart_icon').mouseleave(function(){
         $(this).css('border-color', '');
       });
       var c = colors[1];
@@ -319,7 +322,7 @@
       if($this.has('.to-cart')){
         $this.find('.to-cart').remove();
         $this.find('span').css('opacity', 1);
-        $this.html($(this).find('span').html());
+        $this.html($this.find('span').html());
       }
     }
     $('.price-cart').hover(function(){
@@ -329,7 +332,10 @@
         remove_icon_from_cart($this);
       }, 2000);
     },function(){
-      remove_icon_from_cart($(this));
+      var $this = $(this);
+      setTimeout(function(){
+        remove_icon_from_cart($this);
+      }, 500);
     });
     $('.price-cart').focus(function(){
       var $this = $(this);

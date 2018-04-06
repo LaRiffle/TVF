@@ -76,7 +76,8 @@ class HomeController extends Controller
         $selections = $imagehandler->convert_entity_image($selections, 'sm');
 
         $repository = $em->getRepository('TVFRecordBundle:Vinyl');
-        $vinyls = $repository->getVinyls(array(), array('id' => 'desc'), 12);
+        $nb_vinyls = ($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN') ? 11: 12);
+        $vinyls = $repository->getVinyls(array(), array('id' => 'desc'), $nb_vinyls);
         $vinyls = $imagehandler->convert_vinyl_images($vinyls, 'xss');
         $love_repository = $em->getRepository('TVFStoreBundle:VinylUser');
         $user = $this->getUser();

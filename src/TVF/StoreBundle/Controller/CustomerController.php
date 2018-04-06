@@ -59,7 +59,9 @@ class CustomerController extends Controller
           $cart = new Cart();
           $cart->setCustomer($user);
         }
-        $cart->addProduct($product);
+        if ( !$cart->getProducts()->contains($product) ) {
+          $cart->addProduct($product);
+        }
         $em->persist($cart);
         $em->flush();
         return $this->redirect($this->generateUrl('tvf_store_homepage'));

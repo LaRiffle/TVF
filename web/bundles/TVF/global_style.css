@@ -36,6 +36,11 @@ a {
 a:hover, a:visited, a:link, a:active {
   text-decoration: none;
 }
+@media screen and (min-width: 576px) {
+  .mobile {
+    display: none !important;
+  }
+}
 #front-page {
   height: 100vh;
   width: 100%;
@@ -250,7 +255,7 @@ button.navbar-toggler:hover {
 #nav_right_icon2 {
   right: 65px;
 }
-#nav_left_icon, #nav_right_icon, #nav_right_icon2, .love_icon {
+#nav_left_icon, #nav_right_icon, #nav_right_icon2, .love_icon, .cart_icon {
   width: 40px;
   height: 40px;
   border: 1px rgba(0,0,0,.125) solid;
@@ -317,7 +322,7 @@ button.navbar-toggler:hover {
   float: right;
   padding-top: 7px;
 }
-.love_icon {
+.love_icon, .cart_icon {
   margin-top: 0px;
   padding-top: 9px;
   display: inline-block;
@@ -932,6 +937,7 @@ ul.edition-btn li:after {
   position: absolute;
   float: right;
   left: 11px;
+  width: calc(100% - 22px);
 }
 .to-cart a {
   color: inherit;
@@ -1085,7 +1091,7 @@ footer .row > div {
   margin-right: 20px;
   position: relative;
 }
-.vinyl-overview .love_btn {
+.vinyl-overview .love_btn, .vinyl-overview .cart_icon {
   background-color: transparent;
 }
 .vinyl-overview .content {
@@ -1100,6 +1106,12 @@ footer .row > div {
 }
 #vinyl_overview .price_btn:hover {
   cursor: pointer;
+}
+@media screen and (max-width: 576px) {
+  .vinyl-overview .content > h4 {
+    clear: both;
+    font-size: 1.4rem;
+  }
 }
 
 /* About box */
