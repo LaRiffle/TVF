@@ -30,6 +30,9 @@ textarea {
 .center {
   text-align: center;
 }
+.bold {
+  font-weight: bold;
+}
 a {
   outline: 0;
 }
@@ -358,6 +361,31 @@ button.navbar-toggler:hover {
   bottom: 7px;
   left: 17px;
   background-color: #BA0020;
+}
+.embedded-cart {
+  position: absolute;
+  right: 0px;
+  top: 77px;
+  z-index: 300;
+}
+.embedded-cart .caret {
+  display: block;
+  right: 25px;
+}
+.embedded-cart .card-title {
+    margin-bottom: 0.75rem !important;
+}
+.close-cart {
+  opacity: 0;
+}
+.close-cart a {
+  display: inline-block;
+  float: right;
+  font-size: 1.2rem;
+  color: rgba(0, 0, 0, 0.5);
+}
+.embedded-cart .close-cart {
+  opacity: 1;
 }
 /* Correctif pour record-nav */
 #record-page .title.special-font {
@@ -1069,8 +1097,8 @@ footer .row > div {
     margin-top: -2px;
   }
 }
-.vinyl-overview .caret {
-  border-bottom: 10px solid #222;
+.caret {
+  border-bottom: 10px solid rgba(0,0,0,.125);
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
   transition: border-color 1s;

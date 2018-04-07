@@ -124,7 +124,10 @@ class Cart
     public function addProduct(\TVF\RecordBundle\Entity\Vinyl $product)
     {
         $this->products[] = $product;
-        $this->total += $product->getPrice();
+        $this->total = 0;
+        foreach ($this->products as $product) {
+          $this->total += $product->getPrice();
+        }
         return $this;
     }
 
@@ -135,8 +138,11 @@ class Cart
      */
     public function removeProduct(\TVF\RecordBundle\Entity\Vinyl $product)
     {
-        $this->total -= $product->getPrice();
         $this->products->removeElement($product);
+        $this->total = 0;
+        foreach ($this->products as $product) {
+          $this->total += $product->getPrice();
+        }
     }
 
     /**

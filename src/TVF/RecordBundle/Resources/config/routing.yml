@@ -23,6 +23,9 @@ tvf_record_selection:
 tvf_record_collection:
     path:     /ma-collection
     defaults: { _controller: TVFRecordBundle:Client:collection }
+tvf_record_get_address:
+    path:     /location/disquaire/{slug}
+    defaults: { _controller: TVFRecordBundle:Client:location, slug:'' }
 
 tvf_record_artist:
   path:     /record/artist

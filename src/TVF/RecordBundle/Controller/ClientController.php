@@ -87,6 +87,13 @@ class ClientController extends Controller
           'client' => $client
         ));
     }
+    public function locationAction($slug){
+        $em = $this->getDoctrine()->getManager();
+        $repository = $em->getRepository($this->entityNameSpace);
+        $client = $repository->findOneBy(array('slug' => $slug));
+        $location = $client->getAddress();
+        return new JsonResponse(['address' => $location]);
+    }
     public function myAccountAction(Request $request) {
         $user = $this->getUser();
         $em = $this->getDoctrine()->getManager();
@@ -207,6 +214,9 @@ class ClientController extends Controller
         $form = $this->get('form.factory')->createBuilder(FormType::class, $client)
         ->add('name', TextType::class)
         ->add('website', TextType::class, array(
+          'required' => false
+        ))
+        ->add('address', TextAreaType::class, array(
           'required' => false
         ))
         ->add('description', TextAreaType::class, array(

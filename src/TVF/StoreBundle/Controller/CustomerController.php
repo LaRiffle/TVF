@@ -22,8 +22,13 @@ class CustomerController extends Controller
       - Manage cart
     */
 
-    public function cartAction(){
+    public function cartAction($embedded = false){
       $user = $this->getUser();
+      if(!$user){
+        return $this->render('TVFStoreBundle:Cart:cart.html.twig', array(
+          'cart' => ['products'=>[], 'total'=>0],
+        ));
+      }
       $em = $this->getDoctrine()->getManager();
       $repository = $em->getRepository('TVFStoreBundle:Cart');
       $cart = $repository->findOneBy(array('customer' => $user));
@@ -38,6 +43,11 @@ class CustomerController extends Controller
         $fileNames = $product->getImages();
         $product->small_image = (count($fileNames) > 0) ? $imagehandler->get_image_in_quality($fileNames[0], 'xxs') : '';
       }
+      if($embedded){
+        return $this->render('TVFStoreBundle:Cart:cart.html.twig', array(
+          'cart' => $cart,
+        ));
+      }
       return $this->render('TVFStoreBundle:Cart:show.html.twig', array(
         'cart' => $cart,
       ));
@@ -46,7 +56,7 @@ class CustomerController extends Controller
     /*
      Adds a product to the shopping cart
     */
-    public function addToCartAction($id){
+    public function addToCartAction(Request $request, $id){
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository('TVFRecordBundle:Vinyl');
         if (!$product = $repository->find($id) or $product->getPrice() == null) {
@@ -64,7 +74,7 @@ class CustomerController extends Controller
         }
         $em->persist($cart);
         $em->flush();
-        return $this->redirect($this->generateUrl('tvf_store_homepage'));
+        return $this->redirect($request->server->get('HTTP_REFERER').'?panier=rempli');
     }
 
     /*

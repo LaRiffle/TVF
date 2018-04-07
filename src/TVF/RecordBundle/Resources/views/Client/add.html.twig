@@ -22,6 +22,7 @@
         <div id="website" class="hide">
           {{ include(input_form, {'element': form.website, 'name':"Indiquez l'adresse de votre site web"}) }}
         </div>
+        {{ include(input_form, {'element': form.address, 'name':"Indiquez votre adresse pour les retraits en magasin"}) }}
         {{ include(input_form, {'element': form.description, 'name':"Description succincte de l'enseigne"}) }}
         <div style="margin-top: 10px">
           <a href="#" id="to-image"><i class="fa fa-plus" aria-hidden="true"></i> {% if id is same as(0) %}Ajouter une {% else %} Modifier l'{% endif %}illustration</a>

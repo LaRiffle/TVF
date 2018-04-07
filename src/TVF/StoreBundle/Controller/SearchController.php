@@ -113,7 +113,7 @@ class SearchController extends Controller
         ));
     }
 
-    public function selectionAction($selection = '_', $category = '_')
+    public function selectionAction(Request $request, $selection = '_', $category = '_')
     {
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository('TVFRecordBundle:Vinyl');
@@ -147,14 +147,19 @@ class SearchController extends Controller
         $selections = $repository->findAll();
         $repository = $em->getRepository('TVFAdminBundle:Category');
         $categories = $repository->findAll();
-        return $this->render($this->entityNameSpace.':selection.html.twig', array(
+
+        $variables = array(
           'vinyls' => $vinyls,
           'genders' => $genders,
           'selections' => $selections,
           'selection_id' => $selection_id,
           'categories' => $categories,
           'category_id' => $category
-        ));
+        );
+        if($request->query->get('panier') != null){
+          $variables['show_cart'] = true;
+        }
+        return $this->render($this->entityNameSpace.':selection.html.twig', $variables);
     }
     public function lovedAction()
     {

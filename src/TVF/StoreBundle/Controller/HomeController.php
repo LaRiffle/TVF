@@ -18,7 +18,7 @@ class HomeController extends Controller
     {
         return $this->render($this->entityNameSpace.':work.html.twig');
     }
-    public function homepageAction()
+    public function homepageAction(Request $request)
     {
         $imagehandler = $this->container->get('tvf_store.imagehandler');
         // Load infos on recent & classic vinyls for the chatbot
@@ -48,10 +48,14 @@ class HomeController extends Controller
         $repository = $em->getRepository('TVFAdminBundle:Gender');
         $genders = $repository->findAll();
 
-        return $this->render($this->entityNameSpace.':home_page.html.twig', array(
+        $variables = array(
           'chat_data' => $chat_data,
           'genders' => $genders,
-        ));
+        );
+        if($request->query->get('panier') != null){
+          $variables['show_cart'] = true;
+        }
+        return $this->render($this->entityNameSpace.':home_page.html.twig', $variables);
     }
     public function homeAction()
     {

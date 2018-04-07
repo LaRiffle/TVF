@@ -22,12 +22,15 @@
       </div>
       {% endif %}
       <div id="nav_right_icon" class="top_circle_icon visible-from-sm">
-        <a href="{{ path('tvf_store_cart') }}" style="color: #BA0020;">
+        <a href="{{ path('tvf_store_cart') }}" class="link-to-cart" style="color: #BA0020;">
           <i class="fa fa-shopping-basket fa-2x" aria-hidden="true"></i>
         </a><br />
         <span id="nb_products" class="badge badge-danger">
           {{ render(controller('TVFStoreBundle:Customer:nbProducts')) }}
         </span>
+      </div>
+      <div class="embedded-cart hide">
+        {{ render(controller('TVFStoreBundle:Customer:cart', {'embedded': 1})) }}
       </div>
       <div id="nav_toggle_btn">
         <button class="navbar-toggler navbar-toggler-right" style="z-index: 1;" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">

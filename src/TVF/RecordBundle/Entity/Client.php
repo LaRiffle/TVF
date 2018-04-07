@@ -62,6 +62,13 @@ class Client
     /**
      * @var string
      *
+     * @ORM\Column(name="address", type="text", nullable=true)
+     */
+    private $address;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="description", type="text", nullable=true)
      */
     private $description;
@@ -168,6 +175,30 @@ class Client
     public function getPhone()
     {
         return $this->phone;
+    }
+
+    /**
+     * Set address
+     *
+     * @param string $address
+     *
+     * @return Client
+     */
+    public function setAddress($address)
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    /**
+     * Get address
+     *
+     * @return string
+     */
+    public function getAddress()
+    {
+        return $this->address;
     }
 
     /**

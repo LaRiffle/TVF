@@ -174,14 +174,14 @@
     }
     $('#vinyl_overview').on('click', '.price_btn', function(e){
       e.preventDefault();
-      fire_action_cart_for_product(overview_id);
+      //fire_action_cart_for_product(overview_id);
     });
     $('#my_insta').on('click', 'a.show-vinyl', function(e){
       // if clicked on buy
       if($(this).find('.icon_insta_price').length > 0 &&
          $.contains($(this).find('.icon_insta_price').get(0), e.target)){
         var id = $(this).parents('.tvf-box').attr('data-id');
-        fire_action_cart_for_product(id);
+        //fire_action_cart_for_product(id);
       }
       e.preventDefault();
       if (typeof reorganize === "function") {
@@ -192,11 +192,6 @@
       var row_index = Number($vinyl.attr('data-index'));
       /* Remove the icons hidden that dont count for the index */
       var index = row_index;
-      //$('#my_insta .tvf-box.hide').each(function(){
-      //  if(Number($(this).attr('data-index')) < row_index){
-      //    index--;
-      //  }
-      //});
       {% if is_granted('ROLE_RECORD') or is_granted('ROLE_ADMIN') %}
       if($('.add-vinyl-btn').length > 0){
           index += 1;
@@ -301,6 +296,7 @@
     }
     </script>
     <script>
+    /* Effects relative to cart btn, cart display, and add to cart confirmation */
     function show_icon_to_cart($this){
       var id = Number($this.parents('.tvf-box').attr('data-id'));
       id = isNaN(id) ? Number(overview_id) : id;
@@ -344,6 +340,85 @@
         remove_icon_from_cart($this);
       }, 2000);
     });
+    $('.link-to-cart').on('click', function(e){
+      e.preventDefault();
+      if($('.embedded-cart').hasClass('hide')){
+        $('.embedded-cart').slideDown().removeClass('hide');
+      } else {
+        $('.embedded-cart').slideUp().addClass('hide');
+      }
+    });
+    $('.close-cart').on('click', function(e){
+      e.preventDefault();
+      $('.embedded-cart').slideUp().addClass('hide');
+    });
+    {% if show_cart is defined %}
+    $('.embedded-cart').slideDown().removeClass('hide');
+    {% endif %}
+
+    function nl2br(str, is_xhtml) {
+        if (typeof str === 'undefined' || str === null) {
+            return '';
+        }
+        var breakTag = (is_xhtml || typeof is_xhtml === 'undefined') ? '<br />' : '<br>';
+        return (str + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + breakTag + '$2');
+    }
+    $('.buy-confirmation').on('click', function(e){
+      e.preventDefault();
+      // Need to get the id of the product (to retrieve the record and record address)
+      // Distinguish between click from overview and insta_icon
+      var vinyl_id;
+      if($(this).find('.icon_insta_price').length){ // from insta icon
+        var $vinyl = $(this).closest('.tvf-box');
+        vinyl_id = $vinyl.attr('data-id');
+      } else { // else from overview, id is selected_id
+        vinyl_id = selected_id;
+      }
+      vinyl_id = Number(vinyl_id);
+      if(products_id_in_cart.includes(vinyl_id)){
+        url = '{{ path('tvf_store_remove_from_cart') }}/'+vinyl_id;
+        window.location = url;
+      } else {
+        var record_name = $('.tvf-icon[data-id='+vinyl_id+']').attr('data-disquaire');
+        var record_name_link = $('.tvf-icon[data-id='+vinyl_id+']').attr('data-disquaire-link');
+        var url = this.href;
+        var box = bootbox.dialog({
+              size: 'large',
+              message: `
+                {{ include('TVFStoreBundle:Cart:choice.html.twig') }}
+              `,
+              title: '<i class="fa fa-shopping-basket"></i> Ajouter ce vinyle au panier ? &nbsp;',
+              buttons: {
+                  "Achetez chez le disquaire": {
+                      className: "btn-default",
+                  },
+                  main: {
+                      label: "Ajouter au panier",
+                      className: "btn-default",
+                      callback: function() {
+                          window.location = url;
+                      }
+                  }
+              }
+          });
+          setTimeout(function(){
+            $('#cart-record-choice').find('.record-name').html(record_name);
+            $('#cart-record-choice').find('.add-vinyl-to-cart').attr('href', url);
+          }, 50);
+          $.ajax({
+              url: '{{ path('tvf_record_get_address') }}/'+record_name_link,
+              type: "POST",
+              dataType: "json",
+              data: {},
+              async: true,
+              success: function (data)
+              {
+                console.log(data);
+                $('#cart-record-choice').find('.record-address').html(nl2br(data.address));
+              }
+          });
+        }
+      });
     </script>
   </body>
 </html>

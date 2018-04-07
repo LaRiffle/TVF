@@ -1,0 +1,38 @@
+<div class="caret visible-from-sm hide"></div>
+<div class="card" style="position: relative; top: 10px;">
+  <div class="card-block">
+    <div class="close-cart">
+      <a href="#" title="Fermer la fenêtre">
+        <i class="fa fa-times" aria-hidden="true"></i>
+      </a>
+    </div>
+    <h2 class="card-title badge-title" style="font-size: 2rem; position: inherit;">
+      <span class="badge badge-light badge-pill">
+        Votre panier
+      </span>
+    </h2>
+    <ul class="list-group">
+      {% if cart.products|length == 0 %}
+        <p>Votre panier est vide.</p>
+      {% endif %}
+      {% for product in cart.products %}
+        <li class="list-group-item">
+          {% if product.category.slug == 'abonnement' %}
+            <b>Abonnement <em>{{ product.description }}</em></b>&nbsp; · {{ product.name }} ·
+          {% else %}
+          <img src="{{ asset('uploads/img/' ~ product.small_image) }}" alt="" style="width: 40px; margin-right: 20px;">
+           {{ product.name }} ·
+           {% for artist in product.artists %}{{artist.name}}{% if not loop.last %},{% endif %}{% endfor %} ·
+           {% endif %}
+           <b> {{ product.price }} €</b> ·
+           &nbsp;<a href="{{ path('tvf_store_remove_from_cart', {'id': product.id}) }}">Retirer</a>
+        </li>
+      {% endfor %}
+      <li class="list-group-item">
+        <b>Total : {{ cart.total }} €</b>
+        {% if cart.total > 0 %}
+        &nbsp; &nbsp; <a href="#" class="btn btn-primary">Finaliser la commande</a></li>
+        {% endif %}
+    </ul>
+  </div>
+</div>

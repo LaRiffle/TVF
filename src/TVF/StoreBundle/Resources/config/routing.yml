@@ -21,8 +21,8 @@ tvf_store_customer_register_or_login:
     path:     /register_or_login
     defaults: { _controller: TVFStoreBundle:Customer:register_or_login }
 tvf_store_cart:
-    path:     /mon-panier
-    defaults: { _controller: TVFStoreBundle:Customer:cart }
+    path:     /mon-panier/{embedded}
+    defaults: { _controller: TVFStoreBundle:Customer:cart, embedded:0 }
 tvf_store_add_to_cart:
     path:     /selectionner/{id}
     defaults: { _controller: TVFStoreBundle:Customer:addToCart, id:0 }
