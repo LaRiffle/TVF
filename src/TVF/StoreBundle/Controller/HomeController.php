@@ -24,7 +24,7 @@ class HomeController extends Controller
         // Load infos on recent & classic vinyls for the chatbot
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository('TVFRecordBundle:Vinyl');
-        $recent_vinyls = $repository->getVinyls(array(), array('id' => 'desc'), 9);
+        $recent_vinyls = $repository->getVinyls(9);
         $recent_vinyls = $imagehandler->convert_vinyl_images($recent_vinyls, 'xss');
 
         $repository = $em->getRepository('TVFStoreBundle:VinylUser');
@@ -96,7 +96,7 @@ class HomeController extends Controller
 
         $repository = $em->getRepository('TVFRecordBundle:Vinyl');
         $nb_vinyls = ($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN') ? 11: 12);
-        $vinyls = $repository->getVinyls(array(), array('id' => 'desc'), $nb_vinyls);
+        $vinyls = $repository->getVinyls($nb_vinyls);
         $vinyls = $imagehandler->convert_vinyl_images($vinyls, 'xss');
         $love_repository = $em->getRepository('TVFStoreBundle:VinylUser');
         $user = $this->getUser();

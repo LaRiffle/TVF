@@ -61,7 +61,7 @@ class SearchController extends Controller
       */
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository('TVFRecordBundle:Vinyl');
-        $vinyls = $repository->getVinyls(array(), array('id' => 'desc'));
+        $vinyls = $repository->getVinyls();
         $imagehandler = $this->container->get('tvf_store.imagehandler');
         $vinyls = $imagehandler->convert_vinyl_images($vinyls, 'sm');
         return $this->render($this->entityNameSpace.':index_insta.html.twig', array(
@@ -117,7 +117,7 @@ class SearchController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository('TVFRecordBundle:Vinyl');
-        $vinyls = $repository->getVinyls(array(), array('id' => 'desc'));
+        $vinyls = $repository->getVinyls();
         $imagehandler = $this->container->get('tvf_store.imagehandler');
         $vinyls = $imagehandler->convert_vinyl_images($vinyls, 'xs');
 

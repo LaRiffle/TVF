@@ -24,18 +24,14 @@ class VinylRepository extends \Doctrine\ORM\EntityRepository
           ->getResult()
     ;
   }
-  public function getVinyls($filters, $order, $limit=-1){
-    if($limit > 0){
-      $products = $this->findBy($filters, $order, $limit);
-    } else {
-      $products = $this->findBy($filters, $order);
-    }
-    $vinyls = [];
-    foreach ($products as $product) {
-      if($product->getCategory()->getSlug() == 'vinyle'){
-        $vinyls[] = $product;
-      }
-    }
-    return $vinyls;
+  public function getVinyls($limit=-1){
+    return $this->createQueryBuilder('e')
+          ->innerJoin('e.category', 'c')
+          ->where("c.slug = 'vinyle'")
+          ->orderBy('e.id', 'DESC')
+          ->setMaxResults($limit)
+          ->getQuery()
+          ->getResult()
+    ;
   }
 }
