@@ -78,6 +78,21 @@ class HomeController extends Controller
         $selections = $repository->findBy(array(), array('id' => 'desc'));
         $imagehandler = $this->container->get('tvf_store.imagehandler');
         $selections = $imagehandler->convert_entity_image($selections, 'sm');
+        $is_record = $this->get('security.authorization_checker')->isGranted('ROLE_RECORD');
+        if ($is_record) {
+          $user = $this->getUser();
+          $repository = $em->getRepository('TVFRecordBundle:Client');
+          $client_id = $repository->findOneBy(array('user' => $user))->getId();
+        }
+        foreach ($selections as $selection) {
+          $is_owner = false;
+          if ($is_record) {
+            if($selection->getClient()->getId() == $client_id){
+              $is_owner = true;
+            }
+          }
+          $selection->is_owner = $is_owner;
+        }
 
         $repository = $em->getRepository('TVFRecordBundle:Vinyl');
         $nb_vinyls = ($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN') ? 11: 12);
@@ -129,7 +144,21 @@ class HomeController extends Controller
         $selections = $repository->findBy(array(), array('id' => 'desc'));
         $imagehandler = $this->container->get('tvf_store.imagehandler');
         $selections = $imagehandler->convert_entity_image($selections, 'sm');
-        $em->flush();
+        $is_record = $this->get('security.authorization_checker')->isGranted('ROLE_RECORD');
+        if ($is_record) {
+          $user = $this->getUser();
+          $repository = $em->getRepository('TVFRecordBundle:Client');
+          $client_id = $repository->findOneBy(array('user' => $user))->getId();
+        }
+        foreach ($selections as $selection) {
+          $is_owner = false;
+          if ($is_record) {
+            if($selection->getClient()->getId() == $client_id){
+              $is_owner = true;
+            }
+          }
+          $selection->is_owner = $is_owner;
+        }
         return $this->render($this->entityNameSpace.':selection.html.twig', array(
           'selections' => $selections,
         ));

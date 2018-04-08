@@ -37,8 +37,8 @@ class  SelectionController extends Controller
         $client = $repository->findOneBy(array('user' => $user));
 
         $repository = $em->getRepository('TVFRecordBundle:Selection');
-        $vinyl = $repository->findOneBy(array('id'=>$selection_id, 'client' => $client));
-        if($vinyl == null) {
+        $selection = $repository->findOneBy(array('id'=>$selection_id, 'client' => $client));
+        if($selection == null) {
           return false;
         }
       }
@@ -159,17 +159,13 @@ class  SelectionController extends Controller
         ));
     }
     public function removeAction(Request $request, $id){
-        if (!$this->get('security.authorization_checker')->isGranted('ROLE_RECORD')) {
+        $this->denyAccessUnlessGranted(['ROLE_RECORD','ROLE_ADMIN'], null, 'Accès limité.');
+        // Check the record owns the selection
+        if(!$this->certify_authorship($id)){
           throw new AccessDeniedException('Accès limité.');
         }
-        $user = $this->getUser();
         $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository('TVFRecordBundle:Client');
-        $client = $repository->findOneBy(array('user' => $user));
         $selection = $em->getRepository($this->entityNameSpace)->find($id);
-        if($client->getId() != $selection->getClient()->getId()){
-          throw new AccessDeniedException('Accès limité.');
-        }
         $em->remove($selection);
         $em->flush();
         return $this->redirect($this->generateUrl('tvf_record_selection'));

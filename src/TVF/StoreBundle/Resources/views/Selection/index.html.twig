@@ -7,7 +7,7 @@
       <div class="item-overlay top"></div>
     </a>
       <div class="selection-description">
-        {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_RECORD') %}
+        {% if is_granted('ROLE_ADMIN') or selection.is_owner %}
           {% set edition_buttons="TVFAdminBundle:Utils:edition.html.twig" %}
           {{ include(edition_buttons, {'edit': path('tvf_record_selection_add', {'id': selection.id}), 'remove': path('tvf_record_selection_remove', {'id': selection.id}) }) }}
         {% endif %}

@@ -46,6 +46,9 @@ class ClientController extends Controller
 
     public function indexAction()
     {
+        if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+          throw new AccessDeniedException('Accès limité.');
+        }
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository($this->entityNameSpace);
         $clients = $repository->findAll();
@@ -65,6 +68,7 @@ class ClientController extends Controller
       $accessToken = $session->getAccessToken();
       return new JsonResponse(['token' => $accessToken]);
     }
+
     public function showAction($id = 0){
         if ($this->get('security.authorization_checker')->isGranted('ROLE_RECORD')) {
           return $this->redirect($this->generateUrl('tvf_record_my_account'));
@@ -79,6 +83,7 @@ class ClientController extends Controller
           'client' => $client
         ));
     }
+    
     public function presentAction($slug){
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository($this->entityNameSpace);
@@ -87,6 +92,7 @@ class ClientController extends Controller
           'client' => $client
         ));
     }
+
     public function locationAction($slug){
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository($this->entityNameSpace);
@@ -94,6 +100,7 @@ class ClientController extends Controller
         $location = $client->getAddress();
         return new JsonResponse(['address' => $location]);
     }
+
     public function myAccountAction(Request $request) {
         $user = $this->getUser();
         $em = $this->getDoctrine()->getManager();
@@ -160,6 +167,9 @@ class ClientController extends Controller
 
     public function selectionAction()
     {
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+          return $this->redirect($this->generateUrl('tvf_store_selection'));
+        }
         if (!$this->get('security.authorization_checker')->isGranted('ROLE_RECORD')) {
           throw new AccessDeniedException('Accès limité.');
         }
