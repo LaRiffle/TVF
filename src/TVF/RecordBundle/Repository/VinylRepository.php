@@ -34,4 +34,16 @@ class VinylRepository extends \Doctrine\ORM\EntityRepository
           ->getResult()
     ;
   }
+  public function getVinylsFromClient($client_id){
+    return $this->createQueryBuilder('e')
+          ->innerJoin('e.category', 'c')
+          ->innerJoin('e.client', 'r')
+          ->where("c.slug = 'vinyle'")
+          ->andWhere("r.id = :client_id")
+          ->setParameter('client_id', $client_id)
+          ->orderBy('e.id', 'DESC')
+          ->getQuery()
+          ->getResult()
+    ;
+  }
 }

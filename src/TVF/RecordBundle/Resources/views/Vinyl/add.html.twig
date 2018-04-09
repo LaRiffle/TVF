@@ -703,7 +703,7 @@ $(document).mouseup(function(e){
   });
 </script>
 <script>
-  /* Handle onsold */
+  /* Handle onsold and price checking */
   var onsold = $('#form_onsold').prop("checked");
   if(onsold){
     $('#price').show();
@@ -718,6 +718,39 @@ $(document).mouseup(function(e){
       $('#price').css('display', 'none');
     }
     $('#form_onsold').prop('checked', onsold);
+  });
+  function check_number_valid($input, value){
+    var number_re = /^\d+(?:[\.\,]\d{1,2})?$/;
+    if(!value.match(number_re)){
+      bootbox.prompt({
+          title: "Format incorrect, utilisez le format `19.99`",
+          callback: function (value) {
+            if(value){
+              console.log(value);
+              check_number_valid($input, value);
+            } else {
+              $input.val('');
+            }
+          }
+      });
+    } else {
+      var french_number_re = /^(\d+)(?:\,(\d{1,2}))?$/;
+      if(value.match(french_number_re)){
+        var nbs = value.match(french_number_re);
+        console.log(nbs);
+        $input.val(nbs[1]+'.'+nbs[2]);
+      } else {
+        $input.val(value);
+      }
+    }
+  }
+  $('#form_price').blur(function(){
+    var value = $(this).val();
+    if(value != ''){
+      check_number_valid($(this), value);
+    } else {
+      $('.add-price').click();
+    }
   });
 </script>
 {% endblock %}

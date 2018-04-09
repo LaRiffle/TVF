@@ -83,7 +83,7 @@ class ClientController extends Controller
           'client' => $client
         ));
     }
-    
+
     public function presentAction($slug){
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository($this->entityNameSpace);
@@ -135,7 +135,7 @@ class ClientController extends Controller
         $client = $repository->findOneBy(array('user' => $user));
 
         $repository = $em->getRepository('TVFRecordBundle:Vinyl');
-        $vinyls = $repository->findBy(array('client' => $client), array('id' => 'desc'));
+        $vinyls = $repository->getVinylsFromClient($client->getId());
 
         $imagehandler = $this->container->get('tvf_store.imagehandler');
         foreach ($vinyls as $vinyl) {
@@ -187,12 +187,12 @@ class ClientController extends Controller
             $filename = $selection->getImage();
             $path_small_image = $imagehandler->get_image_in_quality($filename, 'sm');
             $selection->small_image = $path_small_image;
+            $selection->is_owner = true;
             $client_selections[] = $selection;
           }
         }
         return $this->render($this->entityNameSpace.':selection.html.twig', array(
-          'selections' => $client_selections,
-          'is_owner' => true
+          'selections' => $client_selections
         ));
     }
 

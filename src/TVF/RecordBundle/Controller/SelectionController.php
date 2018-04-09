@@ -93,11 +93,13 @@ class  SelectionController extends Controller
         ->add('vinyls', EntityType::class, array(
                 'class'        => 'TVFRecordBundle:Vinyl',
                 'query_builder' => function (\Doctrine\ORM\EntityRepository $er) use ( $client ){
-                    return $er->createQueryBuilder('u')
-                        ->innerJoin('u.client', 'c')
-                        ->where('c.id = :client_id')
+                    return $er->createQueryBuilder('e')
+                        ->innerJoin('e.category', 'c')
+                        ->innerJoin('e.client', 'r')
+                        ->where("c.slug = 'vinyle'")
+                        ->andWhere("r.id = :client_id")
                         ->setParameter('client_id', $client->getId())
-                        ->orderBy('u.id', 'DESC');
+                        ->orderBy('e.id', 'DESC');
                 },
                 'choice_label' => 'name',
                 'multiple'     => true,

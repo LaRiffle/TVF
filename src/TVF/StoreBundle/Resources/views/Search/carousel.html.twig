@@ -1,0 +1,65 @@
+<div id="carousel" class="carousel slide" data-ride="carousel" style="margin-bottom: 20px;">
+  {% if url|length > 1 %}
+  <ol class="carousel-indicators">
+    <li data-target="#carousel" data-slide-to="0" class="active"></li>
+    <li data-target="#carousel" data-slide-to="1"></li>
+    <li data-target="#carousel" data-slide-to="2"></li>
+  </ol>
+  {% endif %}
+  <div class="carousel-inner" role="listbox">
+    {% for img in url %}
+      <div class="carousel-item {% if loop.first %}active{% endif %}">
+        <img class="d-block img-fluid" src="{{ asset('uploads/img/' ~ img) }}">
+      </div>
+    {% endfor %}
+  </div>
+  {% if url|length > 1 %}
+  <a class="carousel-control-prev" href="#carousel" role="button" data-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="sr-only">Previous</span>
+  </a>
+  <a class="carousel-control-next" href="#carousel" role="button" data-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="sr-only">Next</span>
+  </a>
+  {% endif %}
+</div>
+{% if url == '' or url|length >= 3 %}
+<div class="container carousel-icons">
+  <div class="row">
+    {% if url == '' %}
+    <div class="col">
+      <div class="img-thumbnail">
+        <span data-target="#carousel" data-slide-to="0">
+          <img src="{{ asset('bundles/TVF/img/robe1.jpg') }}" alt="" style="width:100%;">
+        </span>
+      </div>
+    </div>
+    <div class="col">
+      <div class="img-thumbnail">
+        <span data-target="#carousel" data-slide-to="1">
+          <img src="{{ asset('bundles/TVF/img/robe2.jpg') }}" alt="" style="width:100%;">
+        </span>
+      </div>
+    </div>
+    <div class="col">
+      <div class="img-thumbnail">
+        <span data-target="#carousel" data-slide-to="2">
+          <img src="{{ asset('bundles/TVF/img/robe3.jpg') }}" alt="" style="width:100%;">
+        </span>
+      </div>
+    </div>
+    {% else %}
+    {% for img in url %}
+      <div class="col">
+        <div class="img-thumbnail">
+          <span data-target="#carousel" data-slide-to="{{ loop.index0 }}">
+            <img src="{{ asset('uploads/img/' ~ img) }}" style="width:100%;">
+          </span>
+        </div>
+      </div>
+    {% endfor %}
+    {% endif %}
+  </div>
+</div>
+{% endif %}

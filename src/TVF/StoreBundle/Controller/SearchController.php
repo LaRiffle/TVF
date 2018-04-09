@@ -87,17 +87,21 @@ class SearchController extends Controller
           }
         }
         $user = $this->getUser();
-        $repository = $em->getRepository('TVFStoreBundle:VinylUser');
-        $vinyluser = $repository->findOneBy(array('vinyl' => $vinyl, 'user' => $user));
-        if($vinyluser === null) {
-          $vinyluser = new VinylUser();
-          $vinyluser->setUser($user);
-          $vinyluser->setVinyl($vinyl);
+        if($user != null){
+          $repository = $em->getRepository('TVFStoreBundle:VinylUser');
+          $vinyluser = $repository->findOneBy(array('vinyl' => $vinyl, 'user' => $user));
+          if($vinyluser === null) {
+            $vinyluser = new VinylUser();
+            $vinyluser->setUser($user);
+            $vinyluser->setVinyl($vinyl);
+          }
+          $vinyluser->setNbViews($vinyluser->getNbViews() + 1);
+          $em->persist($vinyluser);
+          $em->flush();
+          $vinyl->love = $vinyluser->getLover();
+        } else {
+            $vinyl->love = false;
         }
-        $vinyluser->setNbViews($vinyluser->getNbViews() + 1);
-        $em->persist($vinyluser);
-        $em->flush();
-        $vinyl->love = $vinyluser->getLover();
 
         $is_owner = false;
         if ($this->get('security.authorization_checker')->isGranted('ROLE_RECORD')) {
