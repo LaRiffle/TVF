@@ -38,7 +38,7 @@
         </div>
         <hr />
         {% set form_image_icon = "TVFRecordBundle:Vinyl:form_image_icon.html.twig" %}
-        <div style="margin-top: 10px; {% if id == 0 %}display: none;{% endif %}">
+        <div id="existing_img" style="margin-top: 10px; {% if id == 0 %}display: none;{% endif %}">
           <h5 style="margin-bottom: -0.5rem;">{{ form_label(form.imgs, "Illustrations") }}</h5>
           {{ form_errors(form.imgs) }}
           {% for img in form.imgs %}
@@ -80,7 +80,7 @@
           <div>
             {{ form_errors(form.onsold) }}
             <a href="#" class="btn btn-default btn-tvf internal-link keep add-price" data-target="price">
-              En vente
+              Mettre en vente
             </a>
             <div class="hide">
               {{ form_widget(form.onsold) }}
@@ -192,6 +192,27 @@
 <script src="{{ asset('bundles/TVF/js/magicsuggest.js') }}"></script>
 {% set type_select = "TVFRecordBundle:Scripts:type_select.html.twig" %}
 {{ include(type_select) }}
+<script>
+// Sanity checks on Submit
+$('#form_save').on('click', function(e){
+  check_form(e);
+});
+$('form[name=form]').submit(function(e){
+  check_form(e);
+});
+function check_form(e){
+  if($('#image-fields-list .img-thumbnail').length == 0
+  && $('#existing_img .img-thumbnail').length == 0 ){
+    e.preventDefault();
+    bootbox.alert('Veuillez spécifier une illustration.');
+  } else
+  if($('#artist_suggest .ms-sel-ctn .ms-sel-item').length == 0){
+    e.preventDefault();
+    bootbox.alert('Veuillez spécifier au moins un artiste.');
+  }
+}
+
+</script>
 <script>
 /* handle the search of the artist and meta data with Spotify API */
 $('#form_name').attr('autocomplete', 'off');
@@ -530,7 +551,17 @@ $(document).mouseup(function(e){
               $('#artist_suggest .ms-sel-item:last .ms-close-btn').click();
             }, 1000);
           } else {
-            console.log('Artist chosen.');
+            if(artist){
+              console.log('Artist chosen.');
+              register_artist(artist.id);
+            } else {
+              console.log('remove artist')
+              proceed_to_next_artist();
+              $('#artist_suggest .ms-sel-item:last').fadeOut('slow');
+              setTimeout(function(){
+                $('#artist_suggest .ms-sel-item:last .ms-close-btn').click();
+              }, 1000);
+            }
           }
         }
     });
@@ -541,7 +572,7 @@ $(document).mouseup(function(e){
     });
     $('body').on('click', '#artists_choice .register-artist', function(e){
       e.preventDefault();
-      register_artist(this.id);
+      $('button[data-bb-handler=confirm]').click();
     });
   }
   function proceed_to_next_artist(){
@@ -554,7 +585,6 @@ $(document).mouseup(function(e){
     }
   }
   function register_artist(spotify_id){
-    $('button[data-bb-handler=confirm]').click();
     $.ajax({
         url: '{{ path('tvf_record_artist_search') }}/' + spotify_id,
         success: function(response) {
@@ -711,9 +741,12 @@ $(document).mouseup(function(e){
   $('.add-price').on('click', function(e){
     onsold = !onsold;
     if(onsold){
+      $(this).html('En vente');
       $(this).addClass('link-selected');
       $('#price').css('display', 'flex');
+      $('#form_price').focus();
     } else {
+      $(this).html('Mettre en vente');
       $(this).removeClass('link-selected');
       $('#price').css('display', 'none');
     }
@@ -738,7 +771,7 @@ $(document).mouseup(function(e){
       if(value.match(french_number_re)){
         var nbs = value.match(french_number_re);
         console.log(nbs);
-        $input.val(nbs[1]+'.'+nbs[2]);
+        $input.val(nbs[1]+ (nbs[2] ? '.'+nbs[2] : '')); // for integers
       } else {
         $input.val(value);
       }

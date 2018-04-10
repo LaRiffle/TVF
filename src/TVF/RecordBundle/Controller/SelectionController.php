@@ -89,7 +89,7 @@ class  SelectionController extends Controller
         $form = $this->get('form.factory')->createBuilder(FormType::class, $selection)
         ->add('title', TextType::class)
         ->add('description', TextareaType::class)
-        ->add('image', FileType::class, array('label' => 'Image', 'required' => False))
+        ->add('image', FileType::class, array('label' => 'Image', 'required' => ($id == 0)))
         ->add('vinyls', EntityType::class, array(
                 'class'        => 'TVFRecordBundle:Vinyl',
                 'query_builder' => function (\Doctrine\ORM\EntityRepository $er) use ( $client ){

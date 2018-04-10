@@ -234,8 +234,7 @@
     color: #d9534f;
     font-size: 10px;
     position: absolute;
-    top: -17px;
-    right: 0;
+    right: 32px;
 }
 .ms-ctn.input-lg .ms-trigger .ms-trigger-ico {
     margin-top: 17px
