@@ -29,9 +29,9 @@
           {{ render(controller('TVFStoreBundle:Customer:nbProducts')) }}
         </span>
       </div>
-      <div class="embedded-cart hide">
+      <div class="visible-from-sm"><div class="embedded-cart hide">
         {{ render(controller('TVFStoreBundle:Customer:cart', {'embedded': 1})) }}
-      </div>
+      </div></div>
       <div id="nav_toggle_btn">
         <button class="navbar-toggler navbar-toggler-right" style="z-index: 1;" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
