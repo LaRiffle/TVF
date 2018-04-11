@@ -1,6 +1,9 @@
 <div id="lateral_mobile" class="col-lg-4 col-xl-3">
   <ul class="list-group">
     <li class="list-group-item collapse-toggle justify-content-between">
+      {% if record is defined %}
+        <h4><a href="{{ path('tvf_record_client_present', {'slug': record.slug}) }}"><b>{{ record.name }}</b></a></h4>
+      {% endif %}
       <h5 style="margin-bottom: 0px; width: 100%;">
         <div style="float: right; margin-top: 2px;">
           <a href="#" title="Fermer le volet" class="close-lateral visible-to-md">

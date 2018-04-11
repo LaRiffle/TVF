@@ -9,6 +9,17 @@
     <div class="row">
       <div class="col-sm-6 offset-sm-3">
         <div class="card" style="width: 100%;">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <h4 class="card-title center" style="font-weight: bold; width:100%; margin-bottom: 0.1rem;">
+                {{ client.name }}
+              </h4>
+            </li>
+            <li class="list-group-item">
+              <span><a href="{{ path('tvf_store_explore_record', {'slug': client.slug}) }}">Découvrir la collection</a>
+                <!-- · <a href="#">Voir les sélections</a></span>-->
+            </li>
+          </ul>
           {% if client.image is not empty %}
             <img class="card-img-top" src="{{ asset('uploads/img/' ~ client.image) }}" alt="Image indisponible" style="width: 100%;">
           {% endif %}
@@ -18,9 +29,9 @@
               <em>Supprimer les vinyles etc avant de supprimer le compte</em>
             {% endif %}
             <h4 class="card-title center" style="font-weight: bold;">{{ client.name }}</h4>
-            <h6 class="card-subtitle mb-2 text-muted">Depuis le {{ client.joindate|date("d/m/Y") }}</h6>
             <p class="card-text">{{ client.description|nl2br }}</p>
             <p class="card-text bold">{{ client.address|nl2br }}</p>
+            <h6 class="card-subtitle mb-2 text-muted">Inscrit depuis le {{ client.joindate|date("d/m/Y") }}</h6>
           </div>
         </div>
       </div>

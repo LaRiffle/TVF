@@ -65,6 +65,9 @@ tvf_store_loved:
 tvf_store_explore:
     path:     /selection/{selection}/{category}
     defaults: { _controller: TVFStoreBundle:Search:selection, selection:"_", category:"_" }
+tvf_store_explore_record:
+    path:     /disquaire/collection/{slug}
+    defaults: { _controller: TVFStoreBundle:Search:recordCollection}
 tvf_store_vinyl:
     path:     /vinyl/
     defaults: { _controller: TVFStoreBundle:Search:indexVinyls}

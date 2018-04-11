@@ -54,6 +54,18 @@ class SearchController extends Controller
       $data = ['results' => $data];
       return new JsonResponse($data);
     }
+    public function recordCollectionAction(Request $request, $slug){
+      $em = $this->getDoctrine()->getManager();
+      $repository = $em->getRepository('TVFRecordBundle:Client');
+      $client = $repository->findOneBy(array('slug' => $slug));
+      if($client){
+        //$repository = $em->getRepository('TVFRecordBundle:Vinyl');
+        //$vinyls = $repository->findBy(array('client' => $client))
+        return $this->selectionAction($request, '_', '_', $client);
+      } else {
+        return $this->redirect($this->generateUrl('tvf_store_homepage'));
+      }
+    }
     public function indexVinylsAction()
     {
       /*
@@ -117,11 +129,21 @@ class SearchController extends Controller
         ));
     }
 
-    public function selectionAction(Request $request, $selection = '_', $category = '_')
+    public function selectionAction(Request $request, $selection = '_', $category = '_', $client = NULL)
     {
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository('TVFRecordBundle:Vinyl');
         $vinyls = $repository->getVinyls();
+        if($client){
+          $client_id = $client->getId();
+          $client_vinyls = [];
+          foreach ($vinyls as $vinyl) {
+            if($vinyl->getClient()->getId() == $client_id){
+              $client_vinyls[] = $vinyl;
+            }
+          }
+          $vinyls = $client_vinyls;
+        }
         $imagehandler = $this->container->get('tvf_store.imagehandler');
         $vinyls = $imagehandler->convert_vinyl_images($vinyls, 'xs');
 
@@ -162,6 +184,9 @@ class SearchController extends Controller
         );
         if($request->query->get('panier') != null){
           $variables['show_cart'] = true;
+        }
+        if($client){
+          $variables['record'] = $client;
         }
         return $this->render($this->entityNameSpace.':selection.html.twig', $variables);
     }

@@ -12,7 +12,7 @@ tvf_record_client_token:
   path:     /record/client/get/token
   defaults: { _controller: TVFRecordBundle:Client:token }
 tvf_record_my_account:
-  path:     /record/mon-compte
+  path:     /mon-compte
   defaults: { _controller: TVFRecordBundle:Client:myAccount, id:0 }
 tvf_record_client_present:
   path:     /disquaire/{slug}

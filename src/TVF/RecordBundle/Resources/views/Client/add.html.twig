@@ -67,6 +67,23 @@
 {% endblock %}
 {% block script %}
 <script>
+  var e = document.getElementById('form_password_first'); e.classList.add("form-control"); e.placeholder = 'Mot de passe';
+  e = document.getElementById('form_password_second'); e.classList.add("form-control"); e.placeholder = 'Confirmez le mot de passe';
+  $('label[for=form_password_second]').css('margin-top', '10px')
+
+  $('#form_password_first').blur(check_password_match);
+  $('#form_password_second').blur(check_password_match);
+  $('#form_password_second').keyup(check_password_match);
+
+  function check_password_match(){
+    if($('#form_password_first').val() != $('#form_password_second').val()){
+      $('#form_password_second').css('border', '2px #BA0020 solid');
+    } else {
+      $('#form_password_second').css('border', '');
+    }
+  }
+</script>
+<script>
   {% if id is not same as(0) %}
   $('#form_email').prop('readonly', true);
   {% else %}

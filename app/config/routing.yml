@@ -23,3 +23,8 @@ login_check:
     path: /login_check
 logout:
     path: /logout
+
+tvf_redirect_user:
+    path: /redirect
+    defaults:
+        _controller: TVFStoreBundle:Home:redirect

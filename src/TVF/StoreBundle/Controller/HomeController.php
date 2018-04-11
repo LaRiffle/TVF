@@ -14,6 +14,13 @@ class HomeController extends Controller
     */
     public $entityNameSpace = 'TVFStoreBundle:Home';
 
+    public function redirectAction(){
+      if($this->get('security.authorization_checker')->isGranted('ROLE_RECORD')) {
+        return $this->redirect($this->generateUrl('tvf_record_my_account'));
+      }
+      return $this->redirect($this->generateUrl('tvf_store_homepage'));
+    }
+
     public function workAction()
     {
         return $this->render($this->entityNameSpace.':work.html.twig');
@@ -79,10 +86,14 @@ class HomeController extends Controller
         $imagehandler = $this->container->get('tvf_store.imagehandler');
         $selections = $imagehandler->convert_entity_image($selections, 'sm');
         $is_record = $this->get('security.authorization_checker')->isGranted('ROLE_RECORD');
+        $client_id = -1;
         if ($is_record) {
           $user = $this->getUser();
           $repository = $em->getRepository('TVFRecordBundle:Client');
-          $client_id = $repository->findOneBy(array('user' => $user))->getId();
+          $client = $repository->findOneBy(array('user' => $user));
+          if($client){
+              $client_id = $repository->findOneBy(array('user' => $user))->getId();
+          }
         }
         foreach ($selections as $selection) {
           $is_owner = false;
@@ -145,10 +156,14 @@ class HomeController extends Controller
         $imagehandler = $this->container->get('tvf_store.imagehandler');
         $selections = $imagehandler->convert_entity_image($selections, 'sm');
         $is_record = $this->get('security.authorization_checker')->isGranted('ROLE_RECORD');
+        $client_id = -1;
         if ($is_record) {
           $user = $this->getUser();
           $repository = $em->getRepository('TVFRecordBundle:Client');
-          $client_id = $repository->findOneBy(array('user' => $user))->getId();
+          $client = $repository->findOneBy(array('user' => $user));
+          if($client){
+              $client_id = $repository->findOneBy(array('user' => $user))->getId();
+          }
         }
         foreach ($selections as $selection) {
           $is_owner = false;

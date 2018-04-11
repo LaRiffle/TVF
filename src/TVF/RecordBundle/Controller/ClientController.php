@@ -17,6 +17,7 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 
 use SpotifyWebAPI\Session;
 
@@ -237,9 +238,14 @@ class ClientController extends Controller
           'required' => false
         ))
         ->add('email', EmailType::class)
-        ->add('password', PasswordType::class, array(
+        ->add('password', RepeatedType::class, array(
+            'type' => PasswordType::class,
             'mapped' => false,
-            'required' => ($id == 0) ? true : false
+            'required' => ($id == 0) ? true : false,
+            'invalid_message' => 'Les valeurs sont différentes',
+            'options' => array('attr' => array('class' => 'password-field')),
+            'first_options'  => array('label' => 'Mot de passe'),
+            'second_options' => array('label' => 'Confirmez le mot de passe'),
         ))
         ->add('save',	SubmitType::class)
         ->getForm();
@@ -292,8 +298,8 @@ class ClientController extends Controller
                 $user->setUsername($client->getEmail());
               }
               $data = $request->get('form');
-              if($data['password'] != ''){
-                  $user->setPassword($data['password']);
+              if($data['password']['first'] != ''){
+                  $user->setPassword($data['password']['first']);
               }
               $client->setUser($user);
               $em->persist($client);
