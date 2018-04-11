@@ -501,35 +501,39 @@ $(document).mouseup(function(e){
       id: 'artists_choice',
       class: 'list-group'
     });
+    var first_artist_id;
     if(artists.length == 0){
       var see_more = $('<li/>').addClass('list-group-item');
       see_more.html("Nous n'avons pas trouvé de résultats. :/ <br />Essayez peut-être avec une autre orthographe.");
       content.append(see_more);
-    }
-    for(var i=0; i<artists.length; i++){
-      if(i == 1){
-        var see_more = $('<li/>').addClass('list-group-item');
-        see_more.html('<a href="#" id="see_more_artists">+ Voir plus de résultats</a>');
-        content.append(see_more);
+    } else {
+      first_artist_id = artists[0].id;
+      console.log('> ' + first_artist_id);
+      for(var i=0; i<artists.length; i++){
+        if(i == 1){
+          var see_more = $('<li/>').addClass('list-group-item');
+          see_more.html('<a href="#" id="see_more_artists">+ Voir plus de résultats</a>');
+          content.append(see_more);
+        }
+        var artist = artists[i];
+        var url = '...';
+        if(artist.images.length > 0){
+          url = artist.images[0].url;
+        }
+        var artist_node = $('<li/>').addClass('list-group-item');
+        if(i > 0){
+          artist_node.addClass('hide');
+        }
+        $(`<div class="media">
+          <img alt="Pas d'aperçu" src="`+ url +`" class="d-flex mr-3">
+          <div class="media-body">
+            <h5 class="mt-0">`+ artist.name +`</h5>
+            <p class="secondary">`+ artist.genres.join(' · ') +`</p>
+            <a href="#" class="btn btn-primary register-artist" id="`+ artist.id +`">Sélectionner</a>
+          </div>
+        </div>`).appendTo(artist_node);
+        content.append(artist_node);
       }
-      var artist = artists[i];
-      var url = '...';
-      if(artist.images.length > 0){
-        url = artist.images[0].url;
-      }
-      var artist_node = $('<li/>').addClass('list-group-item');
-      if(i > 0){
-        artist_node.addClass('hide');
-      }
-      $(`<div class="media">
-        <img alt="Pas d'aperçu" src="`+ url +`" class="d-flex mr-3">
-        <div class="media-body">
-          <h5 class="mt-0">`+ artist.name +`</h5>
-          <p class="secondary">`+ artist.genres.join(' · ') +`</p>
-          <a href="#" class="btn btn-primary register-artist" id="`+ artist.id +`">Sélectionner</a>
-        </div>
-      </div>`).appendTo(artist_node);
-      content.append(artist_node);
     }
     bootbox.confirm({
         title: "À quel artiste pensez-vous ?",
@@ -551,9 +555,9 @@ $(document).mouseup(function(e){
               $('#artist_suggest .ms-sel-item:last .ms-close-btn').click();
             }, 1000);
           } else {
-            if(artist){
+            if(first_artist_id){
               console.log('Artist chosen.');
-              register_artist(artist.id);
+              register_artist(first_artist_id);
             } else {
               console.log('remove artist')
               proceed_to_next_artist();
@@ -572,7 +576,11 @@ $(document).mouseup(function(e){
     });
     $('body').on('click', '#artists_choice .register-artist', function(e){
       e.preventDefault();
-      $('button[data-bb-handler=confirm]').click();
+      var artist_id = $(this).attr('id');
+      console.log('>> ' + first_artist_id);
+      bootbox.hideAll();
+      register_artist(artist_id);
+      //$('button[data-bb-handler=confirm]').click();
     });
   }
   function proceed_to_next_artist(){
