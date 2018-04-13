@@ -10,18 +10,24 @@ namespace TVF\RecordBundle\Repository;
  */
 class VinylRepository extends \Doctrine\ORM\EntityRepository
 {
-  public function search($query)
+  public function search($query, $client_id = null)
   {
-    return $this->createQueryBuilder('e')
+    $qb = $this->createQueryBuilder('e')
           ->innerJoin('e.artists', 'a')
           ->innerJoin('e.category', 'c')
           ->where("c.slug = 'vinyle'")
           ->andWhere('a.name LIKE :query_artist OR e.name LIKE :query')
           ->setParameter('query_artist', '%'.$query.'%')
           ->setParameter('query', '%'.$query.'%')
-          ->orderBy('e.id', 'DESC')
-          ->getQuery()
-          ->getResult()
+    ;
+    if($client_id){
+      $qb = $qb->innerJoin('e.client', 'r')
+               ->andWhere("r.id = 6")
+      ;
+    }
+    return $qb->orderBy('e.id', 'DESC')
+           ->getQuery()
+           ->getResult()
     ;
   }
   public function getVinyls($limit=(1024*1024*1024)){

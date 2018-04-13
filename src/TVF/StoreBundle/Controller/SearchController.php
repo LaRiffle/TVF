@@ -24,6 +24,7 @@ class SearchController extends Controller
       }
       $imagehandler = $this->container->get('tvf_store.imagehandler');
       $query = $request->request->get('request');
+      $client_id = $request->request->get('client_id');
 
       $user = $this->getUser();
       $em = $this->getDoctrine()->getManager();
@@ -33,7 +34,7 @@ class SearchController extends Controller
         throw new AccessDeniedException('Accès limité.');
       }
       $repository = $em->getRepository('TVFRecordBundle:Vinyl');
-      $vinyls = $repository->search($query);
+      $vinyls = $repository->search($query, $client_id);
       $data = [];
       foreach ($vinyls as $vinyl) {
         if($vinyl->getClient()->getId() == $client->getId()){

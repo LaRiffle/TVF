@@ -6,6 +6,7 @@ use TVF\RecordBundle\Entity\Selection;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
@@ -90,6 +91,10 @@ class  SelectionController extends Controller
         ->add('title', TextType::class)
         ->add('description', TextareaType::class)
         ->add('image', FileType::class, array('label' => 'Image', 'required' => ($id == 0)))
+        ->add('crop_image', TextType::class, array(
+          'mapped' => false,
+          'required' => false,
+        ))
         ->add('vinyls', EntityType::class, array(
                 'class'        => 'TVFRecordBundle:Vinyl',
                 'query_builder' => function (\Doctrine\ORM\EntityRepository $er) use ( $client ){
@@ -117,11 +122,22 @@ class  SelectionController extends Controller
               // Generate a unique name for the file before saving it
               $fileName = md5(uniqid()).'.'.$file->guessExtension();
 
-              // Move the file to the directory where images are stored
-              $file->move(
-                  $this->getParameter('img_dir'),
-                  $fileName
-              );
+              // test if crop image hasn't been saved, if yes it is prioritary
+              $data = $request->get('form');
+              if($data['crop_image'] != ''){
+                  $fileName = $data['crop_image'];
+                  rename(
+                    $this->getParameter('img_dir').'_tmp/'.$data['crop_image'],
+                    $this->getParameter('img_dir').'/'.$fileName
+                  );
+              } else {
+                // Else move the file to the directory where images are stored
+                $file->move(
+                    $this->getParameter('img_dir'),
+                    $fileName
+                );
+              }
+
               // Check orientation
               $path = $this->getParameter('img_dir').'/'.$fileName;
               $imagehandler = $this->container->get('tvf_store.imagehandler');
@@ -171,5 +187,26 @@ class  SelectionController extends Controller
         $em->remove($selection);
         $em->flush();
         return $this->redirect($this->generateUrl('tvf_record_selection'));
+    }
+    public function uploadAction(Request $request){
+      $base64img = $request->request->get('image');
+      $title = $request->request->get('title');
+      $extension = 'jpg';
+      if(strpos($base64img, 'data:image/jpeg;base64') !== FALSE){
+        $base64img = str_replace('data:image/jpeg;base64,', '', $base64img);
+      } elseif(strpos($base64img, 'data:image/png;base64') !== FALSE){
+        $base64img = str_replace('data:image/png;base64,', '', $base64img);
+        $extension = 'png';
+      } else {
+        return new JsonResponse([
+          'error' => $base64img
+        ]);
+      }
+      $data = base64_decode($base64img);
+      $filename = $this->getParameter('img_dir').'_tmp/'.$title.'.'.$extension;
+      file_put_contents($filename, $data);
+      return new JsonResponse([
+        'uploaded' => $title.'.'.$extension
+      ]);
     }
   }

@@ -61,6 +61,10 @@ tvf_record_selection_show:
 tvf_record_selection_remove:
   path:     /record/selection/remove/{id}
   defaults: { _controller: TVFRecordBundle:Selection:remove}
+tvf_record_selection_upload:
+  path:     /record/selection/upload
+  defaults: { _controller: TVFRecordBundle:Selection:upload}
+
 tvf_record_vinyl_attributes:
   path:     /record/attributes/
   defaults: { _controller: TVFRecordBundle:Attribute:index}

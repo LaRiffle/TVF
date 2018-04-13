@@ -812,6 +812,9 @@ ul.edition-btn li:after {
 .selection-item:hover .selection-description {
   color: white;
 }
+#selection-img-preview {
+  margin-top: 15px;
+}
 
 /* Attribute management */
 .horizontal-scroll {

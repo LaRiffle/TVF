@@ -1,4 +1,7 @@
 {% extends "TVFStoreBundle::layout.html.twig" %}
+{% block head %}
+  <link rel="stylesheet" href="{{ asset('bundles/TVF/css/croppie.css') }}">
+{% endblock %}
 {% block body %}
 <div id="record-page">
 {% set navbar = "TVFRecordBundle:Utils:nav.html.twig" %}
@@ -15,11 +18,28 @@
         {{ include(input_form, {'element': form.title, 'name':"Titre"}) }}
         {{ include(input_form, {'element': form.description, 'name':"Brève description de la sélection"}) }}
         {% if selectionId != 0 and img != '' %}
-        <div style="margin-top: 1rem; font-weight: bold;">Modifier l'image</div>
-        <img src="{{ asset('uploads/img/' ~ img) }}" class="img-thumbnail" width="300">
+        <div style="margin-top: 1rem; font-weight: bold;">Modifier l'illustration</div>
+        {% else %}
+        <div style="margin-top: 1rem; font-weight: bold;">Ajouter une illustration</div>
         {% endif %}
-        {{ include(input_form, {'element': form.image, 'name':"Ajouter une image"}) }}
-        <em>Attention, l'image doit respecter le format portrait</em>
+        <div id="crop_box" class="hide">
+          <div id="selection-img-preview"></div>
+          <p class="center">
+            <a id="save_crop" href="#" class="btn btn-primary">Sauvegarder l'image</a>
+          </p>
+          <div class="hide">
+            {{ include(input_form, {'element': form.crop_image, 'name':"Lien image rognée"}) }}
+          </div>
+        </div>
+        <div id="img_preview" class="{% if selectionId == 0 or img == '' %}hide{% endif %}" style="margin-top: 10px;">
+          <img class="img-thumbnail" src="{% if selectionId != 0 and img != '' %}{{ asset('uploads/img/' ~ img) }}{% endif %}" style="width: 50%; margin-left: 25%;"/>
+          <p class="center">
+            <a id="change_crop" href="#">Modifier l'image</a>
+          </p>
+        </div>
+        <div class="{% if selectionId != 0 and img != '' %}hide{% endif %}">
+          {{ include(input_form, {'element': form.image, 'name':"Ajouter une image"}) }}
+        </div>
         <hr />
         <div style="margin-top: 10px;">
           <h5>Vinyles sélectionnés (<span id="nb_selected">0</span>)</h5>
@@ -132,6 +152,102 @@
 </div>
 {% endblock %}
 {% block script %}
+<script src="{{ asset('bundles/TVF/js/croppie.min.js') }}"></script>
+<script>
+var el = document.getElementById('selection-img-preview');
+var img_crop = new Croppie(el, {
+    viewport: {
+      width: 300,
+      height: 400
+    },
+    boundary: {
+      width: 400,
+      height: 440
+    },
+    enableExif: true
+});
+
+function readFile(input) {
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+
+    reader.onload = function (event) {
+      img_crop.bind({
+        url: event.target.result
+      });
+    };
+
+    reader.readAsDataURL(input.files[0]);
+  } else {
+    console.log('Sorry - you\'re browser doesn\'t support the FileReader API');
+  }
+}
+var crop_status = 'saved';
+$('#form_image').on('change', function() {
+  $(this).hide();
+  $('#img_preview').hide();
+  $('#crop_box').fadeIn();
+  crop_status = 'changed';
+  readFile(this);
+});
+
+function makeid() {
+  var text = "";
+  var possible = "abcdefghijklmnopqrstuvwxyz0123456789";
+  for (var i = 0; i < 28; i++)
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  return 'CROP'+text;
+}
+$('#save_crop').on('click', function(e){
+  e.preventDefault();
+  img_crop.result({
+    type: 'base64'
+  }).then(function (base64) {
+      $.ajax({
+          url: "{{ url('tvf_record_selection_upload') }}",
+          type: "PUT",
+          data: {
+            "title": makeid(),
+            "image": base64
+          },
+          success: function (data) {
+              console.log(data);
+              if(data['uploaded']){
+                $('#form_crop_image').val(data['uploaded']);
+                var width = $('h3').width();
+                img_crop.result({
+                  type: 'html',
+                  size: {width: width/2}
+                }).then(function (elem) {
+                  $('#img_preview').show();
+                  $('#img_preview img').attr('src', base64);
+                  $('#crop_box').hide();
+                  if(crop_status == 'ready_for_submit'){
+                    $('#form_save').click();
+                  }
+                  crop_status = 'saved';
+                });
+              }
+          },
+          fail: function (data) {
+
+          }
+      });
+  });
+});
+$('#change_crop').on('click', function(e){
+  e.preventDefault();
+  $('#form_image').click();
+});
+$('#form_save').on('click', function(e){
+  if(crop_status == 'changed'){
+    e.preventDefault();
+    $(this).html('Chargement...');
+    crop_status = 'ready_for_submit';
+    $('#save_crop').click();
+  }
+});
+</script>
 <script>
 $('body').on('click', '.show-vinyl', function(e){
   e.preventDefault();
@@ -195,7 +311,8 @@ function launch_search(){
       type: "POST",
       dataType: "json",
       data: {
-        request: request
+        request: request,
+        client_id: '{{ client_id }}'
       },
       async: true,
       success: function (data)
@@ -256,7 +373,9 @@ function complete_selected_zone_with_blank(zone_id){
   /* Add the fake icons of the selected vinyls if any */
   // Count number of icons
   var nb_results = $('#'+zone_id+' .mock-input').length;
-  $('#nb_selected').html(nb_results);
+  if(zone_id == 'selected'){
+      $('#nb_selected').html(nb_results);
+  }
   // Remove the fake icons use to complete if any
   $('#'+zone_id+' .template').remove();
 

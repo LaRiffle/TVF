@@ -16,3 +16,4 @@
 !var/SymfonyRequirements.php
 /vendor/
 /web/uploads/img/*
+/web/uploads/img_tmp/*
