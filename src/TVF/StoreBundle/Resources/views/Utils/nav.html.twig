@@ -10,7 +10,9 @@
           <i class="fa fa-heart fa-2x full-heart" aria-hidden="true" style="bottom: 1.5rem;"></i>
         </a><br />
         <span id="nb_love" class="badge badge-danger">
-          {{ render(controller('TVFStoreBundle:Customer:register_or_login')) }}
+          {% if no_controller is not defined %}
+            {{ render(controller('TVFStoreBundle:Customer:register_or_login')) }}
+          {% endif %}
         </span>
       </div>
       {% if is_granted('ROLE_RECORD') %}
@@ -26,11 +28,15 @@
           <i class="fa fa-shopping-basket fa-2x" aria-hidden="true"></i>
         </a><br />
         <span id="nb_products" class="badge badge-danger">
-          {{ render(controller('TVFStoreBundle:Customer:nbProducts')) }}
+          {% if no_controller is not defined %}
+            {{ render(controller('TVFStoreBundle:Customer:nbProducts')) }}
+          {% endif %}
         </span>
       </div>
       <div class="visible-from-sm"><div class="embedded-cart hide">
-        {{ render(controller('TVFStoreBundle:Customer:cart', {'embedded': 1})) }}
+        {% if no_controller is not defined %}
+          {{ render(controller('TVFStoreBundle:Customer:cart', {'embedded': 1})) }}
+        {% endif %}
       </div></div>
       <div id="nav_toggle_btn">
         <button class="navbar-toggler navbar-toggler-right" style="z-index: 1;" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">

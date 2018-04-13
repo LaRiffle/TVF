@@ -1,0 +1,19 @@
+{# app/Resources/TwigBundle/views/Exception/error404.html.twig #}
+{% extends "TVFStoreBundle::layout.html.twig" %}
+{% block body %}
+{% set navbar = "TVFStoreBundle:Utils:nav.html.twig" %}
+{{ include(navbar, {'active': 'none', 'no_controller': true}) }}
+<div class="container">
+  <div class="row">
+    <div class="col-sm-6 offset-sm-3">
+      <h3>
+        <a href="https://www.youtube.com/watch?v=eyk-Sliy8RU" title="Visionner Erreur 404 par L'impératrice" target="_blank">Erreur 404</a>:
+        La page n'a pas été trouvée
+      </h3>
+      <p>Nous ignorons l'origine du problème, mais nos équipes reviendront vers vous très prochainement.</p>
+      <img src="{{ asset('bundles/TVF/img/404.jpg') }}" class="img-thumbnail" style="width: 100%"/>
+      <br />
+    </div>
+  </div>
+</div>
+{% endblock %}
