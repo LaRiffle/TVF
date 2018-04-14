@@ -67,7 +67,7 @@
       }
     }
     $(document).ready(function() {
-        $('.creation-icon img').each(function(){
+        $('.tvf-icon img').each(function(){
             var img = $(this);
             portray(img);
         });
@@ -259,7 +259,8 @@
       var url = '{{ path('tvf_store_add_to_cart') }}/'+overview_id;
       $("#vinyl_overview .vinyl-btn-add-cart").attr('href', url);
 
-      color_overview_from_img(src);
+      var image = $vinyl.find('img').first();
+      color_overview_from_img(image);
       // adapt caret
       $("#vinyl_overview .caret").css('right', 'calc('+(16.67+(after_index - index)*33.33)+'% - 10px)');
 
@@ -269,12 +270,10 @@
       }, 10);
     }
 
-    function color_overview_from_img(sourceImage){
+    function color_overview_from_img(image){
       /* Color the vinyle overview */
       var colorThief = new ColorThief();
-      var image = new Image;
-      image.src = sourceImage;
-      var colors = colorThief.getPalette(image, 3);
+      var colors = colorThief.getPalette(image[0], 3);
       var c = colors[0];
       var rgb = 'rgb('+c[0]+','+c[1]+', '+c[2]+')';
       $('.vinyl-overview').css('color', rgb);

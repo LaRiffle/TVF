@@ -18,29 +18,8 @@
         slidesToScroll: 1
       });
       $('.selection-carousel').css('visibility', 'hidden').show();
-      var min_height = 100000;
       setTimeout(function(){
-        $('.selection-img').each(function(){
-          $(this).css('width', '100%');
-          min_height = Math.min(min_height, $(this).height());
-        });
-        // We can't allow that a too flat image break all the display.
-        min_height = Math.max(min_height, 150);
-        $('.selection-img').each(function(){
-          if($(this).height() < min_height) {
-            var overflow_width = $(this).width()*(min_height/$(this).height() - 1);
-            $(this).css('margin-left', -overflow_width/2+'px');
-            $(this).css('margin-right', -overflow_width/2+'px');
-            $(this).css('max-width', 'none');
-            $(this).css('width', 100*min_height/$(this).height()+'%');
-          }
-        });
-        $('.selection-img').each(function(){
-          var overflow = $(this).height() - min_height;
-          $(this).css('margin-top', -overflow/2+'px');
-          $(this).css('margin-bottom', -overflow/2+'px');
-        });
         $('.selection-carousel').css('display', 'none').css('visibility', 'visible').fadeIn();
-      }, 400);
+      }, 100);
     });
 </script>

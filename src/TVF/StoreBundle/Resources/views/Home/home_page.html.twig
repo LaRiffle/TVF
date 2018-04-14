@@ -20,18 +20,6 @@
 {% set carousel_scripts = "TVFStoreBundle:Selection:index_scripts.html.twig" %}
 {{ include(carousel_scripts) }}
 <script>
-$('.tvf-icon').slice(0,10).each(function(){
-  var img = $(this).find('img');
-  var img_width = img.width();
-  var img_height = img.height();
-  if(img_width < img_height){
-     img.addClass('portrait');
-  } else {
-     img.removeClass('portrait');
-  }
-});
-</script>
-<script>
 /* Pour le chat 1/2 */
 $('#vinyl-explore').on('click', function(e){
   e.preventDefault();

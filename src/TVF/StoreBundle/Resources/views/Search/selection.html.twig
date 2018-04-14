@@ -11,6 +11,13 @@
     <div class="row">
       {{ include(lateral_navbar) }}
       <div id="display_icons" class="col-lg-8 col-xl-9">
+        {% if selection_name != '' %}
+        <div id="selected_selection" class="card">
+          <div class="card-block">
+            <h2 class="card-title">{{ selection_name }}</h2>
+          </div>
+        </div>
+        {% endif %}
         <div class="horizontal-scroller" style="margin: 5px; margin-top: 0px">
           <div class="input-group visible-to-md" style="margin-right: 10px;">
             <input id="search_input_mobile" value="{% if app.request.get('q') is defined %}{{ app.request.get('q') }}{% endif %}" class="form-control" placeholder="Album, artiste..."/>

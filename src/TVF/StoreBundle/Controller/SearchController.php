@@ -166,9 +166,12 @@ class SearchController extends Controller
         }
         $repository = $em->getRepository('TVFRecordBundle:Selection');
         if($selection != '_'){
-          $selection_id = $repository->findOneBy(array('slug' => $selection))->getId();
+          $selection_ = $repository->findOneBy(array('slug' => $selection));
+          $selection_id = $selection_->getId();
+          $selection_name = $selection_->getTitle();
         } else {
           $selection_id = $selection;
+          $selection_name = '';
         }
 
         $selections = $repository->findAll();
@@ -180,6 +183,7 @@ class SearchController extends Controller
           'genders' => $genders,
           'selections' => $selections,
           'selection_id' => $selection_id,
+          'selection_name' => $selection_name,
           'categories' => $categories,
           'category_id' => $category
         );
