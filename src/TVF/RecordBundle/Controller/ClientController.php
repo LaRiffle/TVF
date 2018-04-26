@@ -115,7 +115,7 @@ class ClientController extends Controller
         } else {
           $first_visit = false;
         }
-        return $this->render($this->entityNameSpace.':show.html.twig', array(
+        return $this->render($this->entityNameSpace.':my-account.html.twig', array(
           'client' => $client,
           'first_visit' => $first_visit
         ));

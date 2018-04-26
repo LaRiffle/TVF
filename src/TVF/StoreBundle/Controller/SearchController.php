@@ -44,9 +44,20 @@ class SearchController extends Controller
           } else {
             $path_small_image = '';
           }
+          $artists = '';
+          $first = true;
+          foreach ($vinyl->getArtists() as $artist) {
+            if(!$first){
+              $artists .= ', ';
+            } else {
+              $first = false;
+            }
+            $artists .= $artist->getName();
+          }
           $data[] = [
             'id' => $vinyl->getId(),
             'name' => $vinyl->getName(),
+            'artists'=> $artists,
             'image' => $path_small_image
           ];
         }

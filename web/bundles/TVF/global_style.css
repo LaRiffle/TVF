@@ -33,6 +33,9 @@ textarea {
 .bold {
   font-weight: bold;
 }
+.success {
+  color: #5cb85c;
+}
 a {
   outline: 0;
 }
@@ -651,6 +654,14 @@ a.filter:hover, a.filter:focus  {
   position: absolute;
   z-index:1;
 }
+.result-img {
+  height: 40px;
+  margin: -5px;
+      margin-right: -5px;
+      margin-left: -5px;
+  margin-right: 9px;
+  margin-left: -12px;
+}
 .caption h3 {
   margin: auto;
   margin-top: calc(50% - 32px);
@@ -1035,7 +1046,7 @@ ul.edition-btn li:after {
 #album_results li {
   z-index: 3;
 }
-#album_results li.item-selected {
+#album_results, li.item-selected {
   background-color: #DFEEFA;
 }
 #album_results h5 {

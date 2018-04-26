@@ -1,0 +1,400 @@
+{% extends "TVFStoreBundle::layout.html.twig" %}
+{% block title %}
+  | Mon compte
+{% endblock %}
+
+{% block body %}
+
+<div id="record-page">
+  {% set navbar = "TVFRecordBundle:Utils:nav.html.twig" %}
+  {{ include(navbar, {active: 'profile'}) }}
+  <div class="container" style="margin-top: 5px; margin-bottom: 20px;">
+    <div class="row">
+      <div class="col-sm-8 offset-sm-2">
+        <div class="card" style="width: 100%;">
+          <div class="card-block">
+            <div class="media" style="margin-bottom: 10px;">
+              <div class="media-left">
+                {% if client.image is not empty %}
+                  <img class="media-object" style="width:50px" src="{{ asset('uploads/img/' ~ client.image) }}" alt="Image">
+                {% endif %}
+              </div>
+              <div class="media-body" style="margin-left: 20px; padding-top: 10px;">
+                <div style="float: right;"><a href="#" class="internal-link" data-target="more_info"><i class="fa fa-eye" aria-hidden="true"></i> Voir le détail</a></div>
+                <h4 class="card-title" style="font-weight: bold;">
+                  {{ client.name }}
+                  <a href="{{ path('tvf_record_client_add', {'id': client.id}) }}" class="card-link small">
+                    <i class="fa fa-pencil-square-o"></i>
+                  </a>
+                </h4>
+              </div>
+            </div>
+            <div id="more_info" class="hide">
+              <p class="card-text">{{ client.description|nl2br }}</p>
+              <p class="card-text bold">{{ client.address|nl2br }}</p>
+              <h6 class="card-subtitle mb-2 text-muted">Inscrit depuis le {{ client.joindate|date("d/m/Y") }}</h6>
+              <hr />
+            </div>
+            <h5 class="center bold">Carnet des ventes</h5>
+            <table class="table" style="margin-bottom: 0; padding-top: 0.5rem;">
+              <h5 style="margin-top: 0.5rem;"><label class="required" for="form_name" style="margin-bottom:0">Ajouter une vente en magasin</label></h5>
+              <div class="input-group">
+                <input id="search_request" class="form-control" placeholder="Indiquez le nom de l'album ou l'artiste..." autocomplete="off" type="text">
+                <span class="input-group-btn" style="border: 1px rgba(0,0,0,0.125) solid;">
+                  <a id="search_cancel" class="btn btn-default" type="button" href="#"><i class="fa fa-times"></i></a>
+                </span>
+                <span class="input-group-btn">
+                  <a id="search_launch" class="btn btn-primary" type="button" href="#"><i class="fa fa-search"></i></a>
+                </span>
+              </div>
+              <div id="info_results">
+              </div>
+              <div id="result_template" class="hide">
+                <li class="list-group-item">
+                  <img src="{{ asset('uploads/img/') }}" alt="" class="result-img">
+                  <span class="album">Album</span>&nbsp;·&nbsp;
+                  <span class="secondary artist">Artist</span>
+                </li>
+              </div>
+              <ul id="album_results" class="list-group" style="top: inherit; width: calc(100% - 40px);">
+              </ul>
+              <thead>
+                <tr>
+                  <th scope="col">Album</th>
+                  <th scope="col">Artiste</th>
+                  <th scope="col">Prix</th>
+                  <th scope="col">Date de vente</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Vanille et Fraise</td>
+                  <td>l'Impératrice</td>
+                  <td>18€</td>
+                  <td>il y a 1h</td>
+                </tr>
+                <tr>
+                  <td>Le vestibule</td>
+                  <td>Léo Ferré</td>
+                  <td>20€</td>
+                  <td>il y a 2h,&nbsp; <span class="success">vendu en ligne</span></td>
+                </tr>
+                <tr>
+                  <td>L'aigle noir</td>
+                  <td>Barbara</td>
+                  <td>24€</td>
+                  <td>il y a 4h</td>
+                </tr>
+                <tr>
+                  <td colspan="4"><a href="#">Voir les ventes moins récentes</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card-footer text-muted">
+            <a href="mailto:{{ client.email }}">{{ client.email }}</a>
+            {% if client.website != '' %}
+             · <a href="{{ client.website }}" target="_blank">{{ client.website }}</a>
+            {% endif %}
+            {% if client.phone != '' %}
+             · {{ client.phone }}
+            {% endif %}
+             · <a href="{{ path('tvf_record_client_add', {'id': client.id}) }}" class="card-link">Modifier le profil</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6 hide">
+        <div class="card" style="width: 100%;">
+          <div class="card-block">
+            <h4 class="card-title" style="font-weight: bold;">Informations d'usage</h4>
+            <h6 class="card-subtitle mb-2 text-muted">Aperçu des ventes et des activités en ligne</h6>
+            <hr />
+            <h5>Ventes</h5>
+            <div class="card">
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item"><a href="#">+ Ajouter une vente en magasin</a></li>
+                <li class="list-group-item">Vanille et Fraise, &nbsp;<b>l'Impératrice</b>,&nbsp; <span class="date">il y a 1 heure</span>,&nbsp; <span class="success">vendu en ligne</span></li>
+                <li class="list-group-item">Le vestibule, &nbsp;<b> Léo Ferré</b>,&nbsp; <span class="date">il y a 2 heures</li>
+                <li class="list-group-item"><a href="#">Voir les ventes moins récentes</a></li>
+              </ul>
+            </div>
+            <hr />
+            <h5>Activités</h5>
+            <div class="card">
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">13 personnes ont consulté vos vinyles en ligne. &nbsp;<a href="#">Voir le détail</a></li>
+                <li class="list-group-item">L'aigle noir, &nbsp;<b>Barbara</b> &nbsp; va probablement être acheté.</li>
+                <li class="list-group-item"><a href="#">Voir les activités moins récentes</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="card-footer text-muted">
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block script %}
+<script>
+
+function display_result(result){
+  var icon = $($('#result_template').html());
+  icon.find('.album').html(result.name);
+  icon.find('.artist').html(result.artists);
+  var img = icon.find('img');
+  img.attr('src', img.attr('src')+result.image);
+  console.log(icon);
+  console.log(result.name);
+  $('#album_results').append(icon);
+}
+function end_display_result(){
+}
+function clear_results(){
+  $('#album_results').html('');
+}
+var loading_message = '<i class="fa fa-circle-o-notch fa-spin fa-fw"></i> Chargement...'
+function launch_search(){
+  $('#info_results').html(loading_message);
+  var request = $('#search_request').val();
+  console.log('Search requested : "'+request+'"');
+  $.ajax({
+      url: "{{ path('tvf_store_search') }}",
+      type: "POST",
+      dataType: "json",
+      data: {
+        request: request,
+        client_id: '{{ client.id }}'
+      },
+      async: true,
+      success: function (data)
+      {
+          console.log('Response found');
+          var results = data.results;
+          if(results.length == 0){
+            $('#info_results').html('Pas de résultat :/');
+          } else {
+            $('#info_results').html('');
+          }
+          console.log(data.results);
+          clear_results();
+          for(var i = 0; i < results.length; i++){
+            var result = results[i];
+            console.log('print')
+            display_result(result);
+          }
+          end_display_result();
+      }
+  });
+}
+$('#search_launch').on('click', function(e){
+  e.preventDefault();
+  launch_search();
+});
+/* Delay the search to activate search only when user has stopped typing */
+var last_key_up = -1;
+var delay = 600; // ms
+var dropdown = {
+  active: false,
+  _user_value: '',
+  select: function(){
+    var item;
+    if(dropdown.active){
+      var item = dropdown._get_item();
+      item.click();
+    }
+  },
+  movedown: function(){
+    if(!dropdown.active){
+      dropdown.active = true;
+      dropdown._user_value = $(dropdown._input_id).val();
+      dropdown._set_item(0);
+    } else {
+      var item = dropdown._next_item();
+      if(item === null){
+        dropdown.clear();
+        $(dropdown._input_id).val(dropdown._user_value);
+      } else {
+        dropdown._activate_item(item);
+      }
+    }
+  },
+  moveup: function(){
+    if(!dropdown.active){
+      dropdown.active = true;
+      n_item = $(dropdown._id + ' li').length;
+      dropdown._set_item(n_item - 1);
+    } else {
+      var item = dropdown._previous_item();
+      if(item === null){
+        dropdown.clear();
+        $(dropdown._input_id).val(dropdown._user_value);
+      } else {
+        dropdown._activate_item(item);
+      }
+    }
+  },
+  _id: '#album_results',
+  _input_id: '#search_request',
+  _activate_item: function(item){
+    $(dropdown._id + ' li').removeClass('item-selected');
+    item.addClass('item-selected');
+    $(dropdown._input_id).val(item.find('.album').html());
+  },
+  _set_item: function(index){
+    var item = $(dropdown._id + ' li:eq('+index+')');
+    dropdown._activate_item(item);
+    return item;
+  },
+  _get_item: function(){
+    var item = $(dropdown._id + ' li.item-selected').first();
+    if(item.length > 0){
+      return item;
+    } else {
+      return $(dropdown._id + ' li').first();
+    }
+  },
+  _next_item: function(){
+    var item = dropdown._get_item();
+    var next_item = item.next();
+    return (next_item.length > 0) ? next_item : null;
+  },
+  _previous_item: function(){
+    var item = dropdown._get_item();
+    var previous_item = item.prev();
+    return (previous_item.length > 0) ? previous_item : null;
+  },
+  clear: function(){
+    dropdown.active = false;
+    $(dropdown._id + ' li').removeClass('item-selected');
+  }
+}
+$(dropdown._id).mousemove(function(){
+  dropdown.clear();
+});
+$('#search_request').keypress(function(e){
+  var KEYCODES = {
+      BACKSPACE: 8,
+      TAB: 9,
+      ENTER: 13,
+      CTRL: 17,
+      ESC: 27,
+      SPACE: 32,
+      UPARROW: 38,
+      DOWNARROW: 40,
+      COMMA: 188
+  };
+  switch(e.keyCode) {
+    case KEYCODES.ENTER:
+        e.preventDefault();
+        console.log('BLOCK SELECTION');
+        dropdown.select();
+        /*
+        e.preventDefault();
+        last_key_up = new Date() + delay + 50; // kill the setimouts if any
+        launch_search();
+        */
+        break;
+    case KEYCODES.DOWNARROW:
+        e.preventDefault();
+        dropdown.movedown();
+        break;
+    case KEYCODES.UPARROW:
+        e.preventDefault();
+        dropdown.moveup();
+        break;
+    default:
+        var date = new Date();
+        last_key_up = date.getTime();
+        setTimeout(function(){
+          var date = new Date();
+          if(date.getTime() - last_key_up > delay - 50){
+            launch_search();
+          }
+        }, delay);
+        break;
+    }
+});
+$('body').on('click', '#album_results li', function(){
+  console.log('Mark item as SOLD');
+  var album = $(this).find('.album').html();
+  album = album.replace(/&amp;/g, '&');
+  $('#search_request').val('');
+  $('#search_request').focus();
+  $('#album_results').html('');
+  $('#info_results').html('');
+  var image = $(this).find('img').attr('src');
+  var artists = $(this).find('.artist').html();
+  $('table.table tbody').prepend($(`
+    <tr>
+      <td>`+ album +`</td>
+      <td>`+ artists +`</td>
+      <td>20€</td>
+      <td>à l'instant</td>
+    </tr>
+    `));
+});
+
+$('#search_cancel').on('click', function(e){
+  e.preventDefault();
+  $('#search_request').val('');
+  $('#album_results').html('');
+});
+
+</script>
+{% if first_visit %}
+<style>
+.tooltip:hover {
+  cursor: pointer;
+}
+.tooltip-inner {
+  padding: 15px 15px;
+}
+</style>
+<script>
+$( document ).ready(function() {
+  bootbox.confirm({
+      title: "Bienvenue sur Le bon sillon !",
+      message: "Voici votre espace dédié pour gérer votre offre de vinyles.<br />Voulez-vous découvrir rapidement comment interagir avec la plateforme ?",
+      backdrop: true,
+      buttons: {
+          cancel: {
+              label: 'Non, merci'
+          },
+          confirm: {
+              label: "C'est parti !"
+          }
+      },
+      callback: function (discover) {
+        var steps = ['profile', 'collection', 'selection', 'nav_left_icon', 'nav_right_icon'];
+        var placement = ['bottom', 'bottom', 'bottom', 'right', 'left']
+        var step = 0;
+        var message = {
+          next: '\n[Cliquez pour continuer]',
+          profile: "La page Profil vous permet de gérer les informations sur votre enseigne.",
+          collection: "La page Collection regroupe tous vos vinyles, et permet d'en ajouter de nouveaux.",
+          selection: "La page Sélection vous permet de regrouper des vinyles selon vos critères.",
+          nav_left_icon: "Ici vous pouvez retourner sur le site public",
+          nav_right_icon: "Ici vous pouvez vous déconnecter. Voilà c'est tout, bonne découverte!"
+        }
+        function set_tooltip(step){
+          $('#'+steps[step]).attr('title', '('+(step+1)+'/'+steps.length+') ' + message[steps[step]] + (step <= 1 ? message.next : ''))
+                       .attr('data-toggle',"tooltip").attr('data-placement', placement[step]).attr('data-trigger', 'manual')
+                       .tooltip("show");
+        }
+        if(discover){
+          set_tooltip(step);
+          $('body').on('click', '.tooltip', function(){
+            $('#'+steps[step]).tooltip('hide');
+            step++;
+            set_tooltip(step);
+          });
+        }
+      }
+  });
+});
+</script>
+{% endif %}
+{% endblock %}
