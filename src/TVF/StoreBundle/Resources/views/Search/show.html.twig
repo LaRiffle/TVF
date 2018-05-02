@@ -11,7 +11,7 @@
       <div class="col-sm-7 col-md-6">
         <div class="visible-to-xs">
           <h3><b>{{ vinyl.name }}</b></h3>
-          <h4 style="margin-bottom: 12px;">Par {% for artist in vinyl.artists %}<a href="{{ path('tvf_record_artist_show', {'id': artist.id}) }}">{{artist.name}}</a>{% if not loop.last %}, {% endif %}{% endfor %}</h4>
+          <h4 style="margin-bottom: 12px;">Par {% for artist in vinyl.artists %}<a href="{{ path('tvf_store_explore') }}?q={{ artist.name }}">{{artist.name}}</a>{% if not loop.last %}, {% endif %}{% endfor %}</h4>
           <h4>
             <span class="love_btn love_icon top_circle_icon" style="left:0px">
               <a href="#" style="color:#BA0020;">
@@ -41,7 +41,7 @@
         {% endif %}
         <div class="visible-from-sm">
           <h3><b>{{ vinyl.name }}</b></h3>
-          <h4 style="margin-bottom: 12px;">Par {% for artist in vinyl.artists %}<a href="{{ path('tvf_record_artist_show', {'id': artist.id}) }}">{{artist.name}}</a>{% if not loop.last %}, {% endif %}{% endfor %}</h4>
+          <h4 style="margin-bottom: 12px;">Par {% for artist in vinyl.artists %}<a href="{{ path('tvf_store_explore') }}?q={{ artist.name }}">{{artist.name}}</a>{% if not loop.last %}, {% endif %}{% endfor %}</h4>
           <h4>
             <span class="love_btn love_icon top_circle_icon" style="left:0px">
               <a href="#" style="color:#BA0020;">
@@ -66,6 +66,7 @@
         {% if vinyl.types|length > 0 %}
         <p><b>Genre : </b>{% for type in vinyl.types %}{% if not loop.first %} · {% endif %}{{type.name}}{% endfor %}</p>
         {% endif %}
+        <p>Proposé par <a href="{{ path('tvf_record_client_present', {'slug': vinyl.client.slug}) }}" class="bold">{{ vinyl.client.name }}</a></p>
          <ul id="notify" class="list-group" style="margin-bottom: 10px;">
            <!--<li class="list-group-item collapse-toggle justify-content-between">
              <h5 style="margin-bottom: 0px;">

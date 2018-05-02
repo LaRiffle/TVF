@@ -5,6 +5,7 @@ namespace TVF\StoreBundle\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 use TVF\RecordBundle\Entity\Vinyl;
 use TVF\AdminBundle\Entity\Gender;
@@ -180,9 +181,11 @@ class SearchController extends Controller
           $selection_ = $repository->findOneBy(array('slug' => $selection));
           $selection_id = $selection_->getId();
           $selection_name = $selection_->getTitle();
+          $selection_record = $selection_->getClient();
         } else {
           $selection_id = $selection;
           $selection_name = '';
+          $selection_record = null;
         }
 
         $selections = $repository->findAll();
@@ -195,6 +198,7 @@ class SearchController extends Controller
           'selections' => $selections,
           'selection_id' => $selection_id,
           'selection_name' => $selection_name,
+          'selection_record' => $selection_record,
           'categories' => $categories,
           'category_id' => $category
         );

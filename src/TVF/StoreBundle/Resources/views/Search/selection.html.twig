@@ -14,7 +14,7 @@
         {% if selection_name != '' %}
         <div id="selected_selection" class="card">
           <div class="card-block">
-            <h2 class="card-title">{{ selection_name }}</h2>
+            <h2 class="card-title">{{ selection_name }} <span class="small">par <a href="{{ path('tvf_record_client_present', {'slug': selection_record.slug}) }}" style="color: inherit;">{{ selection_record.name }}</a></span></h2>
           </div>
         </div>
         {% endif %}

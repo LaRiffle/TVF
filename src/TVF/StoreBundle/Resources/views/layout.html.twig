@@ -381,6 +381,7 @@
       } else {
         var record_name = $('.tvf-icon[data-id='+vinyl_id+']').attr('data-disquaire');
         var record_name_link = $('.tvf-icon[data-id='+vinyl_id+']').attr('data-disquaire-link');
+        var record_address = '';
         var url = this.href;
         var box = bootbox.dialog({
               size: 'large',
@@ -391,6 +392,13 @@
               buttons: {
                   "Achetez chez le disquaire": {
                       className: "btn-default",
+                      callback: function() {
+                          bootbox.alert({
+                              title: "Retrait chez le disquaire",
+                              message: "Votre article est désormais disponible chez <br /><b>" + record_name + "</b><br /><b>" + record_address + '</b>',
+                              backdrop: true
+                          });
+                      }
                   },
                   main: {
                       label: "Ajouter au panier",
@@ -414,6 +422,7 @@
               success: function (data)
               {
                 console.log(data);
+                record_address = nl2br(data.address);
                 $('#cart-record-choice').find('.record-address').html(nl2br(data.address));
               }
           });

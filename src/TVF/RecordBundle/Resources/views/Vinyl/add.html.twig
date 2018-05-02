@@ -139,11 +139,6 @@
         <div id="panel_options" style="margin-top: 10px;" class="hide">
           <hr />
           <h5>Déclinaisons du modèle</h5>
-          <div style="margin-bottom: 10px;">
-            <a target="_blank" href="{{ path('tvf_record_vinyl_attributes') }}">
-              Modifier le choix de déclinaisons
-            </a>
-          </div>
           <h5>{{ form_label(form.attributes, "Tailles disponibles") }}</h5>
           {{ form_errors(form.attributes) }}
           {% for attribute in form.attributes %}
@@ -173,6 +168,11 @@
             {{ include(card, {'attribute': entity, 'allow_modify': false, 'widget': form_widget(attribute) }) }}
             {% endif %}
           {% endfor %}
+          <div style="margin-bottom: 10px;">
+            <a target="_blank" href="{{ path('tvf_record_vinyl_attributes') }}">
+              Modifier le choix de déclinaisons
+            </a>
+          </div>
         </div>
         <div style="clear: both;"></div>
         <div id="music_types" class="hide">
