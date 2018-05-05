@@ -144,7 +144,12 @@ class TVFImagehandler {
   public function convert_vinyl_images($vinyls, $quality){
     foreach ($vinyls as $vinyl) {
       $fileNames = $vinyl->getImages();
-      $vinyl->small_image = (count($fileNames) > 0) ? $this->get_image_in_quality($fileNames[0], $quality) : '';
+      if(count($fileNames) > 0){
+        $path_small_image = $this->get_image_in_quality($fileNames[0], $quality);
+        $vinyl->small_image = $path_small_image;
+      } else {
+        $vinyl->small_image = '../../bundles/TVF/img/default-release.png';
+      }
     }
     return $vinyls;
   }

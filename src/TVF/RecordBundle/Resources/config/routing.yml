@@ -33,6 +33,9 @@ tvf_record_artist:
 tvf_record_artist_add:
   path:     /record/artist/add/{id}
   defaults: { _controller: TVFRecordBundle:Artist:add, id:0 }
+tvf_record_artist_auto_add:
+  path:     /record/artist/auto/add/{name}
+  defaults: { _controller: TVFRecordBundle:Artist:autoAdd, name:'' }
 tvf_record_artist_show:
   path:     /record/artist/show/{id}
   defaults: { _controller: TVFRecordBundle:Artist:show }
@@ -44,9 +47,16 @@ tvf_record_artist_search:
   defaults: { _controller: TVFRecordBundle:Artist:search, spotify_id:0 }
 
 
+
+tvf_record_vinyl_select_add_mode:
+  path:     /record/vinyl/select/add/mode
+  defaults: { _controller: TVFRecordBundle:Vinyl:selectAddMode }
 tvf_record_vinyl_add:
   path:     /record/vinyl/add/{id}
   defaults: { _controller: TVFRecordBundle:Vinyl:add, id:0 }
+tvf_record_vinyl_auto_add:
+  path:     /record/vinyl/auto/add/{index}
+  defaults: { _controller: TVFRecordBundle:Vinyl:autoAdd, index:1 }
 tvf_record_vinyl_remove:
   path:     /record/vinyl/remove/{id}
   defaults: { _controller: TVFRecordBundle:Vinyl:remove}

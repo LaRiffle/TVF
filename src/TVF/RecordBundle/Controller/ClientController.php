@@ -141,8 +141,12 @@ class ClientController extends Controller
         $imagehandler = $this->container->get('tvf_store.imagehandler');
         foreach ($vinyls as $vinyl) {
           $fileNames = $vinyl->getImages();
-          $path_small_image = $imagehandler->get_image_in_quality($fileNames[0], 'xs');
-          $vinyl->small_image = $path_small_image;
+          if(count($fileNames) > 0){
+            $path_small_image = $imagehandler->get_image_in_quality($fileNames[0], 'xs');
+            $vinyl->small_image = $path_small_image;
+          } else {
+            $vinyl->small_image = '../../bundles/TVF/img/default-release.png';
+          }
           $vinyl->loved = '0';
         }
         $repository = $em->getRepository('TVFAdminBundle:Gender');

@@ -1,4 +1,8 @@
 {% extends "TVFStoreBundle:Search:layout.html.twig" %}
+{% set auto = false %}
+{% if auto_mode is defined %}
+  {% set auto = true %}
+{% endif %}
 {% block head %}
   <link rel="stylesheet" href="{{ asset('bundles/TVF/magicsuggest.css') }}">
 {% endblock %}
@@ -7,10 +11,10 @@
   {% set navbar = "TVFRecordBundle:Utils:nav.html.twig" %}
   {{ include(navbar, {'active': 'selection'}) }}}
   <div class="container" style="margin-bottom: 50px;">
-    <form name="form" class="form-signin" method="post" enctype="multipart/form-data" action="{{ path('tvf_record_vinyl_add',{'id': id}) }}">
+    <form name="form" class="form-signin" method="post" enctype="multipart/form-data" action="{% if not auto %}{{ path('tvf_record_vinyl_add',{'id': id}) }}{% else %}{{ path('tvf_record_vinyl_auto_add',{'index': id}) }}{% endif %}">
     <div class="row">
       <div class="col-sm-6 offset-sm-3">
-        <h3 class="form-signin-heading">{% if id == 0 %}Ajouter{% else %}Modifier{% endif %} un album vinyle</h3>
+        <h3 class="form-signin-heading">{% if id == 0 %}Ajouter{% else %}Modifier{% endif %} un album vinyle {% if auto %}(auto mode){% endif %}</h3>
         {% set input_form="TVFAdminBundle:Utils:form_input.html.twig" %}
         {% set save_form="TVFAdminBundle:Utils:form_save.html.twig" %}
         <div class="h3">
@@ -24,16 +28,42 @@
         </div>
         </div>
         <div id="album_results"></div>
+        {% if auto %}
+        <h5>Artistes</h5>
+        <div id="suggested_artists">
+          {% for artist, suggestions in suggested_artists %}
+          <li class="list-group-item" style="padding: 5px; padding-right:0px;margin-bottom: 10px;">
+            <div class="horizontal-scroller-more"><i class="fa fa-chevron-right" aria-hidden="true"></i></div>
+            <div class="horizontal-scroll">
+              <span style="flex: 0 0 auto; padding: 7px;">
+                <b class="{% if suggestions|length == 0 %}artist_not_found{% endif %}">
+                  {{ artist }}
+                </b> :
+              </span>
+              {% for suggestion in suggestions %}
+                {% if loop.first and suggestion.name == artist %}
+                  <a href="#"class="btn btn-default btn-tvf" style="border: 2px solid #0275d8;"><i class="name">{{ suggestion.name }}</i> ({{ suggestion.popularity }}%)</a>
+                {% else %}
+                  <a href="#"class="btn btn-default btn-tvf"><i class="name">{{ suggestion.name }}</i> ({{ suggestion.popularity }}%)</a>
+                {% endif %}
+              {% endfor %}
+            </div>
+          </li>
+          {% endfor %}
+        </div>
+        {% endif %}
         <div id="artist_suggest">
           <i class="fa fa-circle-o-notch fa-spin fa-2x fa-fw"></i>
           <span class="sr-only">Loading...</span>
         </div>
         <div class="hide">{{ include(input_form, {'element': form.artists, 'name':"Artiste"}) }}</div>
         <hr />
+        {% if not auto %}
         <a href="#" class="internal-link" data-target="box_description">
           <h5>+ Ajouter une description</h5>
         </a>
-        <div id="box_description" class="hide">
+        {% endif %}
+        <div id="box_description" class="{% if not auto %}hide{% endif %}">
           {{ include(input_form, {'element': form.description, 'name':"Donnez quelques éléments à propos de cet album"}) }}
         </div>
         <hr />
@@ -131,7 +161,12 @@
           {% endfor %}
         </div>
         <hr />
-        {{ include(save_form, {'element': form.save, 'name':"Publier"}) }}
+        {% if not auto %}
+          {% set submit_message = "Publier" %}
+        {% else %}
+          {% set submit_message = "Publier et ajouter le suivant" %}
+        {% endif %}
+        {{ include(save_form, {'element': form.save, 'name': submit_message}) }}
         {% set card="TVFRecordBundle:Attribute:card_attribute.html.twig" %}
         <a href="#" class="internal-link" data-target="panel_options">
           <h6 style="margin-top: 10px;">+ Ajouter des informations supplémentaires</h6>
@@ -483,6 +518,39 @@ $(document).mouseup(function(e){
     }
   }
 
+  var skip_confirm = [];
+{% if auto %}
+  $('#suggested_artists a').on('click', function(e){
+    e.preventDefault();
+    $(this).css('border', '2px solid #0275d8');
+    var artist = $(this).find('.name').html().trim();
+    console.log('suggested artist selected: '+ artist);
+    //select_artist(artist);
+    var id = artist;
+    // if artist exists, fetch its id
+    if(list_artists[artist] != undefined) {
+      id = list_artists[artist];
+    }
+    ms.addToSelection({id: id, name: artist});
+  });
+  var handle = setInterval(function(){
+    if(token != null){
+      clearInterval(handle);
+      add_auto_selected_artist();
+    }
+  }, 200);
+  function add_auto_selected_artist() {
+  {% for artist, suggestions in suggested_artists %}
+    {% for suggestion in suggestions %}
+      {% if loop.first and suggestion.name == artist %}
+        skip_confirm.push('{{ artist }}');
+        ms.addToSelection({id: '{{ artist }}', name: '{{ artist }}'});
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+  }
+{% endif %}
+
   function select_new_artist(artist){
     console.log(artist + ' must be added to the database...');
     $.ajax({
@@ -492,11 +560,17 @@ $(document).mouseup(function(e){
         },
         success: function(response) {
           var found_artists = response.artists.items;
-          display_artists_choice(found_artists);
+          if(skip_confirm.includes(artist) && found_artists.length > 0){
+            var first_artist_id = found_artists[0].id
+            register_artist(first_artist_id);
+            proceed_to_next_artist();
+          } else {
+            display_artists_choice(found_artists, artist);
+          }
         }
     });
   }
-  function display_artists_choice(artists){
+  function display_artists_choice(artists, artist){
     var content = $('<ul/>', {
       id: 'artists_choice',
       class: 'list-group'
@@ -504,7 +578,7 @@ $(document).mouseup(function(e){
     var first_artist_id;
     if(artists.length == 0){
       var see_more = $('<li/>').addClass('list-group-item');
-      see_more.html("Nous n'avons pas trouvé de résultats. :/ <br />Essayez peut-être avec une autre orthographe.");
+      see_more.html("Nous n'avons pas trouvé de résultats pour \""+artist+"\". :/ <br />Appuyez sur 'Confirmer' pour tout de même ajouter cet artiste.");
       content.append(see_more);
     } else {
       first_artist_id = artists[0].id;
@@ -559,12 +633,15 @@ $(document).mouseup(function(e){
               console.log('Artist chosen.');
               register_artist(first_artist_id);
             } else {
-              console.log('remove artist')
+              // Pas d'artiste tourvé sur spotify mais confirmation de son ajout:
+              console.log('Force add artist...');
+              $.ajax({
+                  url: '{{ path('tvf_record_artist_auto_add') }}/' + artist,
+                  success: function(response) {
+                    console.log('Resp: artist added');
+                  }
+              });
               proceed_to_next_artist();
-              $('#artist_suggest .ms-sel-item:last').fadeOut('slow');
-              setTimeout(function(){
-                $('#artist_suggest .ms-sel-item:last .ms-close-btn').click();
-              }, 1000);
             }
           }
         }
@@ -793,5 +870,10 @@ $(document).mouseup(function(e){
       $('.add-price').click();
     }
   });
+</script>
+<script>
+{% if auto %}
+  $('a[data-target=price]').click();
+{% endif %}
 </script>
 {% endblock %}

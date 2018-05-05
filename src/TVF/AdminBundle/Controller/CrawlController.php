@@ -24,6 +24,9 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 use Symfony\Component\Finder\Finder;
 
+use SpotifyWebAPI\Session;
+use SpotifyWebAPI\SpotifyWebAPI;
+
 class CrawlController extends Controller
 {
     public $entityNameSpace = 'TVFRecordBundle:Vinyl';
@@ -44,6 +47,25 @@ class CrawlController extends Controller
       return $this->redirect($this->generateUrl('tvf_store_explore'));
     }
     public function feedAction(Request $request) {
+      $this->denyAccessUnlessGranted(['ROLE_RECORD', 'ROLE_ADMIN'], null, 'Accès limité.');
+      $artist = 'Guetta';
+      $session = new Session(
+          $this->getParameter('client_id'),
+          $this->getParameter('client_secret')
+      );
+      $session->requestCredentialsToken();
+      $accessToken = $session->getAccessToken();
+
+      $api = new SpotifyWebAPI();
+      $api->setAccessToken($accessToken);
+      $results = $api->search($artist, 'artist');
+
+      foreach ($results->artists->items as $artist) {
+          echo $artist->name, '<br>';
+      }
+      return new JsonResponse(['results' => $results]);
+
+      //--------
       $finder = new Finder();
       $finder->files()->in(__DIR__.'/../Crawl');
       $vinyls = [];

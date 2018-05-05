@@ -1,0 +1,54 @@
+{% extends "TVFStoreBundle:Search:layout.html.twig" %}
+{% set auto = false %}
+{% if auto_mode is defined %}
+  {% set auto = true %}
+{% endif %}
+{% block title %}
+|  Mode d'importation
+{% endblock %}
+{% block body %}
+<div id="home-page">
+  {% set navbar = "TVFRecordBundle:Utils:nav.html.twig" %}
+  {{ include(navbar, {'active': 'selection'}) }}}
+  <div class="container" style="margin-bottom: 10px;">
+    <div class="row">
+      <div class="offset-sm-0 col-sm-12 offset-md-1 col-md-10 offset-lg-2 col-lg-8">
+        <h3>Importer une collection</h3>
+        <div class="card-deck">
+          <div class="card">
+            <a href="{{ path('tvf_store_explore') }}">
+              <img src="" style="width:100%" class="card-img-top "/>
+            </a>
+            <div class="card-block">
+              <h2 class="card-title center">Ajout automatique</h2>
+              <p class="card-text">Transférez automatiquement votre collection, recommandé si vous avez de nombreux vinyles.</p>
+              <div class="center">
+                <a href="{{ path('tvf_record_vinyl_auto_add', {'index': 1}) }}" class="btn btn-primary">
+                  Ajout automatique
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <a href="{{ path('tvf_record_vinyl_auto_add', {'index': 1}) }}">
+              <img src="" style="width:100%" class="card-img-top "/>
+            </a>
+            <div class="card-block">
+              <h2 class="card-title center">Ajout supervisé</h2>
+              <p class="card-text">Vérifiez chaque élément que vous importez, adapté si vous avez peu vinyles.</p>
+              <div class="center">
+                <a href="{{ path('tvf_record_vinyl_auto_add', {'index': 1}) }}" class="btn btn-primary">
+                  Ajout supervisé
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block script %}
+
+{% endblock %}
