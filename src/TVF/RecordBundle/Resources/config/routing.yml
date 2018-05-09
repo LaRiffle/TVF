@@ -57,6 +57,9 @@ tvf_record_vinyl_add:
 tvf_record_vinyl_auto_add:
   path:     /record/vinyl/auto/add/{index}
   defaults: { _controller: TVFRecordBundle:Vinyl:autoAdd, index:1 }
+tvf_record_vinyl_full_auto_add:
+  path:     /record/vinyl/full/auto/add
+  defaults: { _controller: TVFRecordBundle:Vinyl:fullAutoAdd}
 tvf_record_vinyl_remove:
   path:     /record/vinyl/remove/{id}
   defaults: { _controller: TVFRecordBundle:Vinyl:remove}

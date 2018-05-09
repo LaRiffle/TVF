@@ -1,0 +1,57 @@
+{% extends "TVFStoreBundle:Search:layout.html.twig" %}
+{% set auto = false %}
+{% if auto_mode is defined %}
+  {% set auto = true %}
+{% endif %}
+{% block title %}
+| Importation automatique
+{% endblock %}
+{% block body %}
+<div id="home-page">
+  {% set navbar = "TVFRecordBundle:Utils:nav.html.twig" %}
+  {{ include(navbar, {'active': 'selection'}) }}}
+  <div class="container" style="margin-bottom: 10px;">
+    <div class="row">
+      <div class="offset-sm-0 col-sm-12 offset-md-1 col-md-10 offset-lg-2 col-lg-8">
+        <h3>Importation automatique</h3>
+        <h4>Avancement : <span id="avancement">0</span>%</h4>
+        <ul class="list-group" id="notif_block">
+          <li class="list-group-item"><b>Informations...</b></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block script %}
+<script>
+var url = '{{ path('tvf_admin_vinyl_feed_one') }}';
+var total = {{ nb_vinyls }};
+function call_next_add(index){
+  $.ajax({
+      url: url+'/'+index,
+      success: function(response) {
+        $('#avancement').html(Math.round(100*(index-1)/total));
+        add_notification(response.message);
+        index++;
+        if(response.message != 'Not found'){
+          call_next_add(index);
+        }
+      },
+      error: function(e){
+        console.log('Error:');
+        console.log(e);
+        add_notification('<b>Erreur à la ligne '+index+'</b>');
+        index++;
+        call_next_add(index);
+      }
+  });
+}
+var start = 1;
+call_next_add(start);
+function add_notification(message){
+  var info = $('<li class="list-group-item">'+message+'</li>')
+  $('#notif_block').prepend(info);
+}
+</script>
+{% endblock %}

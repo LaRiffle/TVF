@@ -496,6 +496,24 @@ class  VinylController extends Controller
             'suggested_artists' => $suggested_artists
         ));
     }
+
+    public function fullAutoAddAction(){
+      $finder = new Finder();
+      $finder->files()->in(__DIR__.'/../../AdminBundle/Crawl/Discogs');
+      $i = 0;
+      foreach ($finder as $file) {
+        $handle = fopen($file->getRealPath(), "r");
+        if ($handle) {
+          $i = 0;
+          while (($line = fgets($handle)) !== false) {
+              $i++;
+          }
+        }
+      }
+      return $this->render($this->entityNameSpace.':auto_add.html.twig', array(
+        'nb_vinyls' => $i
+      ));
+    }
     public function removeAction(Request $request, $id){
         if(!$this->certify_authorship($id)){
           throw new AccessDeniedException('Accès limité.');

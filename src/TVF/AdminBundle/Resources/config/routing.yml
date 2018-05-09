@@ -4,6 +4,9 @@ tvf_admin_vinyl_drop:
 tvf_admin_vinyl_feed:
     path:     /admin/vinyl/feed
     defaults: { _controller: TVFAdminBundle:Crawl:feed}
+tvf_admin_vinyl_feed_one:
+    path:     /admin/vinyl/feed_one/{id}
+    defaults: { _controller: TVFAdminBundle:Crawl:feedOne, id:0}
 
 tvf_admin_category_add:
     path:     /admin/category/add/{id}
