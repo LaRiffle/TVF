@@ -156,14 +156,6 @@ h2 {
 .h2 input {
   font-size: 1.5rem !important;
 }
-.fil, .hidden-fil, .sprinter  {
-  position: relative;
-  bottom: 0.9rem;
-}
-.fil-cadre {
-  height: 5.5px;
-  width: 1000px;
-}
 a.sober_link:hover {
   text-decoration: none;
 }
@@ -523,6 +515,16 @@ a.filter:hover, a.filter:focus  {
   text-align: center;
   color: #CCCCCC;
   display: none;
+}
+.see_more_results {
+  width: 100%;
+  padding-top: 7px;
+}
+.see_more_results p {
+  text-align: center;
+}
+.see_more_results a {
+  border: 1px solid rgba(0,0,0,0.125);
 }
 .list-gender h5 {
   width: 100%;

@@ -3,6 +3,7 @@
 namespace TVF\AdminBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 
 /**
  * Category
@@ -10,8 +11,16 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="category")
  * @ORM\Entity(repositoryClass="TVF\AdminBundle\Repository\CategoryRepository")
  */
-class Category
+class Category implements JsonSerializable
 {
+
+    public function jsonSerialize()
+    {
+        return array(
+            'name' => $this->name,
+            'slug' => $this->slug
+        );
+    }
     /**
      * @var int
      *

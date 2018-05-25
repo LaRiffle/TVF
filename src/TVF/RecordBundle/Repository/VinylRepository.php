@@ -10,25 +10,60 @@ namespace TVF\RecordBundle\Repository;
  */
 class VinylRepository extends \Doctrine\ORM\EntityRepository
 {
-  public function search($query, $client_id = null)
+  public function search($filter, $offset = 0, $limit = 12, $client_id = null, $count = false)
   {
-    $qb = $this->createQueryBuilder('e')
-          ->innerJoin('e.artists', 'a')
+    $qb = $this->createQueryBuilder('e');
+    if($count){
+      $qb = $qb->select('COUNT(DISTINCT e.id)');
+    }
+    $qb = $qb->innerJoin('e.artists', 'a')
           ->innerJoin('e.category', 'c')
           ->where("c.slug = 'vinyle'")
-          ->andWhere('a.name LIKE :query_artist OR e.name LIKE :query')
-          ->setParameter('query_artist', '%'.$query.'%')
-          ->setParameter('query', '%'.$query.'%')
     ;
+    // TODO handle more filters
+    $queries = $filter['keywords'];
+    if($queries != [""]){
+      $i = 0;
+      $sql = '';
+      foreach ($queries as $query) {
+        if($i > 0){
+          $sql .= ' OR ';
+        }
+        $sql .= 'SOUNDEX(a.name) LIKE SOUNDEX(:query_artist'.$i.') OR SOUNDEX(e.name) LIKE SOUNDEX(:query'.$i.')';
+        $i++;
+      }
+      $qb = $qb->andWhere($sql);
+      $i = 0;
+      foreach ($queries as $query) {
+        $qb = $qb->setParameter('query_artist'.$i, '%'.$query.'%')
+                 ->setParameter('query'.$i, '%'.$query.'%')
+        ;
+        $i++;
+      }
+    }
+
     if($client_id){
       $qb = $qb->innerJoin('e.client', 'r')
-               ->andWhere("r.id = 6")
+               ->andWhere("r.id = :client_id")
+               ->setParameter('client_id', $client_id)
       ;
     }
-    return $qb->orderBy('e.id', 'DESC')
-           ->getQuery()
-           ->getResult()
-    ;
+    if($count){
+      return $qb->getQuery()
+             ->getSingleScalarResult()
+      ;
+    } else {
+      // Here is an ugly fix because LIMIT and OFFSET don't work well with JOIN in DQL
+
+      $statistic_limit = ($offset + $limit)*5;
+      $results = $qb->orderBy('e.id', 'DESC')
+             ->setMaxResults($statistic_limit)
+             ->getQuery()
+             ->getResult()
+      ;
+      return array_slice($results, $offset, $limit);
+    }
+
   }
   public function getVinyls($limit=(1024*1024*1024)){
     return $this->createQueryBuilder('e')
@@ -40,7 +75,17 @@ class VinylRepository extends \Doctrine\ORM\EntityRepository
           ->getResult()
     ;
   }
-  public function getVinylsFromClient($client_id){
+  public function countVinyls(){
+    return $this->createQueryBuilder('e')
+          ->select('COUNT(e)')
+          ->innerJoin('e.category', 'c')
+          ->where("c.slug = 'vinyle'")
+          ->orderBy('e.id', 'DESC')
+          ->getQuery()
+          ->getSingleScalarResult()
+    ;
+  }
+  public function getVinylsFromClient($client_id, $limit=(1024*1024*1024)){
     return $this->createQueryBuilder('e')
           ->innerJoin('e.category', 'c')
           ->innerJoin('e.client', 'r')
@@ -48,8 +93,22 @@ class VinylRepository extends \Doctrine\ORM\EntityRepository
           ->andWhere("r.id = :client_id")
           ->setParameter('client_id', $client_id)
           ->orderBy('e.id', 'DESC')
+          ->setMaxResults($limit)
           ->getQuery()
           ->getResult()
     ;
+  }
+  public function countVinylsFromClient($client_id){
+     return $this->createQueryBuilder('e')
+           ->select('COUNT(e)')
+           ->innerJoin('e.category', 'c')
+           ->innerJoin('e.client', 'r')
+           ->where("c.slug = 'vinyle'")
+           ->andWhere("r.id = :client_id")
+           ->setParameter('client_id', $client_id)
+           ->orderBy('e.id', 'DESC')
+           ->getQuery()
+           ->getSingleScalarResult()
+     ;
   }
 }

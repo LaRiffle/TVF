@@ -63,7 +63,7 @@ tvf_store_loved:
     path:     /votre-selection
     defaults: { _controller: TVFStoreBundle:Search:loved }
 tvf_store_explore:
-    path:     /selection/{selection}/{category}
+    path:     /collection/{selection}/{category}
     defaults: { _controller: TVFStoreBundle:Search:selection, selection:"_", category:"_" }
 tvf_store_explore_record:
     path:     /disquaire/collection/{slug}
@@ -74,8 +74,6 @@ tvf_store_vinyl:
 tvf_store_vinyl_show:
     path:     /vinyl/{id}
     defaults: { _controller: TVFStoreBundle:Search:showVinyl }
-    requirements:
-        id:   \d+
 tvf_store_artist_search:
   path:     /about/{spotify_id}
   defaults: { _controller: TVFRecordBundle:Artist:Search, spotify_id: '' }

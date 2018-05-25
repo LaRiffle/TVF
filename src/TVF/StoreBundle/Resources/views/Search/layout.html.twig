@@ -91,7 +91,9 @@
   var filter = {
     selection: "{{ selection_id }}",
     category: "{{ category_id }}",
+    client: "_",
     types: [],
+    keywords: [],
     search: []
   }
   // Dict of all the selections
@@ -125,6 +127,9 @@
   }
 
   function icon_filter(){
+    $('#vinyl_slider').slideUp(400, function(){
+        $('#vinyl_overview').hide();
+    });
     var visible_items = 0;
     $('.tvf-icon:not(.add-icon):not(.no-count)').each(function(){
       var id = $(this).attr('data-id');
@@ -150,8 +155,9 @@
         $(this).addClass('hide').hide();
       }
     });
-    if(visible_items > 0){
-      $('#number_results').html('('+visible_items+')');
+
+    if(nb_vinyls > 0){
+      $('#number_results').html('('+nb_vinyls+')');
       $('#no_results').hide();
     } else {
       $('#number_results').html('');
@@ -166,7 +172,199 @@
     if(filter.search.length > 0){
       icon_sort(by='data-distance');
     }
+    $('.tvf-box.tvf-white-block').remove();
+    {% if is_granted('ROLE_RECORD') or is_granted('ROLE_ADMIN') %}
+      visible_items++;
+    {% endif %}
+    if(visible_items > 0){
+      var white_block_html = '<div class="tvf-box tvf-white-block"><div class="tvf-inner"></div></div>';
+      for(var i = 0; i < Math.ceil(visible_items/3)*3 - visible_items; i++){
+        var $last_icon = $('#my_insta > .tvf-grid > .tvf-row > .tvf-box').last()
+        $(white_block_html).insertAfter($last_icon);
+      }
+    }
     return visible_items;
+  }
+
+
+  function path(route, args){
+    var routes = {
+      'tvf_store_vinyl_show': '{{ path('tvf_store_vinyl_show', {'id': '__arg__id'}) }}',
+      'tvf_record_vinyl_add': '{{ path('tvf_record_vinyl_add', {'id': '__arg__id'}) }}',
+      'tvf_record_vinyl_remove': '{{ path('tvf_record_vinyl_remove', {'id': '__arg__id'}) }}'
+    }
+    var url = routes[route];
+    for(var arg in args){
+      url = url.replace('__arg__'+args[arg], args[arg]);
+    }
+    return url;
+  }
+
+  var index0 = 0;
+  function load_icons(vinyls){
+    $('.see_more_results').remove();
+    index0 = 0;
+    // remove old icon_sort if new request
+    if(offset == 0){
+        $('#my_insta .tvf-box:not(.no-count):not(.add-icon)').remove();
+    }
+    for(var i = 0; i < vinyls.length; i++){
+      var vinyl = JSON.parse(vinyls[i]);
+      add_icon(vinyl);
+      index0++;
+    }
+    var nb_icons = vinyls.length;
+    {% if is_granted('ROLE_RECORD') or is_granted('ROLE_ADMIN') %}
+      nb_icons++;
+    {% endif %}
+    var white_block_html = '<div class="tvf-box tvf-white-block"><div class="tvf-inner"></div></div>';
+    for(var i = 0; i < Math.ceil(nb_icons/3)*3 - nb_icons; i++){
+      $('#my_insta > .tvf-grid > .tvf-row').append($(white_block_html));
+    }
+    if(vinyls.length < nb_vinyls){
+      var $see_more_btn = $(`
+        <div class="see_more_results">
+          <p>
+            <a class="btn btn-default" id="see_more_results" href="#">Voir plus de résultats</a>
+          </p>
+        </div>
+      `);
+      $('#my_insta > .tvf-grid > .tvf-row').append($see_more_btn);
+    }
+  }
+  $('body').on('click', '#see_more_results', function(e){
+    e.preventDefault();
+    $('.see_more_results p').html('<i class="fa fa-circle-o-notch fa-2x fa-spin"></i>');
+    offset += 6;
+    search(query);
+  });
+
+  var IMG_PATH = '{{ asset('uploads/img/') }}';
+  function add_icon(vinyl){
+    vinyl.description = (vinyl.description != null) ? vinyl.description : '';
+    var artists = '';
+    for(var k = 0; k < vinyl.artists.length; k++){
+      if(k > 0){
+        artists += ',';
+      }
+      artists += vinyl.artists[k].name;
+    }
+    vinyl.artists = artists
+    var types = '';
+    for(var k = 0; k < vinyl.types.length; k++){
+      if(k > 0){
+        types += ',';
+      }
+      types += vinyl.types[k].id;
+    }
+    vinyl.types = types;
+
+    var edition = `<div class="tvf-edition">
+      {% if is_granted('ROLE_ADMIN') %}
+      <ul class="edition-btn">
+        <li>
+          <a href="${ path('tvf_record_vinyl_add', {'id': vinyl.id}) }" title="" data-toggle="tooltip" data-original-title="Modifier"><i class="fa fa-pencil-square-o"></i></a>
+        </li>
+        <li>
+          <a href="${ path('tvf_record_vinyl_remove', {'id': vinyl.id}) }" class="remove" title="" data-toggle="tooltip" data-original-title="Supprimer"><i class="fa fa-trash-o"></i></a>
+        </li>
+      </ul>
+      {% endif %}
+    </div>`;
+    var html = `
+    <div class="tvf-box tvf-icon"
+        data-index="${ index0 }"
+        data-id="`+ vinyl.id +`"
+        data-img="`+ vinyl.small_image +`"
+        data-name="`+ vinyl.name +`"
+        data-artists="`+ vinyl.artists +`"
+        data-price="`+ vinyl.price +`"
+        data-onsold="`+ vinyl.onsold +`"
+        data-description="${vinyl.description}"
+        data-disquaire="`+ vinyl.client.name +`"
+        data-disquaire-link="`+ vinyl.client.slug +`"
+        data-type="`+ vinyl.types +`"
+        data-category="`+ vinyl.category.slug +`"
+        data-loved="`+ vinyl.loved +`"
+        style="z-index: ${ nb_vinyls - index0 };">
+      <div class="tvf-inner">`
+        + edition +
+       `<h3 class="tvf-button visible-from-sm">
+          <div class="love_icon love_icon_insta_btn">`
+            +(
+              vinyl.loved
+              ?
+              ` <i class="fa fa-heart fa-2x" aria-hidden="true"></i>
+                <i class="fa fa-heart fa-2x full-heart" aria-hidden="true"></i>
+              `
+              :
+              ` <i class="fa fa-heart-o fa-2x" aria-hidden="true"></i>
+                <i class="fa fa-heart fa-2x full-heart" aria-hidden="true"></i>
+              `
+            )+
+          `</div>`
+          +(
+            vinyl.onsold
+            ?
+            `<a href="#" class="buy-confirmation">
+              <span class="icon_insta_price price-cart badge badge-primary badge-pill">
+                  `+ vinyl.price +` €
+              </span>
+            </a>`
+            :
+            ``
+          )+
+          `
+        </h3>
+        <a class="show-vinyl" href="`+ path('tvf_store_vinyl_show', {'id': vinyl.id}) +`">
+          <img src="`+ IMG_PATH + vinyl.small_image +`" alt="" style="">
+          {% if not is_granted('ROLE_ADMIN') %}
+          <div class="caption visible-from-sm">
+
+          </div>
+          {% else %}
+          <div class="caption" style="opacity: 1">
+            <h3 style="position: absolute; bottom: 15px; width: 96%;">`+ vinyl.name +`</h3>
+          </div>
+          {% endif %}
+        </a>
+      </div>
+    </div>`;
+    var $icon = $(html);
+    $('#my_insta > .tvf-grid > .tvf-row').append($icon);
+    $icon.find('img').on('load', function(){
+      reshape_image($(this).parents('div'));
+    });
+
+  }
+
+  var offset = 0;
+  function search(request){
+    filter.keywords = request.split(', ');
+    console.log('Filters:')
+    console.log(filter);
+    $.ajax({
+        url: "{{ path('tvf_store_search') }}",
+        type: "POST",
+        dataType: "json",
+        data: {
+          filter: filter,
+          offset: offset,
+          auth: 'no-auth'
+        },
+        async: true,
+        success: function (data)
+        {
+            console.log('Response found');
+            var results = data.results;
+            nb_vinyls = data.nb_results;
+            console.log(results);
+            reorganize();
+            load_icons(results);
+            $('.tvf-icon').css('display', 'none').css('visibility', 'visible').fadeIn();
+            icon_filter();
+        }
+    });
   }
   $(document).ready(function(){
     setTimeout(function(){
@@ -307,7 +505,9 @@ $('#search_launch_mobile').on('click', function(e){
   e.preventDefault();
   $('#search_launch').click();
 });
+var query = $('#search_input').val().toLowerCase();
 $('#search_launch').on('click', function(e){
+  e.preventDefault();
   reorganize();
   // close the overview
   $('#vinyl_slider').hide();
@@ -315,9 +515,12 @@ $('#search_launch').on('click', function(e){
   if(active_index !== null){
     active_index = -1
   }
-
-  e.preventDefault();
-  var query = $('#search_input').val().toLowerCase();
+  query = $('#search_input').val().toLowerCase();
+  offset = 0;
+  search(query);
+});
+function js_search(query){
+  /* Depreciated - Perform a search on the loaded icons */
   var scores = [];
   filter.search = [];
   if(query != ''){
@@ -353,7 +556,7 @@ $('#search_launch').on('click', function(e){
   }
   icon_filter();
   console.log(scores);
-});
+}
 if($('#search_input').val() != ''){
     $('#search_launch').click();
 }
@@ -361,8 +564,8 @@ if($('#search_input').val() != ''){
 <script>
 /* Put on top vinyl on which we hover with the mouse */
 
-  nb_vinyl = $('.tvf-icon').length;
-  z_index = nb_vinyl;
+  var nb_vinyls = {{ nb_results }};
+  z_index = {{ nb_results }}; // initialize
   $('.tvf-icon').mouseenter(function(){
     var $this = $(this)
     $this.css('z-index', z_index);
@@ -431,4 +634,6 @@ $(document).ready(function(){
   });
 });
 </script>
+{% block sub_script %}
+{% endblock %}
 {% endblock %}

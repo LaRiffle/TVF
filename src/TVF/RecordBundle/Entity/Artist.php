@@ -4,6 +4,7 @@ namespace TVF\RecordBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use JsonSerializable;
 
 /**
  * Artist
@@ -11,7 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="artist")
  * @ORM\Entity(repositoryClass="TVF\RecordBundle\Repository\ArtistRepository")
  */
-class Artist
+class Artist implements JsonSerializable
 {
     /**
      * Constructor
@@ -20,6 +21,15 @@ class Artist
     {
         $this->types = new \Doctrine\Common\Collections\ArrayCollection();
     }
+
+    public function jsonSerialize()
+    {
+        return array(
+            'name' => $this->name,
+            'bio' => $this->bio
+        );
+    }
+
     /**
      * @var int
      *

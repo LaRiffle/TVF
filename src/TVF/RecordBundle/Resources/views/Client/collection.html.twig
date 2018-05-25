@@ -15,7 +15,7 @@
             {% if vinyls|length == 0 %}
               Vous n'avez pas encore ajouté de vinyles. Essayez, c'est très simple !
             {% else %}
-              Votre collection de {{ vinyls|length }} vinyle{% if vinyls|length > 1 %}s{% endif %}
+              Votre collection de {{ nb_results }} vinyle{% if nb_results > 1 %}s{% endif %}
             {% endif %}
           </h4>
           <div class="horizontal-scroller" style="margin-bottom: 3px;">
@@ -29,4 +29,12 @@
       </div>
     </div>
   </div>
+
+{% endblock %}
+{% block sub_script %}
+<script>
+  $(document).ready(function() {
+    filter.client = {{ client_id}};
+  });
+</script>
 {% endblock %}

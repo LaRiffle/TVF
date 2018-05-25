@@ -4,6 +4,7 @@ namespace TVF\RecordBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use JsonSerializable;
 
 /**
  * Client
@@ -11,12 +12,21 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="client")
  * @ORM\Entity(repositoryClass="TVF\RecordBundle\Repository\ClientRepository")
  */
-class Client
+class Client implements JsonSerializable
 {
     public function __construct()
     {
         $this->joindate = new \DateTime();
     }
+
+    public function jsonSerialize()
+    {
+        return array(
+            'name' => $this->name,
+            'slug' => $this->slug
+        );
+    }
+
     /**
      * @var int
      *

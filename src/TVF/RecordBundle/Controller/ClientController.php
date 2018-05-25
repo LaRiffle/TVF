@@ -136,7 +136,10 @@ class ClientController extends Controller
         $client = $repository->findOneBy(array('user' => $user));
 
         $repository = $em->getRepository('TVFRecordBundle:Vinyl');
-        $vinyls = $repository->getVinylsFromClient($client->getId());
+        $limit = 6;
+        $client_id = $client->getId();
+        $vinyls = $repository->getVinylsFromClient($client_id, $limit);
+        $nb_results = $repository->countVinylsFromClient($client_id);
 
         $imagehandler = $this->container->get('tvf_store.imagehandler');
         foreach ($vinyls as $vinyl) {
@@ -161,7 +164,9 @@ class ClientController extends Controller
         $categories = $repository->findAll();
         return $this->render($this->entityNameSpace.':collection.html.twig', array(
             'vinyls' => $vinyls,
+            'nb_results' => $nb_results,
             'is_owner' => true,
+            'client_id' => $client_id,
             'genders' => $genders,
             'selections' => $selections,
             'selection_id' => '_',

@@ -80,18 +80,29 @@
         {% endif %}
         {% if filterable == 'no'%}
           {% if (index + 1) is divisible by(3) %}
-            <div class="tvf-box"><div class="tvf-inner"></div></div>
+            <div class="tvf-box tvf-white-block"><div class="tvf-inner"></div></div>
           {% elseif (index + 2) is divisible by(3) %}
-            <div class="tvf-box"><div class="tvf-inner"></div></div>
-            <div class="tvf-box"><div class="tvf-inner"></div></div>
+            <div class="tvf-box tvf-white-block"><div class="tvf-inner"></div></div>
+            <div class="tvf-box tvf-white-block"><div class="tvf-inner"></div></div>
           {% endif %}
         {% else %}
-          <div class="tvf-box"><div class="tvf-inner"></div></div>
-          <div class="tvf-box"><div class="tvf-inner"></div></div>
-          <div class="tvf-box"><div class="tvf-inner"></div></div>
+          <div class="tvf-box tvf-white-block"><div class="tvf-inner"></div></div>
+          <div class="tvf-box tvf-white-block"><div class="tvf-inner"></div></div>
+          <div class="tvf-box tvf-white-block"><div class="tvf-inner"></div></div>
         {% endif %}
       {% endif %}
-      {% endif %}{% endfor %}
+      {% endif %}
+    {% endfor %}
+    {% if nb_results is not defined %}
+      {% set nb_results = 0 %}
+    {% endif %}
+    {% if nb_results > vinyls|length %}
+    <div class="see_more_results">
+      <p>
+        <a class="btn btn-default" id="see_more_results" href="#">Voir plus de résultats</a>
+      </p>
+    </div>
+    {% endif %}
     </div>
   </div>
 </div>

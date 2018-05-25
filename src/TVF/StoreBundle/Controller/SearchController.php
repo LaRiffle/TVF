@@ -20,51 +20,36 @@ class SearchController extends Controller
 
     public function searchAction(Request $request)
     {
-      if (!$this->get('security.authorization_checker')->isGranted('ROLE_RECORD')) {
-        throw new AccessDeniedException('Accès limité.');
-      }
-      $imagehandler = $this->container->get('tvf_store.imagehandler');
-      $query = $request->request->get('request');
-      $client_id = $request->request->get('client_id');
-
-      $user = $this->getUser();
-      $em = $this->getDoctrine()->getManager();
-      $repository = $em->getRepository('TVFRecordBundle:Client');
-      $client = $repository->findOneBy(array('user' => $user));
-      if($client == null){
-        throw new AccessDeniedException('Accès limité.');
-      }
-      $repository = $em->getRepository('TVFRecordBundle:Vinyl');
-      $vinyls = $repository->search($query, $client_id);
-      $data = [];
-      foreach ($vinyls as $vinyl) {
-        if($vinyl->getClient()->getId() == $client->getId()){
-          $fileNames = $vinyl->getImages();
-          if(count($fileNames) > 0){
-            $path_small_image = $imagehandler->get_image_in_quality($fileNames[0], 'xs');
-          } else {
-            $path_small_image = '../../bundles/TVF/img/default-release.png';
-          }
-          $artists = '';
-          $first = true;
-          foreach ($vinyl->getArtists() as $artist) {
-            if(!$first){
-              $artists .= ', ';
-            } else {
-              $first = false;
-            }
-            $artists .= $artist->getName();
-          }
-          $data[] = [
-            'id' => $vinyl->getId(),
-            'name' => $vinyl->getName(),
-            'artists'=> $artists,
-            'image' => $path_small_image
-          ];
-        }
-      }
       /* Used to search for specific vinyls */
-      $data = ['results' => $data];
+      if (!$this->get('security.authorization_checker')->isGranted('ROLE_USER')) {
+        throw new AccessDeniedException('Accès limité.');
+      }
+      $user = $this->getUser();
+      $auth = $request->request->get('auth');
+      // TODO Check authentication
+
+      $imagehandler = $this->container->get('tvf_store.imagehandler');
+      $em = $this->getDoctrine()->getManager();
+      $repository = $em->getRepository('TVFRecordBundle:Vinyl');
+      $data = [];
+      $filter = $request->request->get('filter');
+      $offset = $request->request->get('offset');
+      $client_id = ($filter['client'] != '_') ? $filter['client'] : null;
+      $vinyls = $repository->search($filter, $offset, 6, $client_id, false);
+      $nb_vinyls = $repository->search($filter, -1, -1, $client_id, true);
+      $vinyls = $imagehandler->convert_vinyl_images($vinyls, 'xs');
+
+      foreach ($vinyls as $vinyl) {
+        $artists = [];
+        // TODO Add loved or not loved
+        $viny_data = json_encode($vinyl);
+        $data[] = $viny_data;
+      }
+
+      $data = [
+        'results' => $data,
+        'nb_results' => $nb_vinyls
+      ];
       return new JsonResponse($data);
     }
     public function recordCollectionAction(Request $request, $slug){
@@ -78,20 +63,6 @@ class SearchController extends Controller
       } else {
         return $this->redirect($this->generateUrl('tvf_store_homepage'));
       }
-    }
-    public function indexVinylsAction()
-    {
-      /*
-        This function shouldn't be useful anymore
-      */
-        $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository('TVFRecordBundle:Vinyl');
-        $vinyls = $repository->getVinyls();
-        $imagehandler = $this->container->get('tvf_store.imagehandler');
-        $vinyls = $imagehandler->convert_vinyl_images($vinyls, 'sm');
-        return $this->render($this->entityNameSpace.':index_insta.html.twig', array(
-          'vinyls' => $vinyls,
-        ));
     }
     public function showVinylAction($id)
     {
@@ -146,16 +117,14 @@ class SearchController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository('TVFRecordBundle:Vinyl');
-        $vinyls = $repository->getVinyls();
+        $limit = 6;
         if($client){
           $client_id = $client->getId();
-          $client_vinyls = [];
-          foreach ($vinyls as $vinyl) {
-            if($vinyl->getClient()->getId() == $client_id){
-              $client_vinyls[] = $vinyl;
-            }
-          }
-          $vinyls = $client_vinyls;
+          $repository->getVinylsFromClient($client_id, $limit);
+          $nb_results = $repository->countVinylsFromClient($client_id);
+        } else {
+          $vinyls = $repository->getVinyls($limit);
+          $nb_results = $repository->countVinyls();
         }
         $imagehandler = $this->container->get('tvf_store.imagehandler');
         $vinyls = $imagehandler->convert_vinyl_images($vinyls, 'xs');
@@ -194,6 +163,7 @@ class SearchController extends Controller
 
         $variables = array(
           'vinyls' => $vinyls,
+          'nb_results' => $nb_results,
           'genders' => $genders,
           'selections' => $selections,
           'selection_id' => $selection_id,

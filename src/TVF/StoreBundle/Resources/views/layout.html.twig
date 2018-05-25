@@ -54,9 +54,9 @@
       var width = img.width();
       var height = img.height();
       if(width == 0 || height == 0){
-        console.log('Portraying failed');
+        //console.log('Portraying failed');
         setTimeout(function(){
-          console.log('New attempt for portraying');
+          //console.log('New attempt for portraying');
           portray(img);
         }, 500);
       } else {
@@ -107,7 +107,7 @@
     /* Handle love btn actions */
     var love_url = '{{ path('tvf_store_vinyl_love') }}/';
     var unlove_url = '{{ path('tvf_store_vinyl_unlove') }}/';
-    $('.love_icon_insta_btn').on('click', function(e){
+    $('body').on('click', '.love_icon_insta_btn', function(e){
       e.preventDefault();
       var $vinyl = $(this).closest('.tvf-box');
       selected_id = $vinyl.attr('data-id');
@@ -177,7 +177,7 @@
       e.preventDefault();
       //fire_action_cart_for_product(overview_id);
     });
-    $('#my_insta').on('click', 'a.show-vinyl', function(e){
+    $('body').on('click', '#my_insta a.show-vinyl', function(e){
       // if clicked on buy
       if($(this).find('.icon_insta_price').length > 0 &&
          $.contains($(this).find('.icon_insta_price').get(0), e.target)){
@@ -205,6 +205,7 @@
         active_index = -1;
       } else {
         var after_index = index - index%3 + 2;
+        console.log('after_index '+after_index);
         var $after_box = $($('#my_insta .tvf-box:not(.no-count):not(.hide) .tvf-inner')[after_index]).parent('.tvf-box');
         // If different row, need to slide up the overview :
         if(active_index == -1 || after_index != (active_index - active_index%3 + 2)){

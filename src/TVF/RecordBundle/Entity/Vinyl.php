@@ -4,13 +4,15 @@ namespace TVF\RecordBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
+use JsonSerializable;
+
 /**
  * Vinyl
  *
  * @ORM\Table(name="vinyl")
  * @ORM\Entity(repositoryClass="TVF\RecordBundle\Repository\VinylRepository")
  */
-class Vinyl
+class Vinyl implements JsonSerializable
 {
     /**
      * Constructor
@@ -23,6 +25,31 @@ class Vinyl
         $this->sizes = new \Doctrine\Common\Collections\ArrayCollection();
         $this->onsold = false;
     }
+
+    public function jsonSerialize()
+    {
+        if(isset($this->small_image)){
+          $image = $this->small_image;
+        } elseif(count($this->images) > 0) {
+          $image = $this->images[0];
+        } else {
+          $image = '../../bundles/TVF/img/default-release.png';
+        }
+        return array(
+            'id' => $this->id,
+            'name' => $this->name,
+            'description'=> $this->description,
+            'price' => $this->price,
+            'onsold' => $this->onsold,
+            'types' => $this->types->toArray(),
+            'small_image' => $image,
+            'category' => $this->category,
+            'artists' => $this->artists->toArray(),
+            'client' => $this->client,
+            'loved' => false
+        );
+    }
+
     /**
      * @var int
      *

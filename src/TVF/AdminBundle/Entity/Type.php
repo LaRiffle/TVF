@@ -3,6 +3,7 @@
 namespace TVF\AdminBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 
 /**
  * Type
@@ -10,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="type")
  * @ORM\Entity(repositoryClass="TVF\AdminBundle\Repository\TypeRepository")
  */
-class Type
+class Type implements JsonSerializable
 {
     /**
      * @var int
@@ -20,6 +21,15 @@ class Type
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
+
+    public function jsonSerialize()
+    {
+        return array(
+            'id' => $this->id,
+            'name' => $this->name,
+            'slug' => $this->slug
+        );
+    }
 
     /**
      * @var string
